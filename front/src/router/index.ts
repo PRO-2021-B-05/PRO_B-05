@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import Home from "../views/Home.vue";
+import Home from "../views/Discover.vue";
 
 Vue.use(VueRouter);
 
@@ -11,7 +11,7 @@ const routes: Array<RouteConfig> = [
     component: Home,
   },
   {
-    path: "/about",
+    path: "/profil",
     name: "About",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
