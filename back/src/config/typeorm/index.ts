@@ -1,6 +1,2 @@
-// @tsed/cli do not edit
-import * as defaultConfig from "./default.config.json";
-
-export default [
-  defaultConfig as any
-];
+import defaultConfig from './default.config';
+export default [defaultConfig as any];

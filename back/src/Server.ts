@@ -1,73 +1,86 @@
-import {Env} from "@tsed/core";
-import {Configuration, Inject} from "@tsed/di";
-import {$log, PlatformApplication} from "@tsed/common";
-import "@tsed/platform-express"; // /!\ keep this import
-import bodyParser from "body-parser";
-import compress from "compression";
-import cookieParser from "cookie-parser";
-import methodOverride from "method-override";
-import cors from "cors";
-import "@tsed/ajv";
-import "@tsed/swagger";
-import "@tsed/typeorm";
-import typeormConfig from "./config/typeorm";
+import '@tsed/platform-express'; // /!\ keep this import
+import '@tsed/ajv';
+import '@tsed/swagger';
+import '@tsed/typeorm';
+import '@tsed/passport';
 
-import { IndexCtrl } from "./controllers/pages/IndexCtrl";
+import {$log, PlatformApplication} from '@tsed/common';
+import {Env} from '@tsed/core';
+import {Configuration, Inject} from '@tsed/di';
+import bodyParser from 'body-parser';
+import compress from 'compression';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import * as dotenv from 'dotenv';
+import methodOverride from 'method-override';
 
+import typeormConfig from './config/typeorm';
+import {IndexCtrl} from './controllers/pages/IndexCtrl';
+import {User} from './entities/User';
+
+dotenv.config();
 
 export const rootDir = __dirname;
 export const isProduction = process.env.NODE_ENV === Env.PROD;
 
 if (isProduction) {
-  $log.appenders.set("stdout", {
-    type: "stdout",
-    levels: ["info", "debug"],
+  $log.appenders.set('stdout', {
+    type: 'stdout',
+    levels: ['info', 'debug'],
     layout: {
-      type: "json"
-    }
+      type: 'json',
+    },
   });
 
-  $log.appenders.set("stderr", {
-    levels: ["trace", "fatal", "error", "warn"],
-    type: "stderr",
+  $log.appenders.set('stderr', {
+    levels: ['trace', 'fatal', 'error', 'warn'],
+    type: 'stderr',
     layout: {
-      type: "json"
-    }
+      type: 'json',
+    },
   });
 }
 
 @Configuration({
   rootDir,
-  acceptMimes: ["application/json"],
+  acceptMimes: ['application/json'],
   httpPort: process.env.PORT || 8083,
   httpsPort: false, // CHANGE
   logger: {
-    disableRoutesSummary: isProduction
+    disableRoutesSummary: isProduction,
   },
   mount: {
-    "/rest": [
-      `${rootDir}/controllers/**/*.ts`
-    ],
-    "/": [IndexCtrl]
+    '/api/v1': [`${rootDir}/controllers/**/*.ts`],
+    '/': [IndexCtrl],
+  },
+  componentsScan: [
+    `${rootDir}/protocols/*{.ts,.js}`,
+    `${rootDir}/services/*{.ts,.js}`,
+    `${rootDir}/middlewares/*{.ts,.js}`,
+  ],
+  passport: {
+    userInfoModel: User,
   },
   swagger: [
     {
-      path: "/v2/docs",
-      specVersion: "2.0"
+      path: '/docs/v1',
+      specVersion: '3.0.1',
     },
-    {
-      path: "/v3/docs",
-      specVersion: "3.0.1"
-    }
   ],
   views: {
     root: `${rootDir}/../views`,
-    viewEngine: "ejs"
+    viewEngine: 'ejs',
   },
   typeorm: typeormConfig,
-  exclude: [
-    "**/*.spec.ts"
-  ]
+  exclude: ['**/*.spec.ts'],
+  sms3: {
+    endPoint: 's3.studimax.ch',
+    region: 'ch-1',
+    port: 443,
+    useSSL: true,
+    accessKey: 'stArt',
+    secretKey: process.env.S3_PASSWORD??"",
+  },
 })
 export class Server {
   @Inject()
@@ -83,8 +96,10 @@ export class Server {
       .use(compress({}))
       .use(methodOverride())
       .use(bodyParser.json())
-      .use(bodyParser.urlencoded({
-        extended: true
-      }));
+      .use(
+        bodyParser.urlencoded({
+          extended: true,
+        })
+      );
   }
 }

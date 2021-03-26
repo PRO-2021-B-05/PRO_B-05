@@ -1,4 +1,4 @@
-# back
+# streamboard-appstore
 
 > An awesome project based on Ts.ED framework
 

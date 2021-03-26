@@ -8,17 +8,9 @@ services:
         - http_proxy
         - https_proxy
         - no_proxy
-    image: back/server:latest
+    image: streamboard-appstore/server:latest
     ports:
-      - '8081:8081'
-    stdin_open: true
-    tty: true
-  mariadb:
-    image: mariadb:10.1.16
-    ports:
-      - '3306:3306'
-    environment:
-      MYSQL_ROOT_PASSWORD: admin
-      MYSQL_USER: test
-      MYSQL_PASSWORD: test
-      MYSQL_DATABASE: test
+      - "8081:8081"
+    stdin_open: true  # -i
+    tty: true         # -t
+
