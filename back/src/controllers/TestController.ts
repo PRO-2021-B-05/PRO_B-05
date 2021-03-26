@@ -1,7 +1,10 @@
-import {Controller, Get, MultipartFile, PlatformMulterFile, Post, Res} from '@tsed/common';
+import Jimp from 'jimp';
+import * as uuid from 'uuid';
+import {Controller, Err, Get, MulterOptions, MultipartFile, PlatformMulterFile, Post, Res} from '@tsed/common';
 import {Inject} from '@tsed/di';
 
 import {SMS3StorageService} from '../services/SMS3StorageService';
+import {MulterError} from "multer";
 
 @Controller('/test')
 export class TestController {
@@ -32,9 +35,17 @@ export class TestController {
   }
 
   @Post('/file')
+  @MulterOptions({limits : {
+    fileSize: 20*1000*1000
+    } })
   async upload(@MultipartFile("file") file: PlatformMulterFile){
-    return this.s3.putFile('start', file.originalname, file.buffer, {
-      'Content-Type':file.mimetype
+    const image = await Jimp.read(file.buffer)
+    image.resize(250, Jimp.AUTO);
+    const buffer = await image.getBufferAsync(Jimp.MIME_PNG);
+
+    return this.s3.putFile('start', uuid.v4(), buffer, {
+      'Content-Type':Jimp.MIME_PNG,
+      'Original-Name': file.originalname
     });
   }
 }

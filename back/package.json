@@ -42,7 +42,8 @@
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "typeorm": "^0.2.31",
-    "unzipper": "^0.10.11"
+    "unzipper": "^0.10.11",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@tsed/cli-plugin-eslint": "2.11.0",
@@ -61,6 +62,7 @@
     "@types/passport": "^1.0.6",
     "@types/passport-jwt": "^3.0.5",
     "@types/unzipper": "^0.10.3",
+    "@types/uuid": "^8.3.0",
     "concurrently": "^6.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "gts": "^3.1.0",
