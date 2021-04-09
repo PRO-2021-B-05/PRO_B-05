@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <Header/>
+    <Header />
     <v-main>
-      <RouterView/>
+      <RouterView />
     </v-main>
   </v-app>
 </template>
@@ -15,10 +15,8 @@ import Discover from "@/views/Discover.vue";
 @Component({
   components: {
     Discover,
-    Header
+    Header,
   },
 })
-export default class App extends Vue {
-
-}
+export default class App extends Vue {}
 </script>

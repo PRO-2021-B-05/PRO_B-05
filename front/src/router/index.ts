@@ -16,11 +16,6 @@ const routes: Array<RouteConfig> = [
     path: "/profil",
     name: "Profil",
     component: Profil,
-  },
-  {
-    path: "/createProject",
-    name: "CreateProject",
-    component: CreateProject
   }
 ];
 

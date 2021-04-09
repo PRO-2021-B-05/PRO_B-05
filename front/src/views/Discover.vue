@@ -1,9 +1,12 @@
 <template>
   <div class="Discover">
-    <v-container><h1>Discover</h1></v-container>
     <v-container>
+      <heading1> Discover </heading1>
       <v-row>
-        <v-col v-for="id in projects.length" :key="id">
+        <v-col class="px-1 py-1" xs="12" sm="6" lg="4" xl="3"
+          v-for="id in projects.length"
+          :key="id"
+        >
           <div v-if="id > projects.length && projectsLoading">
             <v-skeleton-loader
               elevation="2"
@@ -14,11 +17,9 @@
           </div>
           <SmallProject
             v-else
-            cHeight="200"
-            c-width="400"
             titre="hello"
             :id="id"
-            :project="projects[id]"
+            :picture="projects[id]"
           />
         </v-col>
       </v-row>
@@ -31,9 +32,10 @@ import { Component, Vue } from "vue-property-decorator";
 import Header from "@/components/Header.vue";
 import SmallProject from "@/components/SmallProject.vue";
 import { Picture } from "@/model/Picture.ts";
+import Heading1 from "@/components/Heading1.vue";
 
 @Component({
-  components: { SmallProject, Header },
+  components: { Heading1, SmallProject, Header },
 })
 export default class Discover extends Vue {
   private pageLimit = 12;

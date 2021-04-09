@@ -133,7 +133,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import Heading1 from "@/components/Heading1";
+import Heading1 from "@/components/Heading1.vue";
 import NavInfo from "@/components/NavInfo.vue";
 
 @Component({
