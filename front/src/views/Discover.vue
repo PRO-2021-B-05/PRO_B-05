@@ -16,6 +16,8 @@
             />
           </div>
           <SmallProject
+            author="true"
+            descripton="false"
             v-else
             titre="hello"
             :id="id"

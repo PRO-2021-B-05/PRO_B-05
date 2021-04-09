@@ -39,91 +39,26 @@
         </v-btn>
       </v-row>
       <v-row>
-        <v-col
-          v-for="i in 12"
-          :key="i"
+        <v-col class="px-1 py-1" xs="12" sm="6" lg="4" xl="3"
+               v-for="id in projects.length"
+               :key="id"
         >
-          <v-card
-            class="mx-auto my-2"
-            max-width="600px"
-          >
-            <v-row>
-              <v-col
-                class="py-0"
-                sm="6"
-                xs="12"
-              >
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-img class="mx-auto " :src="'https://picsum.photos/id/'+i+'/500/200'"
-                           v-bind="attrs"
-                           v-on="on"
-                           height="250px"
-                    />
-                    <!--v-skeleton-loader class="mx-auto" max-width="500" max-height="200" v-bind="attrs" type="image" /-->
-                  </template>
-                  <span>Bottom tooltip</span>
-                </v-tooltip>
-              </v-col>
-              <v-col
-                class="d-flex flex-column justify-lg-space-between"
-                sm="6"
-                xs="12"
-              >
-                <div>
-                  <v-row>
-                    <v-card-title>Projet {{i}}</v-card-title>
-                    <v-spacer/>
-                    <v-btn
-                      class="mr-2 mt-2"
-                      color="primary"
-                      outlined
-                      fab
-                      small
-                      elevation="2"
-                    >
-                      <v-icon>mdi-pencil-outline</v-icon>
-                    </v-btn>
-                    <v-btn
-                      class="mr-5 mt-2"
-                      color="primary"
-                      outlined
-                      fab
-                      small
-                      elevation="2"
-                    >
-                      <v-icon>mdi-delete-outline</v-icon>
-                    </v-btn>
-                  </v-row>
-                  <v-card-text>
-                     Aenean eu quam eget lorem scelerisque suscipit non varius tortor. In hac habitasse platea dictumst. In ullamcorper velit sed neque posuere, ac varius odio feugiat. Vestibulum et odio turpis.
-                  </v-card-text>
-                </div>
-                <div class="mb-2">
-                  <v-row class="d-flex flex-row justify-end">
-                    <v-btn
-                      class="mr-5"
-                      outlined
-                      elevation="2"
-                      color="primary"
-                    >
-                      Learn More
-                    </v-btn>
-                  </v-row>
-                </div>
-              </v-col>
-            </v-row>
-          </v-card>
+          <div v-if="id > projects.length && projectsLoading">
+            <v-skeleton-loader
+              elevation="2"
+              class="mx-auto"
+              type="card"
+              :width="400"
+            />
+          </div>
+          <SmallProject
+            description="true"
+            v-else
+            titre="hello"
+            :id="id"
+            :picture="projects[id]"
+          />
         </v-col>
-      </v-row>
-      <v-row class="my-4">
-        <v-spacer/>
-          <v-pagination
-            v-model="page"
-            length="6"
-          >
-          </v-pagination>
-        <v-spacer/>
       </v-row>
     </v-container>
     <NavInfo :info="authorInfo"/>
@@ -135,9 +70,12 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import Heading1 from "@/components/Heading1.vue";
 import NavInfo from "@/components/NavInfo.vue";
+import SmallProject from "@/components/SmallProject.vue";
+import { Picture } from "@/model/Picture";
 
 @Component({
   components: {
+    SmallProject,
     NavInfo,
     Heading1,
 
@@ -146,6 +84,47 @@ import NavInfo from "@/components/NavInfo.vue";
 export default class Profil extends Vue {
 
   page = 1;
+
+  private pageLimit = 12;
+  private nbLoaded = this.pageLimit;
+  private pageLoaded = 1;
+  private projects: Picture[] = [];
+  private projectsLoading = true;
+
+  scroll() {
+    window.onscroll = () => {
+      if (
+        (window.innerHeight + window.pageYOffset) >=
+        document.body.offsetHeight
+      ) {
+        if (this.nbLoaded < 200) {
+          this.nbLoaded += this.pageLimit;
+          this.pageLoaded += 1;
+          this.getProjects();
+        }
+      }
+    };
+  }
+  public getApi<T>(url: string): Promise<T> {
+    return fetch(url).then((response) => {
+      return response.json();
+    });
+  }
+  public async getProjects() {
+    this.projectsLoading = true;
+    this.projects.push(
+      ...(await this.getApi<Picture[]>(
+        `https://picsum.photos/v2/list?page=${this.pageLoaded}&limit=${
+          1 + this.pageLimit
+        }`
+      ))
+    );
+    this.projectsLoading = false;
+  }
+  public async mounted() {
+    this.scroll();
+    await this.getProjects();
+  }
 
   private authorInfo = {
     title : "Kylian Bourcoud",
