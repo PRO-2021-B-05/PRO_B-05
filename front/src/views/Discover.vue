@@ -1,40 +1,79 @@
 <template>
   <div class="Discover">
-    <v-container> <h1>Discover</h1> </v-container>
-    <!-- futur header -->
-    <!-- HelloWorld msg="Welcome to Your Vue.js + TypeScript App" / -->
+    <v-container><h1>Discover</h1></v-container>
     <v-container>
       <v-row>
-        <v-col v-for="i in 12"
-               :key="i"
-               cols="12">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-img class="mx-auto" height="200" width="500" :src="'https://picsum.photos/id/'+i+'/500/200'"
-                v-bind="attrs"
-                v-on="on"
-              />
-              <!--v-skeleton-loader class="mx-auto" max-width="500" max-height="200" v-bind="attrs" type="image" /-->
-            </template>
-            <span>Bottom tooltip</span>
-          </v-tooltip>
-
+        <v-col v-for="id in projects.length" :key="id">
+          <div v-if="id > projects.length && projectsLoading">
+            <v-skeleton-loader
+              elevation="2"
+              class="mx-auto"
+              type="card"
+              :width="400"
+            />
+          </div>
+          <SmallProject
+            v-else
+            cHeight="200"
+            c-width="400"
+            titre="hello"
+            :id="id"
+            :project="projects[id]"
+          />
         </v-col>
       </v-row>
-
     </v-container>
-
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+import Header from "@/components/Header.vue";
+import SmallProject from "@/components/SmallProject.vue";
+import { Picture } from "@/model/Picture.ts";
 
 @Component({
-  components: {
-    HelloWorld,
-  },
+  components: { SmallProject, Header },
 })
-export default class Home extends Vue {}
+export default class Discover extends Vue {
+  private pageLimit = 12;
+  private nbLoaded = this.pageLimit;
+  private pageLoaded = 1;
+  private projects: Picture[] = [];
+  private projectsLoading = true;
+  scroll() {
+    window.onscroll = () => {
+      if (
+        (window.innerHeight + window.pageYOffset) >=
+        document.body.offsetHeight
+      ) {
+        if (this.nbLoaded < 200) {
+          this.nbLoaded += this.pageLimit;
+          this.pageLoaded += 1;
+          this.getProjects();
+        }
+      }
+    };
+  }
+  public getApi<T>(url: string): Promise<T> {
+    return fetch(url).then((response) => {
+      return response.json();
+    });
+  }
+  public async getProjects() {
+    this.projectsLoading = true;
+    this.projects.push(
+      ...(await this.getApi<Picture[]>(
+        `https://picsum.photos/v2/list?page=${this.pageLoaded}&limit=${
+          1 + this.pageLimit
+        }`
+      ))
+    );
+    this.projectsLoading = false;
+  }
+  public async mounted() {
+    this.scroll();
+    await this.getProjects();
+  }
+}
 </script>
