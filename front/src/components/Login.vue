@@ -3,7 +3,7 @@
     :value = "overlay"
   >
     <v-card color="white" light>
-      <v-app-bar color="white">
+      <v-app-bar color="white" flat>
         <v-card-title>
           Log in
         </v-card-title>
