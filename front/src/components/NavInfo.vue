@@ -47,17 +47,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
   }
 })
 export default class NavInfo extends Vue {
-  @Prop({default : false }) private info! : {
-    title :string,
-    subtitle : string,
-    section : [
-      {
-        id: number,
-        title : string,
-        content : string
-      }
-    ]
-  };
+  @Prop({default : false }) private info! : NavInfo;
 }
 </script>
 
