@@ -1,14 +1,20 @@
 <template>
   <div>
-    <v-app-bar color="white">
-      <div>
-        <v-img
-          max-height="50px"
-          max-width="50px"
-          src="https://picsum.photos/id/11/500/300"
-        ></v-img>
-      </div>
-      <v-app-bar-title>StArt</v-app-bar-title>
+    <v-app-bar
+      color="white"
+      clipped-right
+      app
+    >
+      <v-img
+        max-height="50px"
+        max-width="50px"
+        src="https://picsum.photos/id/11/500/300"
+      ></v-img>
+      <v-app-bar-title class="ml-3">
+        <div>
+          StArt
+        </div>
+      </v-app-bar-title>
       <v-spacer></v-spacer>
       <v-app-bar-nav-icon class="d-lg-none" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <div class="d-none d-lg-block">
@@ -43,9 +49,9 @@
     </v-app-bar>
     <v-navigation-drawer
       v-model="drawer"
-      absolute
-      bottom
+      app
       temporary
+      height="100%"
     >
       <v-list
         nav
@@ -85,48 +91,19 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
+    <Login :overlay = "overlay" @close="overlay=false"/>
 
-    <v-overlay
-      :value = "overlay"
-      :absolute = "absolute"
-    >
-      <v-card color="white" light>
-        <v-form>
-          <v-container>
-            <v-col>
-              <v-text-field
-                label="Username"
-              >
-
-              </v-text-field>
-              <v-text-field
-                label="Password"
-                type = "password"
-              >
-
-              </v-text-field>
-              <v-row>
-                <v-btn color="purple lighten-3">Login</v-btn>
-                <v-spacer/>
-                <v-btn
-                  @click="overlay = false"
-                >
-                  cancel
-                </v-btn>
-              </v-row>
-            </v-col>
-          </v-container>
-        </v-form>
-      </v-card>
-    </v-overlay>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
+import Login from "@/components/Login.vue"
 
-@Component
+@Component({
+  components: {Login}
+})
 export default class Header extends Vue{
   links = [
     {
@@ -143,10 +120,9 @@ export default class Header extends Vue{
     }
   ];
   overlay = false;
-  absolute = true;
   drawer = false;
   group = null;
-  connected = true;
+  connected = false;
 };
 </script>
 

@@ -15,7 +15,7 @@ import Discover from "@/views/Discover.vue";
 @Component({
   components: {
     Discover,
-    Header,
+    Header
   },
 })
 export default class App extends Vue {
