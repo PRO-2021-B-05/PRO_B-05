@@ -2,7 +2,19 @@
   <div class="Admin">
     <v-container>
       <heading1> Admin </heading1>
+      <v-breadcrumbs light />
       <v-card>
+        <v-btn
+          class="my-3 mx-3"
+          color="primary"
+          dark
+          outlined
+          elevation="2"
+          href="/createUser"
+        >
+          <v-icon>mdi-plus</v-icon>
+          Create User
+        </v-btn>
         <v-container fluid v-if="students">
           <v-data-iterator
             :items="students"
@@ -14,7 +26,7 @@
             hide-default-footer
           >
             <template v-slot:header>
-              <v-toolbar dark color="blue darken-3" class="mb-1">
+              <v-toolbar dark color="primary darken-1" class="mb-1">
                 <v-text-field
                   v-model="search"
                   clearable
@@ -26,21 +38,11 @@
                 ></v-text-field>
                 <template v-if="$vuetify.breakpoint.mdAndUp">
                   <v-spacer></v-spacer>
-                  <v-select
-                    v-model="sortBy"
-                    flat
-                    solo-inverted
-                    hide-details
-                    :items="keys"
-                    prepend-inner-icon="mdi-magnify"
-                    label="Sort by"
-                  ></v-select>
-                  <v-spacer></v-spacer>
                   <v-btn-toggle v-model="sortDesc" mandatory>
-                    <v-btn large depressed color="blue" :value="false">
+                    <v-btn large depressed color="primary" :value="false">
                       <v-icon>mdi-arrow-up</v-icon>
                     </v-btn>
-                    <v-btn large depressed color="blue" :value="true">
+                    <v-btn large depressed color="primary" :value="true">
                       <v-icon>mdi-arrow-down</v-icon>
                     </v-btn>
                   </v-btn-toggle>
@@ -59,27 +61,35 @@
                   lg="3"
                 >
                   <v-card>
-                    <v-card-title class="subheading font-weight-bold">
-                      {{ item.name }}
-                    </v-card-title>
-
-                    <v-divider></v-divider>
-
+                    <v-content class="px-4 pt-2 pb-2">
+                      <v-list dense>
+                        <v-list-item dense>
+                          <v-list-item-content>
+                            {{ item.name }}
+                          </v-list-item-content>
+                          <v-list-item-content>
+                            <v-container class="pt-0 pb-0">
+                              <v-btn icon>
+                                <v-icon> mdi-delete </v-icon>
+                              </v-btn>
+                              <v-btn icon>
+                                <v-icon> mdi-pencil </v-icon>
+                              </v-btn>
+                            </v-container>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </v-list>
+                    </v-content>
+                    <v-divider />
                     <v-list dense>
                       <v-list-item
                         v-for="(key, index) in filteredKeys"
                         :key="index"
                       >
                         <v-list-item-content
-                          :class="{ 'blue--text': sortBy === key }"
+                          :class="{ 'primary--text': sortBy === key }"
                         >
-                          {{ key }}:
-                        </v-list-item-content>
-                        <v-list-item-content
-                          class="align-end"
-                          :class="{ 'blue--text': sortBy === key }"
-                        >
-                          {{ item[key.toLowerCase()] }}
+                          {{ key }} : {{ item[key.toLowerCase()] }}
                         </v-list-item-content>
                       </v-list-item>
                     </v-list>
@@ -89,42 +99,20 @@
             </template>
 
             <template v-slot:footer>
-              <v-row class="mt-2" align="center" justify="center">
-                <span class="grey--text">Items per page</span>
-                <v-menu offset-y>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      dark
-                      text
-                      color="primary"
-                      class="ml-2"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                      {{ itemsPerPage }}
-                      <v-icon>mdi-chevron-down</v-icon>
-                    </v-btn>
-                  </template>
-                  <v-list>
-                    <v-list-item
-                      v-for="(number, index) in itemsPerPageArray"
-                      :key="index"
-                      @click="updateItemsPerPage(number)"
-                    >
-                      <v-list-item-title>{{ number }}</v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-
+              <v-row
+                v-if="numberOfPages > 1"
+                class="mt-2"
+                align="center"
+                justify="center"
+              >
                 <v-spacer></v-spacer>
-
                 <span class="mr-4 grey--text">
                   Page {{ page }} of {{ numberOfPages }}
                 </span>
                 <v-btn
                   fab
                   dark
-                  color="blue darken-3"
+                  color="primary darken-2"
                   class="mr-1"
                   @click="formerPage"
                 >
@@ -133,7 +121,7 @@
                 <v-btn
                   fab
                   dark
-                  color="blue darken-3"
+                  color="primary darken-2"
                   class="ml-1"
                   @click="nextPage"
                 >
@@ -160,49 +148,43 @@ import { User } from "@/model/User";
 export default class Admin extends Vue {
   private usersLoading = true;
   private students = [
-    { id: 1, name: "Jean Marc Antoine", useName: "JMA" },
-    { id: 1, name: "Jean Marc Antoine", useName: "JMA" },
-    { id: 2, name: "Jean Jacques Antoine", useName: "JJA" },
-    { id: 2, name: "Jean Jacques Antoine", useName: "JJA" },
-    { id: 2, name: "Jean Jacques Antoine", useName: "JJA" },
-    { id: 2, name: "Jean Jacques Antoine", useName: "JJA" },
-    { id: 2, name: "Jean Jacques Antoine", useName: "JJA" },
-    { id: 1, name: "Jean Marc Antoine", useName: "JMA" },
-    { id: 3, name: "Antoine Smith", useName: "AS" },
-    { id: 3, name: "Antoine Smith", useName: "AS" },
-    { id: 3, name: "Antoine Smith", useName: "AS" },
-    { id: 3, name: "Antoine Smith", useName: "AS" },
-    { id: 3, name: "Antoine Smith", useName: "AS" },
-    { id: 1, name: "Jean Marc Antoine", useName: "JMA" },
-    { id: 1, name: "Jean Marc Antoine", useName: "JMA" },
+    { id: 1, name: "Jean Michel Antoine", userName: "JMA" },
+    { id: 2, name: "Jean Jacques Antoine", userName: "JJA" },
+    { id: 3, name: "Antoine Smith", userName: "AS" },
+    { id: 4, name: "Nathalie Smart", userName: "NS" },
+    { id: 5, name: "Baba Torino", userName: "BT" },
+    { id: 6, name: "Lawrence Plank", userName: "LP" },
+    { id: 7, name: "Jean Michel Antoine", userName: "JMA" },
+    { id: 8, name: "Jean Jacques Antoine", userName: "JJA" },
+    { id: 9, name: "Antoine Smith", userName: "AS" },
+    { id: 10, name: "Nathalie Smart", userName: "NS" },
+    { id: 11, name: "Baba Torino", userName: "BT" },
+    { id: 12, name: "Lawrence Plank", userName: "LP" },
   ];
-  private itemsPerPageArray = [4, 8, 12];
+  private keys = ["id"];
   private search = "";
   private sortDesc = false;
   private page = 1;
-  private itemsPerPage: 4;
+  private itemsPerPage = 24;
   private sortBy = "id";
-  public filteredKeys() {
-    return this.keys.filter(key => key !== 'Name');
+  public get filteredKeys(): string[] {
+    return this.keys.filter((key) => key !== "name");
   }
-  public numberOfPages() {
-    return Math.ceil(this.items.length / this.itemsPerPage);
+  get numberOfPages(): number {
+    return Math.ceil(this.students.length / this.itemsPerPage);
   }
-  public nextPage () {
+  public nextPage(): void {
     if (this.page + 1 <= this.numberOfPages) this.page += 1;
   }
-  public formerPage () {
+  public formerPage(): void {
     if (this.page - 1 >= 1) this.page -= 1;
-  }
-  public updateItemsPerPage (number) {
-    this.itemsPerPage = number;
   }
   public getApi<T>(url: string): Promise<T> {
     return fetch(url).then((response) => {
       return response.json();
     });
   }
-  public async getStudents() {
+  public async getStudents(): Promise<void> {
     this.usersLoading = true;
     /*
     this.students.push(
@@ -210,8 +192,7 @@ export default class Admin extends Vue {
     );*/
     this.usersLoading = false;
   }
-  public async mounted() {
-    this.scroll();
+  public async mounted(): Promise<void> {
     await this.getStudents();
   }
 }
