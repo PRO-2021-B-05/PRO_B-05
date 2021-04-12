@@ -11,7 +11,7 @@
       <v-row class="mx-4 my-2">
         <div class="subtitle-1">{{ sect.title }}</div>
         <v-spacer></v-spacer>
-        <v-btn color="primary" outlined fab small elevation="2">
+        <v-btn color="primary" outlined fab small elevation="2" v-if="modify">
           <v-icon>mdi-pencil-outline</v-icon>
         </v-btn>
       </v-row>
@@ -30,6 +30,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 })
 export default class NavInfo extends Vue {
   @Prop({ default: false }) private info!: NavInfo;
+  @Prop({ default: false }) private modify!: boolean;
 }
 </script>
 

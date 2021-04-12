@@ -12,7 +12,7 @@
       </v-carousel>
       <v-divider class="my-4" />
       <div class="title text-center">{{ images[model].title }}</div>
-      <NavInfo :info="ProjectInfo" />
+      <NavInfo :info="ProjectInfo"/>
     </v-col>
   </v-container>
 </template>
