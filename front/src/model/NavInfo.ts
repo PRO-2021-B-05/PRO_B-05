@@ -1,11 +1,11 @@
 export interface NavInfo {
-  title :string,
-    subtitle : string,
-    section : [
+  title: string;
+  subtitle: string;
+  section: [
     {
-      id: number,
-      title : string,
-      content : string
+      id: number;
+      title: string;
+      content: string;
     }
-  ]
-};
+  ];
+}
