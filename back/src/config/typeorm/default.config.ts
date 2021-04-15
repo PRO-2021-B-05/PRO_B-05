@@ -6,6 +6,7 @@ export default {
   username: process.env.DATABASE_USER || 'root',
   password: process.env.DATABASE_PASSWORD || 'itK9@EqtT!3E6m@r',
   database: process.env.DATABASE_DB || 'project',
+  acquireTimeout: 30000,
   synchronize: true,
   logging: process.env.DATABASE_LOGIN === 'true',
   entities: ['${rootDir}/entities/**/*.ts'],
