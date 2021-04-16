@@ -5,36 +5,46 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {getRepository} from 'typeorm';
 
-import {AcceptRoles} from '../../decorators/AcceptRoles';
-import {User} from '../../entities/User';
+import {Admin} from "../../entities/Admin";
+import {Student} from "../../entities/Student";
+import {User} from "../../entities/User";
 
 @Controller('/auth')
 export class AuthController {
+  private adminRepository = getRepository(Admin);
+  private studentRepository = getRepository(Student);
   private userRepository = getRepository(User);
 
   @Post('/login')
   async login(
-    @BodyParams('email') email: string,
+    @BodyParams('username') username: string,
     @BodyParams('password') password: string
   ) {
-    const user = await this.userRepository.findOne({email});
+    const user = await this.userRepository.findOne({username});
     if (!user || !(await user.verifyPassword(password))) {
       throw new Unauthorized('Wrong credentials');
     }
     const token = jwt.sign(
       {
         uuid: user.uuid,
+        type: user.type
       },
       'secret',
       {expiresIn: '1d'}
     );
-    return {token};
+    return {type : user.type, token};
   }
 
   @Post('/register')
-  async register(@BodyParams(User) user: User) {
+  async registerAdmin(@BodyParams(Admin) user: Admin) {
     user.password = await bcrypt.hash(user.password, 10);
-    return this.userRepository.save(user);
+    return this.adminRepository.save(user);
+  }
+
+  @Post('/register2')
+  async registerStudent(@BodyParams(Student) user: Student) {
+    user.password = await bcrypt.hash(user.password, 10);
+    return this.studentRepository.save(user);
   }
 
   @Get('/')

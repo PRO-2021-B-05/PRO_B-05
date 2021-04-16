@@ -4,6 +4,8 @@ import {ExtractJwt, Strategy, StrategyOptions} from 'passport-jwt';
 import {getRepository} from 'typeorm';
 
 import {User} from '../entities/User';
+import {Admin} from "../entities/Admin";
+import {Student} from "../entities/Student";
 
 @Protocol<StrategyOptions>({
   name: 'jwt',
@@ -15,14 +17,18 @@ import {User} from '../entities/User';
   },
 })
 export class JwtProtocol implements OnVerify {
-  private userRepository = getRepository(User);
+  private adminRepository = getRepository(Admin);
+  private studentRepository = getRepository(Student);
 
   async $onVerify(
     @Req() req: Req,
     @Arg(0) jwtPayload: any
   ): Promise<boolean | User> {
     if (!jwtPayload?.uuid) return false;
-    const user = await this.userRepository.findOne({uuid: jwtPayload.uuid});
+    const user = jwtPayload.type == Admin.name ?
+        await this.adminRepository.findOne({uuid: jwtPayload.uuid}) :
+        await this.studentRepository.findOne({uuid: jwtPayload.uuid});
+
     req.user = user;
     return user ?? false;
   }
