@@ -94,7 +94,7 @@ export default class Header extends Vue {
   overlay = false;
   drawer = false;
   group = null;
-  connected = false;
+  connected = true;
 }
 </script>
 

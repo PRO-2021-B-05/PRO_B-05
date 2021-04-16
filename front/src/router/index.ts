@@ -2,7 +2,8 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Discover from "../views/Discover.vue";
 import Profil from "../views/Profil.vue";
-import CreateProject from "../views/CreateProject.vue"
+import Project from "@/views/Project.vue";
+import CreateProject from "../views/CreateProject.vue";
 import Admin from "@/views/Admin.vue";
 
 Vue.use(VueRouter);
@@ -22,7 +23,12 @@ const routes: Array<RouteConfig> = [
     path: "/admin",
     name: "Admin",
     component: Admin,
-  }
+  },
+  {
+    path: "/project",
+    name: "Project",
+    component: Project,
+  },
 ];
 
 const router = new VueRouter({
