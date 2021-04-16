@@ -13,11 +13,7 @@ import ProjectForm from "@/components/ProjectForm.vue";
 @Component({
   components: { ProjectForm, Heading1 },
 })
-export default class CreateProject extends Vue {
-
-}
+export default class CreateProject extends Vue {}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
