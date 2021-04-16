@@ -29,12 +29,13 @@
               <v-toolbar dark color="primary darken-1" class="mb-1">
                 <v-text-field
                   v-model="search"
-                  clearable
-                  flat
+                  dense
+                  filled
                   solo-inverted
                   hide-details
                   prepend-inner-icon="mdi-magnify"
                   label="Search"
+                  placeholder="Student Name"
                 ></v-text-field>
                 <template v-if="$vuetify.breakpoint.mdAndUp">
                   <v-spacer></v-spacer>
@@ -60,7 +61,7 @@
                   md="4"
                   lg="3"
                 >
-                  <v-card>
+                  <v-card flat>
                     <v-content class="px-4 pt-2 pb-2">
                       <v-list dense>
                         <v-list-item dense>
@@ -78,21 +79,20 @@
                             </v-container>
                           </v-list-item-content>
                         </v-list-item>
+                        <v-list-item
+                          dense
+                          v-for="(key, index) in filteredKeys"
+                          :key="index"
+                        >
+                          <v-list-item-content
+                            :class="{ 'primary--text': sortBy === key }"
+                          >
+                            {{ key }} : {{ item[key.toLowerCase()] }}
+                          </v-list-item-content>
+                        </v-list-item>
+                        <v-divider />
                       </v-list>
                     </v-content>
-                    <v-divider />
-                    <v-list dense>
-                      <v-list-item
-                        v-for="(key, index) in filteredKeys"
-                        :key="index"
-                      >
-                        <v-list-item-content
-                          :class="{ 'primary--text': sortBy === key }"
-                        >
-                          {{ key }} : {{ item[key.toLowerCase()] }}
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list>
                   </v-card>
                 </v-col>
               </v-row>
