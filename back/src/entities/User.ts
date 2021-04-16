@@ -1,6 +1,14 @@
 import {MaxLength, Min, MinLength, Pattern, Property, Required} from '@tsed/schema';
 import bcrypt from 'bcrypt';
-import {Column, Entity, PrimaryGeneratedColumn, TableInheritance, Unique} from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  TableInheritance,
+  Unique,
+  UpdateDateColumn
+} from 'typeorm';
 
 @Entity()
 @Unique(['username'])
@@ -26,6 +34,16 @@ export class User {
   @Column()
   @Required()
   lastname: string;
+
+  @Column()
+  @CreateDateColumn()
+  @Property()
+  createAt: Date
+
+  @Column()
+  @UpdateDateColumn()
+  @Property()
+  updateAt: Date;
 
   @Column()
   type: string;
