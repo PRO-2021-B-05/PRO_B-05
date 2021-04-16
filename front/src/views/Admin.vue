@@ -10,7 +10,7 @@
           dark
           outlined
           elevation="2"
-          href="/createUser"
+          @click="createUser"
         >
           <v-icon>mdi-plus</v-icon>
           Create User
@@ -72,7 +72,7 @@
                               <v-btn icon>
                                 <v-icon> mdi-delete </v-icon>
                               </v-btn>
-                              <v-btn icon>
+                              <v-btn @click="modifyUser(item.name)" icon>
                                 <v-icon> mdi-pencil </v-icon>
                               </v-btn>
                             </v-container>
@@ -131,6 +131,11 @@
         </v-container>
       </v-card>
     </v-container>
+    <CRUD_User
+      :title="crudUser"
+      :overlay="overlay"
+      @close="overlay = false"
+    />
   </div>
 </template>
 
@@ -139,12 +144,22 @@ import { Component, Vue } from "vue-property-decorator";
 import Header from "@/components/Header.vue";
 import Heading1 from "@/components/Heading1.vue";
 import { User } from "@/model/User";
-import CreateUser from "@/components/CreateUser.vue";
+import CRUD_User from "@/components/CRUD_User.vue";
 
 @Component({
-  components: { Heading1, Header, CreateUser },
+  components: { Heading1, Header, CRUD_User },
 })
 export default class Admin extends Vue {
+  private overlay = false;
+  private crudUser = "";
+  public createUser(): void {
+    this.overlay = true;
+    this.crudUser = "Create User";
+  }
+  public modifyUser(userName: string): void {
+    this.overlay = true;
+    this.crudUser = "Modify User: " + userName;
+  }
   private usersLoading = true;
   private students = [
     { id: 1, name: "Jean Michel Antoine", userName: "JMA" },
@@ -178,6 +193,7 @@ export default class Admin extends Vue {
   }
   public async getStudents(): Promise<void> {
     this.usersLoading = true;
+    //todo
     /*
     this.students.push(
       ...(await this.getApi<User[]>())
