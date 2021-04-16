@@ -4,19 +4,21 @@
       <v-row class="d-lg-none">
         <v-col>
           <v-card>
-            <v-card-title>
-              Kylian Bourcoud
-            </v-card-title>
-            <v-card-subtitle>
-              IT Engineer
-            </v-card-subtitle>
+            <v-card-title> Kylian Bourcoud </v-card-title>
+            <v-card-subtitle> IT Engineer </v-card-subtitle>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header>
-                  About Me
-                </v-expansion-panel-header>
+                <v-expansion-panel-header> About Me </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean eu quam eget lorem scelerisque suscipit non varius tortor. In hac habitasse platea dictumst. In ullamcorper velit sed neque posuere, ac varius odio feugiat. Vestibulum et odio turpis. Nunc finibus euismod luctus. Sed tristique velit sit amet turpis elementum, vitae gravida purus ullamcorper. Nullam vulputate sed mi a imperdiet. Curabitur tincidunt, neque nec fringilla varius, lacus nunc sagittis leo, vitae condimentum lectus ipsum vitae ex.
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Aenean eu quam eget lorem scelerisque suscipit non varius
+                  tortor. In hac habitasse platea dictumst. In ullamcorper velit
+                  sed neque posuere, ac varius odio feugiat. Vestibulum et odio
+                  turpis. Nunc finibus euismod luctus. Sed tristique velit sit
+                  amet turpis elementum, vitae gravida purus ullamcorper. Nullam
+                  vulputate sed mi a imperdiet. Curabitur tincidunt, neque nec
+                  fringilla varius, lacus nunc sagittis leo, vitae condimentum
+                  lectus ipsum vitae ex.
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
@@ -39,9 +41,14 @@
         </v-btn>
       </v-row>
       <v-row>
-        <v-col class="px-1 py-1" xs="12" sm="6" lg="4" xl="3"
-               v-for="id in projects.length"
-               :key="id"
+        <v-col
+          class="px-1 py-1"
+          xs="12"
+          sm="6"
+          lg="4"
+          xl="3"
+          v-for="id in projects.length"
+          :key="id"
         >
           <div v-if="id > projects.length && projectsLoading">
             <v-skeleton-loader
@@ -61,7 +68,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <NavInfo :info="authorInfo"/>
+    <NavInfo :info="authorInfo" modify="true" />
   </div>
 </template>
 
@@ -78,11 +85,9 @@ import { Picture } from "@/model/Picture";
     SmallProject,
     NavInfo,
     Heading1,
-
-  }
+  },
 })
 export default class Profil extends Vue {
-
   page = 1;
 
   private pageLimit = 12;
@@ -94,7 +99,7 @@ export default class Profil extends Vue {
   scroll() {
     window.onscroll = () => {
       if (
-        (window.innerHeight + window.pageYOffset) >=
+        window.innerHeight + window.pageYOffset >=
         document.body.offsetHeight
       ) {
         if (this.nbLoaded < 200) {
@@ -127,20 +132,18 @@ export default class Profil extends Vue {
   }
 
   private authorInfo = {
-    title : "Kylian Bourcoud",
-    subtitle : "IT Engineer",
-    section : [
+    title: "Kylian Bourcoud",
+    subtitle: "IT Engineer",
+    section: [
       {
-        id : 1,
-        title : "About me",
-        content : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus, purus sed luctus porta, libero arcu tincidunt dolor, nec ullamcorper turpis mi ut ipsum. Donec ac eros pulvinar, dapibus nisi vel, molestie ligula. "
-      }
-    ]
-  }
-
+        id: 1,
+        title: "About me",
+        content:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus, purus sed luctus porta, libero arcu tincidunt dolor, nec ullamcorper turpis mi ut ipsum. Donec ac eros pulvinar, dapibus nisi vel, molestie ligula. ",
+      },
+    ],
+  };
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
