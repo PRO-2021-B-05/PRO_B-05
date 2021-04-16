@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from "vue-router";
 import Discover from "../views/Discover.vue";
 import Profil from "../views/Profil.vue";
 import Project from "@/views/Project.vue";
+import Events from "@/views/Events.vue"
 import CreateProject from "../views/CreateProject.vue";
 import Admin from "@/views/Admin.vue";
 
@@ -28,6 +29,11 @@ const routes: Array<RouteConfig> = [
     path: "/project",
     name: "Project",
     component: Project,
+  },
+  {
+    path: "/events",
+    name: "Events",
+    component: Events,
   },
 ];
 
