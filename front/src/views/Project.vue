@@ -16,34 +16,32 @@
       </v-row>
       <v-row>
         <v-col class="pt-0">
-          <div class="subtitle-2 text-center ">{{ images[model].title }}</div>
+          <div class="subtitle-2 text-center">{{ images[model].title }}</div>
         </v-col>
       </v-row>
-      <v-divider class="mb-4  mt-8" />
+      <v-divider class="mb-4 mt-8" />
       <div class="d-lg-none">
         <v-row>
           <v-col>
-            <div class="title text-center">{{ ProjectInfo.title}}</div>
+            <div class="title text-center">{{ ProjectInfo.title }}</div>
           </v-col>
         </v-row>
-        <v-divider  class="my-4" />
+        <v-divider class="my-4" />
         <v-row>
           <v-col v-for="sect in ProjectInfo.section" :key="sect.id" xs="12">
-                <div class="subtitle-1 text-center">{{sect.title}}</div>
-                <div class="text-center">{{sect.content}}</div>
+            <div class="subtitle-1 text-center">{{ sect.title }}</div>
+            <div class="text-center">{{ sect.content }}</div>
           </v-col>
         </v-row>
       </div>
     </v-container>
-    <NavInfo :info="ProjectInfo"/>
+    <NavInfo :info="ProjectInfo" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import Header from "@/components/Header.vue";
-import Discover from "@/views/Discover.vue";
 import NavInfo from "@/components/NavInfo.vue";
 @Component({
   components: {
