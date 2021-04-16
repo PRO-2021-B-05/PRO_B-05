@@ -1,7 +1,7 @@
 <template>
-  <v-container>
+  <div>
 
-  </v-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -10,7 +10,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 @Component({
   components: {},
 })
-export default class CreateProject extends Vue {
+export default class ProjectForm extends Vue {
 
 }
 </script>
