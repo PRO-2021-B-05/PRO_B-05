@@ -47,14 +47,6 @@ export class EventController {
         });
         await this.eventRepository.save(createdEvent);
 
-        console.log(`createdEvent = {
-            uuid: ${createdEvent.uuid},
-            title: ${createdEvent.title},
-            description: ${createdEvent.description},
-            beginAt: ${createdEvent.beginAt},
-            endAt: ${createdEvent.endAt},
-        }`);
-
         // TODO: Ne pas hardcoder l'url.
         ctx.response.location(`/api/v1/events/${createdEvent.uuid}`);
     }
