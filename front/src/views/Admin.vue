@@ -180,7 +180,8 @@ export default class Admin extends Vue {
     /*
     this.students.push(
       ...(await this.getApi<User[]>())
-    );*/
+    );
+    */
     this.usersLoading = false;
   }
   public async mounted(): Promise<void> {
