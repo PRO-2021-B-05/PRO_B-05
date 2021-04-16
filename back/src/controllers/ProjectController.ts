@@ -4,6 +4,7 @@ import { Status } from "@tsed/schema";
 import { getRepository } from "typeorm";
 import { Project } from "../entities/Project";
 import { Student } from "../entities/Student";
+import * as uuid from 'uuid';
 
 @Controller('/users/:userId/projects')
 export class ProjectController {
@@ -65,10 +66,12 @@ export class ProjectController {
         }
 
         const createdProject = await this.projectRepository.create({
+            uuid: uuid.v4(),
             title: project.title,
             description: project.description,
             student,
         });
+        await this.projectRepository.save(createdProject);
 
         // TODO: Ne pas hardcoder l'url.
         ctx.response.location(`/api/v1/users/${userId}/projects/${createdProject.uuid}`);
