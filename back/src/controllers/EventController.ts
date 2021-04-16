@@ -3,6 +3,7 @@ import { NotFound } from "@tsed/exceptions";
 import { Status } from "@tsed/schema";
 import { getRepository } from "typeorm";
 import { Event } from "../entities/Event";
+import * as uuid from 'uuid';
 
 @Controller('/events')
 export class EventController {
@@ -11,7 +12,7 @@ export class EventController {
     @Get('/')
     async listAll() {
         const events = await this.eventRepository.find();
-        return events.map(({ uuid }) => { uuid });
+        return events.map(({ uuid }) => ({ uuid }));
     }
 
     @Get("/:uuid")
@@ -37,11 +38,22 @@ export class EventController {
         @Context() ctx: Context,
     ) {
         const createdEvent = await this.eventRepository.create({
+            uuid: uuid.v4(),
             title: event.title,
             description: event.description,
             beginAt: event.beginAt,
             endAt: event.endAt,
+            projects: [],
         });
+        await this.eventRepository.save(createdEvent);
+
+        console.log(`createdEvent = {
+            uuid: ${createdEvent.uuid},
+            title: ${createdEvent.title},
+            description: ${createdEvent.description},
+            beginAt: ${createdEvent.beginAt},
+            endAt: ${createdEvent.endAt},
+        }`);
 
         // TODO: Ne pas hardcoder l'url.
         ctx.response.location(`/api/v1/events/${createdEvent.uuid}`);
