@@ -139,9 +139,10 @@ import { Component, Vue } from "vue-property-decorator";
 import Header from "@/components/Header.vue";
 import Heading1 from "@/components/Heading1.vue";
 import { User } from "@/model/User";
+import CreateUser from "@/components/CreateUser.vue";
 
 @Component({
-  components: { Heading1, Header },
+  components: { Heading1, Header, CreateUser },
 })
 export default class Admin extends Vue {
   private usersLoading = true;
