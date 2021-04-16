@@ -14,6 +14,7 @@ import cors from 'cors';
 import * as dotenv from 'dotenv';
 import methodOverride from 'method-override';
 
+import SMS3Config from './config/SMS3Config';
 import typeormConfig from './config/typeorm';
 import {IndexCtrl} from './controllers/pages/IndexCtrl';
 import {User} from './entities/User';
@@ -71,16 +72,9 @@ if (isProduction) {
     root: `${rootDir}/../views`,
     viewEngine: 'ejs',
   },
-  typeorm: typeormConfig,
+  typeorm: typeormConfig(),
   exclude: ['**/*.spec.ts'],
-  sms3: {
-    endPoint: 's3.studimax.ch',
-    region: 'ch-1',
-    port: 443,
-    useSSL: true,
-    accessKey: 'stArt',
-    secretKey: process.env.S3_PASSWORD??"",
-  },
+  sms3: SMS3Config(),
 })
 export class Server {
   @Inject()

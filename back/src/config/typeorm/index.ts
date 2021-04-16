@@ -1,2 +1,5 @@
-import defaultConfig from './default.config';
-export default [defaultConfig as any];
+import {ConnectionOptions} from 'typeorm';
+
+import defaultConnection from './defaultConnection';
+
+export default (): ConnectionOptions[] => [defaultConnection()];

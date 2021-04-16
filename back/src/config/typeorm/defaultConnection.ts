@@ -1,11 +1,13 @@
-export default {
+import {ConnectionOptions} from 'typeorm';
+
+export default (): ConnectionOptions => ({
   name: 'default',
   type: 'mariadb',
-  host: process.env.DATABASE_HOST || 'studimax-cloud.ch',
+  host: process.env.DATABASE_HOST,
   port: 3308,
-  username: process.env.DATABASE_USER || 'root',
-  password: process.env.DATABASE_PASSWORD || 'itK9@EqtT!3E6m@r',
-  database: process.env.DATABASE_DB || 'project',
+  username: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_DB,
   synchronize: true,
   logging: process.env.DATABASE_LOGIN === 'true',
   entities: ['${rootDir}/entities/**/*.ts'],
@@ -16,4 +18,4 @@ export default {
     migrationsDir: '${rootDir}/migration',
     subscribersDir: '${rootDir}/subscriber',
   },
-};
+});

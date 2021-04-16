@@ -3,7 +3,12 @@
     <v-container>
       <heading1> Discover </heading1>
       <v-row>
-        <v-col class="px-1 py-1" xs="12" sm="6" lg="4" xl="3"
+        <v-col
+          class="px-1 py-1"
+          xs="12"
+          sm="6"
+          lg="4"
+          xl="3"
           v-for="id in projects.length"
           :key="id"
         >
@@ -48,7 +53,7 @@ export default class Discover extends Vue {
   scroll() {
     window.onscroll = () => {
       if (
-        (window.innerHeight + window.pageYOffset) >=
+        window.innerHeight + window.pageYOffset >=
         document.body.offsetHeight
       ) {
         if (this.nbLoaded < 200) {
