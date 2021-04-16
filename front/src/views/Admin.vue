@@ -50,7 +50,6 @@
                 </template>
               </v-toolbar>
             </template>
-
             <template v-slot:default="props">
               <v-row>
                 <v-col
@@ -97,7 +96,6 @@
                 </v-col>
               </v-row>
             </template>
-
             <template v-slot:footer>
               <v-row
                 v-if="numberOfPages > 1"
@@ -149,17 +147,10 @@ export default class Admin extends Vue {
   private usersLoading = true;
   private students = [
     { id: 1, name: "Jean Michel Antoine", userName: "JMA" },
-    { id: 2, name: "Jean Jacques Antoine", userName: "JJA" },
     { id: 3, name: "Antoine Smith", userName: "AS" },
     { id: 4, name: "Nathalie Smart", userName: "NS" },
     { id: 5, name: "Baba Torino", userName: "BT" },
     { id: 6, name: "Lawrence Plank", userName: "LP" },
-    { id: 7, name: "Jean Michel Antoine", userName: "JMA" },
-    { id: 8, name: "Jean Jacques Antoine", userName: "JJA" },
-    { id: 9, name: "Antoine Smith", userName: "AS" },
-    { id: 10, name: "Nathalie Smart", userName: "NS" },
-    { id: 11, name: "Baba Torino", userName: "BT" },
-    { id: 12, name: "Lawrence Plank", userName: "LP" },
   ];
   private keys = ["id"];
   private search = "";
