@@ -1,4 +1,4 @@
-import { Nullable } from "@tsed/schema";
+import { Nullable, Property } from "@tsed/schema";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Project } from "./Project";
 
@@ -14,6 +14,16 @@ export class Image {
     @Column()
     @Nullable()
     description?: string;
+
+    @Property()
+    get url() {
+        return `https://s3.studimax-cloud.ch/start/${this.project.uuid}/${this.uuid}`;
+    }
+
+    @Property()
+    get thumbnailUrl() {
+        return `https://s3.studimax-cloud.ch/start/${this.project.uuid}/${this.uuid}-thumbnail`;
+    }
 
     @ManyToOne(() => Project, project => project.images)
     project: Project;
