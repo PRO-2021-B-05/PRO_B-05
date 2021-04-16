@@ -18,6 +18,7 @@
         <v-container fluid v-if="students">
           <v-data-iterator
             :items="students"
+            item-key="name"
             :items-per-page.sync="itemsPerPage"
             :page.sync="page"
             :search="search"
@@ -131,11 +132,7 @@
         </v-container>
       </v-card>
     </v-container>
-    <CRUD_User
-      :title="crudUser"
-      :overlay="overlay"
-      @close="overlay = false"
-    />
+    <CRUD_User :title="crudUser" :overlay="overlay" @close="overlay = false" />
   </div>
 </template>
 
@@ -145,11 +142,13 @@ import Header from "@/components/Header.vue";
 import Heading1 from "@/components/Heading1.vue";
 import { User } from "@/model/User";
 import CRUD_User from "@/components/CRUD_User.vue";
+import { UserAPI } from "@/model/IUserAPI";
 
 @Component({
   components: { Heading1, Header, CRUD_User },
 })
 export default class Admin extends Vue {
+  private infos?: UserAPI = undefined;
   private overlay = false;
   private crudUser = "";
   public createUser(): void {
@@ -193,12 +192,7 @@ export default class Admin extends Vue {
   }
   public async getStudents(): Promise<void> {
     this.usersLoading = true;
-    //todo
-    /*
-    this.students.push(
-      ...(await this.getApi<User[]>())
-    );
-    */
+    this.infos = await this.$api.getUser();
     this.usersLoading = false;
   }
   public async mounted(): Promise<void> {

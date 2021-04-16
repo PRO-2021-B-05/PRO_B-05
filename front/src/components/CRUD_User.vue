@@ -18,7 +18,7 @@
               </v-btn>
               <v-spacer />
               <v-btn color="primary" outlined elevation="2" @click="confirm">
-                <v-icon>mdi-yes</v-icon>
+                <v-icon>mdi-check</v-icon>
                 Confirm
               </v-btn>
             </v-row>
