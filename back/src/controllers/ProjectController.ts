@@ -37,7 +37,7 @@ export class ProjectController {
             throw new NotFound("Could not find requested user");
         }
 
-        const project = await this.projectRepository.findOne({ uuid, student });
+        const project = await this.projectRepository.findOne({ uuid });
 
         if (!project) {
             throw new NotFound("Could not find requested project");
@@ -91,7 +91,7 @@ export class ProjectController {
             throw new NotFound("Could not find requested project");
         }
 
-        await this.projectRepository.update({ student, uuid }, {
+        await this.projectRepository.update({ uuid }, {
             title: project.title,
             description: project.description,
         });
@@ -106,11 +106,11 @@ export class ProjectController {
             throw new NotFound("Could not find requested user");
         }
 
-        const existingProject = await this.projectRepository.findOne({ student, uuid });
+        const existingProject = await this.projectRepository.findOne({ uuid });
         if (!existingProject) {
             throw new NotFound("Could not find requested project");
         }
 
-        await this.projectRepository.delete({ student, uuid });
+        await this.projectRepository.delete({ uuid });
     }
 }
