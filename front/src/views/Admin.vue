@@ -131,11 +131,7 @@
         </v-container>
       </v-card>
     </v-container>
-    <CRUD_User
-      :title="crudUser"
-      :overlay="overlay"
-      @close="overlay = false"
-    />
+    <CRUD_User :title="crudUser" :overlay="overlay" @close="overlay = false" />
   </div>
 </template>
 
