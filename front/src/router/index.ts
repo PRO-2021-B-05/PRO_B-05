@@ -5,6 +5,7 @@ import Profil from "../views/Profil.vue";
 import Project from "@/views/Project.vue";
 import Events from "@/views/Events.vue"
 import CreateProject from "../views/CreateProject.vue";
+import Admin from "@/views/Admin.vue";
 
 Vue.use(VueRouter);
 
@@ -18,6 +19,11 @@ const routes: Array<RouteConfig> = [
     path: "/profil",
     name: "Profil",
     component: Profil,
+  },
+  {
+    path: "/admin",
+    name: "Admin",
+    component: Admin,
   },
   {
     path: "/project",
