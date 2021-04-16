@@ -23,6 +23,11 @@ const routes: Array<RouteConfig> = [
     name: "Project",
     component: Project,
   },
+  {
+    path: "/createProject",
+    name: "CreateProject",
+    component : CreateProject
+  }
 ];
 
 const router = new VueRouter({
