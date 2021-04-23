@@ -35,7 +35,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 })
 export default class Login extends Vue {
   @Prop({ default: false }) private overlay!: boolean;
-  close() {
+  close(): void {
     this.$emit("close");
   }
 }
