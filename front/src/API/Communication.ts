@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { UserAPI } from "@/model/IUserAPI";
-import { Login } from "@/model/Login";
+import { ILogin } from "@/model/Login";
 
 export class Communication {
   private axiosUser: AxiosInstance;
@@ -18,7 +18,7 @@ export class Communication {
     const response = await this.axiosUser.get<UserAPI>("/");
     return response.data;
   }
-  async sendLogin(login: Login): Promise<AxiosResponse> {
+  async sendLogin(login: ILogin): Promise<AxiosResponse> {
     const response = await this.axiosUser.post("/auth/login", login);
     return response.data;
   }
