@@ -37,10 +37,12 @@ export class User {
 
   @Column()
   @CreateDateColumn()
+  @Property()
   createAt: Date
 
   @Column()
   @UpdateDateColumn()
+  @Property()
   updateAt: Date;
 
   @Column()
