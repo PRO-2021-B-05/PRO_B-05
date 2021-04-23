@@ -42,6 +42,7 @@ export default class Login extends Vue {
   }
   send(): void {
     this.$api.sendLogin(this.login);
+    this.close();
   }
 }
 </script>

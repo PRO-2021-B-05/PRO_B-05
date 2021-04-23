@@ -19,9 +19,6 @@ export class Communication {
     return response.data;
   }
   sendLogin(login: ILogin): void {
-    this.axiosServer.post(
-      "/auth/login",
-      `{ "username": ${login.username}, "password": ${login.password}`
-    );
+    this.axiosServer.post("/auth/login", login);
   }
 }
