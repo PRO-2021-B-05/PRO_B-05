@@ -6,13 +6,26 @@ import { Project } from "../entities/Project";
 import { Student } from "../entities/Student";
 import * as uuid from 'uuid';
 
-@Controller('/users/:userId/projects')
+@Controller('/projects')
 export class ProjectController {
     private studentRepository = getRepository(Student);
     private projectRepository = getRepository(Project);
 
     @Get('/')
-    async listAll(@PathParams("userId") userId: string) {
+    async listAll() {
+        const projects = await this.projectRepository.find();
+        return projects.map(({ uuid, title, description, publishAt, updateAt }) => ({
+            uuid,
+            title,
+            description,
+            publishAt,
+            updateAt,
+            thumbnailUrl: "",
+        }));
+    }
+
+    @Get('/users/:userId')
+    async listUser(@PathParams("userId") userId: string) {
         const student = await this.studentRepository.findOne({ uuid: userId });
 
         if (!student) {
@@ -31,13 +44,7 @@ export class ProjectController {
     }
 
     @Get("/:uuid")
-    async get(@PathParams("userId") userId: string, @PathParams("uuid") uuid: string) {
-        const student = await this.studentRepository.findOne({ uuid: userId });
-
-        if (!student) {
-            throw new NotFound("Could not find requested user");
-        }
-
+    async get(@PathParams("uuid") uuid: string) {
         const project = await this.projectRepository.findOne({ uuid });
 
         if (!project) {
@@ -52,7 +59,7 @@ export class ProjectController {
         };
     }
 
-    @Post('/')
+    @Post('/users/:userId')
     @Status(201)
     async post(
         @PathParams("userId") userId: string,
@@ -74,21 +81,14 @@ export class ProjectController {
         await this.projectRepository.save(createdProject);
 
         // TODO: Ne pas hardcoder l'url.
-        ctx.response.location(`/api/v1/users/${userId}/projects/${createdProject.uuid}`);
+        ctx.response.location(`/api/v1/projects/${createdProject.uuid}`);
     }
 
     @Put('/:uuid')
     @Status(204)
     async put(
-        @PathParams("userId") userId: string,
         @PathParams("uuid") uuid: string,
         @BodyParams(Project) project: Project) {
-        const student = await this.studentRepository.findOne({ uuid: userId });
-
-        if (!student) {
-            throw new NotFound("Could not find requested user");
-        }
-
         const existingProject = await this.projectRepository.findOne({ uuid });
         if (!existingProject) {
             throw new NotFound("Could not find requested project");
@@ -102,13 +102,7 @@ export class ProjectController {
 
     @Delete('/:uuid')
     @Status(200)
-    async delete(@PathParams("userId") userId: string, @PathParams("uuid") uuid: string) {
-        const student = await this.studentRepository.findOne({ uuid: userId });
-
-        if (!student) {
-            throw new NotFound("Could not find requested user");
-        }
-
+    async delete(@PathParams("uuid") uuid: string) {
         const existingProject = await this.projectRepository.findOne({ uuid });
         if (!existingProject) {
             throw new NotFound("Could not find requested project");
