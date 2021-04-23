@@ -40,8 +40,9 @@ export default class Login extends Vue {
   close(): void {
     this.$emit("close");
   }
-  public send(): void {
-    this.$api.sendLogin(this.login);
+  async send(): Promise<void> {
+    const response = await this.$api.sendLogin(this.login);
+    console.log(response);
   }
 }
 </script>
