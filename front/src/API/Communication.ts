@@ -1,21 +1,25 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
-import { UserAPI } from "@/model/IUserAPI";
 import { ILogin } from "@/model/Login";
+import { Student } from "@/model/IStudent";
 
 export class Communication {
-  private axiosUser: AxiosInstance;
   private axiosServer: AxiosInstance;
   constructor() {
-    this.axiosUser = axios.create({
-      baseURL: "https://randomuser.me/api/",
-    });
     this.axiosServer = axios.create({
       baseURL: "http://localhost:8083/api/v1",
     });
   }
 
-  async getUser(): Promise<UserAPI> {
-    const response = await this.axiosUser.get<UserAPI>("/");
+  async getStudentsUuid(): Promise<{ uuid: string }[]> {
+    const response = await this.axiosServer.get<{ uuid: string }[]>(
+      "/students"
+    );
+    return response.data;
+  }
+  async getStudent(uuid: string): Promise<Student> {
+    const response = await this.axiosServer.get<Student>(
+      `/students/${uuid}`
+    );
     return response.data;
   }
   async sendLogin(login: ILogin): Promise<AxiosResponse> {

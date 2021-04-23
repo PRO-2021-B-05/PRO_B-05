@@ -18,7 +18,7 @@
         <v-container fluid v-if="students">
           <v-data-iterator
             :items="students"
-            item-key="name"
+            item-key="username"
             :items-per-page.sync="itemsPerPage"
             :page.sync="page"
             :search="search"
@@ -55,7 +55,7 @@
               <v-row>
                 <v-col
                   v-for="item in props.items"
-                  :key="item.name"
+                  :key="item.username"
                   cols="12"
                   sm="6"
                   md="4"
@@ -66,14 +66,14 @@
                       <v-list dense>
                         <v-list-item dense>
                           <v-list-item-content>
-                            {{ item.name }}
+                            {{ item.username }}
                           </v-list-item-content>
                           <v-list-item-content>
                             <v-container class="pt-0 pb-0">
                               <v-btn icon>
                                 <v-icon> mdi-delete </v-icon>
                               </v-btn>
-                              <v-btn @click="modifyUser(item.name)" icon>
+                              <v-btn @click="modifyUser(item.username)" icon>
                                 <v-icon> mdi-pencil </v-icon>
                               </v-btn>
                             </v-container>
@@ -140,9 +140,9 @@
 import { Component, Vue } from "vue-property-decorator";
 import Header from "@/components/Header.vue";
 import Heading1 from "@/components/Heading1.vue";
-import { User } from "@/model/User";
 import CRUD_User from "@/components/CRUD_User.vue";
 import { UserAPI } from "@/model/IUserAPI";
+import { Student } from "@/model/IStudent";
 
 @Component({
   components: { Heading1, Header, CRUD_User },
@@ -160,13 +160,8 @@ export default class Admin extends Vue {
     this.crudUser = "Modify User: " + userName;
   }
   private usersLoading = true;
-  private students = [
-    { id: 1, name: "Jean Michel Antoine", userName: "JMA" },
-    { id: 3, name: "Antoine Smith", userName: "AS" },
-    { id: 4, name: "Nathalie Smart", userName: "NS" },
-    { id: 5, name: "Baba Torino", userName: "BT" },
-    { id: 6, name: "Lawrence Plank", userName: "LP" },
-  ];
+  private uuids?: { uuid: string }[] | null;
+  private students: Student[] = [];
   private keys = ["id"];
   private search = "";
   private sortDesc = false;
@@ -185,17 +180,23 @@ export default class Admin extends Vue {
   public formerPage(): void {
     if (this.page - 1 >= 1) this.page -= 1;
   }
-  public getApi<T>(url: string): Promise<T> {
-    return fetch(url).then((response) => {
-      return response.json();
-    });
+  public async getStudentsUuids(): Promise<void> {
+    this.usersLoading = true;
+    this.uuids = await this.$api.getStudentsUuid();
+    this.usersLoading = false;
   }
   public async getStudents(): Promise<void> {
     this.usersLoading = true;
-    this.infos = await this.$api.getUser();
+    if (this.uuids != null) {
+      for (let i = 0; i < this.uuids.length; ++i) {
+        this.students.push(...(await this.$api.getStudent(this.uuids[i])));
+      }
+    }
+    this.uuids = await this.$api.getStudentsUuid();
     this.usersLoading = false;
   }
   public async mounted(): Promise<void> {
+    await this.getStudentsUuids();
     await this.getStudents();
   }
 }
