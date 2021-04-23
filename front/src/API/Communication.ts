@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance } from "axios";
 import { UserAPI } from "@/model/IUserAPI";
 import { ILogin } from "@/model/Login";
 
@@ -10,7 +10,7 @@ export class Communication {
       baseURL: "https://randomuser.me/api/",
     });
     this.axiosServer = axios.create({
-      baseURL: "localhost:8083/api/v1/",
+      baseURL: "http://localhost:8083/api/v1",
     });
   }
 
@@ -18,8 +18,10 @@ export class Communication {
     const response = await this.axiosUser.get<UserAPI>("/");
     return response.data;
   }
-  async sendLogin(login: ILogin): Promise<AxiosResponse> {
-    const response = await this.axiosUser.post("/auth/login", login);
-    return response.data;
+  sendLogin(login: ILogin): void {
+    this.axiosServer.post(
+      "/auth/login",
+      `{ "username": ${login.username}, "password": ${login.password}`
+    );
   }
 }
