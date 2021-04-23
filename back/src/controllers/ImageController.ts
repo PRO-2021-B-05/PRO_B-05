@@ -9,7 +9,7 @@ import * as uuid from 'uuid';
 import { SMS3StorageService } from "../services/SMS3StorageService";
 import Jimp from 'jimp';
 
-@Controller('/users/:userId/projects/:projectId/images')
+@Controller('/projects/:projectId/images')
 export class ImageController {
     @Inject()
     private s3: SMS3StorageService;
@@ -21,12 +21,6 @@ export class ImageController {
     async listAll(
         @PathParams("projectId") projectId: string,
     ) {
-        const student = await this.studentRepository.findOne({ uuid: userId });
-
-        if (!student) {
-            throw new NotFound("Could not find requested user");
-        }
-
         const project = await this.projectRepository.findOne({ uuid: projectId });
 
         if (!project) {
@@ -44,16 +38,9 @@ export class ImageController {
 
     @Get("/:uuid")
     async get(
-        @PathParams("userId") userId: string,
         @PathParams("projectId") projectId: string,
         @PathParams("uuid") uuid: string,
     ) {
-        const student = await this.studentRepository.findOne({ uuid: userId });
-
-        if (!student) {
-            throw new NotFound("Could not find requested user");
-        }
-
         const project = await this.projectRepository.findOne({ uuid: projectId });
 
         if (!project) {
@@ -76,17 +63,10 @@ export class ImageController {
     @Post('/')
     @Status(201)
     async post(
-        @PathParams("userId") userId: string,
         @PathParams("projectId") projectId: string,
         @MultipartFile("file") file: PlatformMulterFile,
         @Response() response: Response,
     ) {
-        const student = await this.studentRepository.findOne({ uuid: userId });
-
-        if (!student) {
-            throw new NotFound("Could not find requested user");
-        }
-
         const project = await this.projectRepository.findOne({ uuid: projectId });
 
         if (!project) {
@@ -117,23 +97,16 @@ export class ImageController {
         */
 
         // TODO: Ne pas hardcoder l'url.
-        response.location(`/api/v1/users/${userId}/projects/${projectId}/images/${createdImage.uuid}`);
+        response.location(`/api/v1/projects/${projectId}/images/${createdImage.uuid}`);
     }
 
     @Put('/:uuid')
     @Status(204)
     async put(
-        @PathParams("userId") userId: string,
         @PathParams("projectId") projectId: string,
         @PathParams("uuid") uuid: string,
         @BodyParams(Image) image: Image,
     ) {
-        const student = await this.studentRepository.findOne({ uuid: userId });
-
-        if (!student) {
-            throw new NotFound("Could not find requested user");
-        }
-
         const project = await this.projectRepository.findOne({ uuid: projectId });
 
         if (!project) {
@@ -154,16 +127,9 @@ export class ImageController {
     @Delete('/:uuid')
     @Status(200)
     async delete(
-        @PathParams("userId") userId: string,
         @PathParams("projectId") projectId: string,
         @PathParams("uuid") uuid: string,
     ) {
-        const student = await this.studentRepository.findOne({ uuid: userId });
-
-        if (!student) {
-            throw new NotFound("Could not find requested user");
-        }
-
         const project = await this.projectRepository.findOne({ uuid: projectId });
 
         if (!project) {
