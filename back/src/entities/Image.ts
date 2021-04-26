@@ -17,14 +17,12 @@ export class Image {
 
     @Property()
     get url() {
-        // TODO: Mettre a jour l'url.
-        return `https://s3.studimax-cloud.ch/minio/start/${this.project.uuid}/${this.uuid}`;
+        return `https://s3.studimax.ch/start/${this.project.uuid}/${this.uuid}`;
     }
 
     @Property()
     get thumbnailUrl() {
-        // TODO: Mettre a jour l'url.
-        return `https://s3.studimax-cloud.ch/minio/start/${this.project.uuid}/${this.uuid}-thumbnail`;
+        return `https://s3.studimax.ch/start/${this.project.uuid}/${this.uuid}-thumbnail`;
     }
 
     @ManyToOne(() => Project, project => project.images)

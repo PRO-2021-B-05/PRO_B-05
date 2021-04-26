@@ -142,7 +142,7 @@ export class ImageController {
 
         const existingImage = await this.imageRepository.findOne({ uuid });
         if (!existingImage) {
-            throw new NotFound("Could not find requested project");
+            throw new NotFound("Could not find requested image");
         }
 
         await this.imageRepository.delete({ uuid });
