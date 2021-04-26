@@ -13,7 +13,6 @@ import Jimp from 'jimp';
 export class ImageController {
     @Inject()
     private s3: SMS3StorageService;
-    private studentRepository = getRepository(Student);
     private projectRepository = getRepository(Project);
     private imageRepository = getRepository(Image);
 
@@ -27,7 +26,10 @@ export class ImageController {
             throw new NotFound("Could not find requested project");
         }
 
-        const images = await this.imageRepository.find({ project });
+        const images = await this.imageRepository.find({
+            where: { project },
+            relations: ["project"],
+        });
         return images.map(({ uuid, title, url, thumbnailUrl }) => ({
             uuid,
             title,
@@ -47,7 +49,10 @@ export class ImageController {
             throw new NotFound("Could not find requested project");
         }
 
-        const image = await this.imageRepository.findOne({ uuid });
+        const image = await this.imageRepository.findOne({
+            where: { uuid },
+            relations: ["project"],
+        });
 
         if (!image) {
             throw new NotFound("Could not find requested image");
@@ -82,7 +87,7 @@ export class ImageController {
         await this.imageRepository.save(createdImage);
 
         // TODO: Supporter l'upload sur S3.
-        /*
+
         this.s3.putFile("start", `${projectId}/${createdImage.uuid}`, file.buffer, {
             'Content-Type': file.mimetype,
         });
@@ -94,7 +99,6 @@ export class ImageController {
         this.s3.putFile('start', `${projectId}/${createdImage.uuid}-thumbnail`, buffer, {
             'Content-Type': Jimp.MIME_PNG,
         });
-        */
 
         // TODO: Ne pas hardcoder l'url.
         response.location(`/api/v1/projects/${projectId}/images/${createdImage.uuid}`);
@@ -113,7 +117,7 @@ export class ImageController {
             throw new NotFound("Could not find requested project");
         }
 
-        const existingImage = await this.projectRepository.findOne({ uuid });
+        const existingImage = await this.imageRepository.findOne({ uuid });
         if (!existingImage) {
             throw new NotFound("Could not find requested image");
         }

@@ -8,21 +8,23 @@ export class Image {
     uuid: string;
 
     @Column()
-    @Nullable()
-    title?: string;
+    @Nullable(String)
+    title: string;
 
     @Column()
-    @Nullable()
-    description?: string;
+    @Nullable(String)
+    description: string;
 
     @Property()
     get url() {
-        return `https://s3.studimax-cloud.ch/start/${this.project.uuid}/${this.uuid}`;
+        // TODO: Mettre a jour l'url.
+        return `https://s3.studimax-cloud.ch/minio/start/${this.project.uuid}/${this.uuid}`;
     }
 
     @Property()
     get thumbnailUrl() {
-        return `https://s3.studimax-cloud.ch/start/${this.project.uuid}/${this.uuid}-thumbnail`;
+        // TODO: Mettre a jour l'url.
+        return `https://s3.studimax-cloud.ch/minio/start/${this.project.uuid}/${this.uuid}-thumbnail`;
     }
 
     @ManyToOne(() => Project, project => project.images)
