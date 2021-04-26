@@ -31,6 +31,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { Student } from "@/model/IStudent";
 
 @Component({
   components: {},
@@ -38,6 +39,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 export default class CRUD_User extends Vue {
   @Prop({ default: false }) private overlay!: boolean;
   @Prop({ default: "Create User" }) private title!: string;
+  @Prop({ default: null }) private user!: Student;
   public close(): void {
     this.$emit("close");
   }

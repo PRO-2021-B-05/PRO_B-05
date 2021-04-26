@@ -15,7 +15,7 @@
           <v-icon>mdi-plus</v-icon>
           Create User
         </v-btn>
-        <v-container fluid v-if="students">
+        <v-container fluid v-if="!uuidsLoading">
           <v-data-iterator
             :items="students"
             item-key="username"
@@ -51,6 +51,7 @@
                 </template>
               </v-toolbar>
             </template>
+
             <template v-slot:default="props">
               <v-row>
                 <v-col
@@ -61,42 +62,39 @@
                   md="4"
                   lg="3"
                 >
-                  <v-card flat>
-                    <v-content class="px-4 pt-2 pb-2">
+                  <v-card>
+                    <v-card-text class="px-4 pt-2 pb-2">
+                      <v-card-title>
+                        {{ item.firstname }} {{ item.lastname }}
+                      </v-card-title>
+                      <v-divider />
                       <v-list dense>
-                        <v-list-item dense>
-                          <v-list-item-content>
-                            {{ item.username }}
-                          </v-list-item-content>
-                          <v-list-item-content>
-                            <v-container class="pt-0 pb-0">
-                              <v-btn icon>
-                                <v-icon> mdi-delete </v-icon>
-                              </v-btn>
-                              <v-btn @click="modifyUser(item.username)" icon>
-                                <v-icon> mdi-pencil </v-icon>
-                              </v-btn>
-                            </v-container>
-                          </v-list-item-content>
-                        </v-list-item>
                         <v-list-item
                           dense
                           v-for="(key, index) in filteredKeys"
                           :key="index"
                         >
                           <v-list-item-content
-                            :class="{ 'primary--text': sortBy === key }"
+                            :class="{ 'primary--text small': sortBy === key }"
                           >
                             {{ key }} : {{ item[key.toLowerCase()] }}
                           </v-list-item-content>
                         </v-list-item>
-                        <v-divider />
+                        <v-container class="pt-0 pb-0 text-right">
+                          <v-btn icon>
+                            <v-icon> mdi-delete </v-icon>
+                          </v-btn>
+                          <v-btn @click="modifyUser(item)" icon>
+                            <v-icon> mdi-pencil </v-icon>
+                          </v-btn>
+                        </v-container>
                       </v-list>
-                    </v-content>
+                    </v-card-text>
                   </v-card>
                 </v-col>
               </v-row>
             </template>
+
             <template v-slot:footer>
               <v-row
                 v-if="numberOfPages > 1"
@@ -155,14 +153,15 @@ export default class Admin extends Vue {
     this.overlay = true;
     this.crudUser = "Create User";
   }
-  public modifyUser(userName: string): void {
+  public modifyUser(user: Student): void {
     this.overlay = true;
-    this.crudUser = "Modify User: " + userName;
+    this.crudUser = "Modify User: " + user.username;
   }
+  private uuidsLoading = true;
   private usersLoading = true;
   private uuids?: { uuid: string }[] | null;
   private students: Student[] = [];
-  private keys = ["id"];
+  private keys = ["username", "firstname", "lastname"];
   private search = "";
   private sortDesc = false;
   private page = 1;
@@ -181,18 +180,18 @@ export default class Admin extends Vue {
     if (this.page - 1 >= 1) this.page -= 1;
   }
   public async getStudentsUuids(): Promise<void> {
-    this.usersLoading = true;
+    this.uuidsLoading = true;
     this.uuids = await this.$api.getStudentsUuid();
-    this.usersLoading = false;
+    this.uuidsLoading = false;
   }
   public async getStudents(): Promise<void> {
     this.usersLoading = true;
-    if (this.uuids != null) {
+    if (this.uuids && this.uuids.length > 0) {
+      console.log("nb students : " + this.uuids.length);
       for (let i = 0; i < this.uuids.length; ++i) {
-        this.students.push(...(await this.$api.getStudent(this.uuids[i])));
+        this.students.push(...[await this.$api.getStudent(this.uuids[i].uuid)]);
       }
     }
-    this.uuids = await this.$api.getStudentsUuid();
     this.usersLoading = false;
   }
   public async mounted(): Promise<void> {

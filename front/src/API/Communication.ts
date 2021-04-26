@@ -18,7 +18,7 @@ export class Communication {
   }
   async getStudent(uuid: string): Promise<Student> {
     const response = await this.axiosServer.get<Student>(
-      `/students/${uuid}`
+      "/students/" + uuid
     );
     return response.data;
   }
