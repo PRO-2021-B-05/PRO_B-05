@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import Heading1 from "@/components/Heading1.vue";
 import ProjectForm from "@/components/ProjectForm.vue";
 
