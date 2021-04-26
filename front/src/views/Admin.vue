@@ -130,7 +130,12 @@
         </v-container>
       </v-card>
     </v-container>
-    <CRUD_User :title="crudUser" :overlay="overlay" @close="overlay = false" />
+    <CRUD_User
+      :user="currentUser"
+      :title="crudUser"
+      :overlay="overlay"
+      @close="overlay = false"
+    />
   </div>
 </template>
 
@@ -146,16 +151,26 @@ import { Student } from "@/model/IStudent";
   components: { Heading1, Header, CRUD_User },
 })
 export default class Admin extends Vue {
+  private blankUser: Student = {
+    username: "",
+    password: "",
+    firstname: "",
+    lastname: "",
+    description: "",
+  };
+  private currentUser = this.blankUser;
   private infos?: UserAPI = undefined;
   private overlay = false;
   private crudUser = "";
   public createUser(): void {
     this.overlay = true;
     this.crudUser = "Create User";
+    this.currentUser = this.blankUser;
   }
   public modifyUser(user: Student): void {
     this.overlay = true;
     this.crudUser = "Modify User: " + user.username;
+    this.currentUser = user;
   }
   private uuidsLoading = true;
   private usersLoading = true;
