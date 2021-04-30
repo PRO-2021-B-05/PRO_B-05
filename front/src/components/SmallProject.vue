@@ -5,7 +5,13 @@
       <v-card-title href="/project" class="py-0 text--primary">
         Project name
       </v-card-title>
-      <v-btn href="/profil" small text class="px-4" v-if="author">
+      <v-btn
+        href="/profil/451c5c6a-72a7-4c0c-aa26-7c3c0b7a7792"
+        small
+        text
+        class="px-4"
+        v-if="author"
+      >
         by {{ picture.author }}
       </v-btn>
       <div v-if="description">

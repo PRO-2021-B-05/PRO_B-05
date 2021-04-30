@@ -15,7 +15,9 @@
               v-model="login.password"
             >
             </v-text-field>
-            <div class="subtitle-2 red--text" v-if="error"> username or password is incorrect</div>
+            <div class="subtitle-2 red--text" v-if="error">
+              username or password is incorrect
+            </div>
             <v-row class="mt-2">
               <v-btn class="mr-2" outlined elevation="2" @click="close">
                 <v-icon>mdi-close</v-icon>
@@ -54,7 +56,6 @@ export default class Login extends Vue {
     this.$api
       .sendLogin(this.login)
       .then((response: AxiosResponse) => {
-        document.cookie = `token = ${response.data.token}`;
         this.$emit("connected");
         this.close();
       })

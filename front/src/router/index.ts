@@ -21,6 +21,11 @@ const routes: Array<RouteConfig> = [
     component: Profil,
   },
   {
+    path: "/profil/:uuid",
+    name: "Profil",
+    component: Profil,
+  },
+  {
     path: "/admin",
     name: "Admin",
     component: Admin,

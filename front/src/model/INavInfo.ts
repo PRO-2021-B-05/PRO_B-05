@@ -1,4 +1,4 @@
-export interface NavInfo {
+export interface INavInfo {
   title: string;
   subtitle: string;
   section: [

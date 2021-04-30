@@ -43,13 +43,14 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import NavInfo from "@/components/NavInfo.vue";
+import { INavInfo } from "@/model/INavInfo";
 @Component({
   components: {
     NavInfo,
   },
 })
 export default class Project extends Vue {
-  private ProjectInfo = {
+  private ProjectInfo: INavInfo = {
     title: "Project Name",
     section: [
       {

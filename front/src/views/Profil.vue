@@ -26,7 +26,7 @@
         </v-col>
       </v-row>
       <Heading1>Projects</Heading1>
-      <v-row>
+      <v-row v-if="modify">
         <v-spacer></v-spacer>
         <v-btn
           class="my-3 mx-3"
@@ -68,7 +68,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <NavInfo :info="authorInfo" modify="true" />
+    <NavInfo :info="authorInfo" />
   </div>
 </template>
 
@@ -79,6 +79,8 @@ import Heading1 from "@/components/Heading1.vue";
 import NavInfo from "@/components/NavInfo.vue";
 import SmallProject from "@/components/SmallProject.vue";
 import { Picture } from "@/model/Picture";
+import { Student } from "@/model/IStudent";
+import { INavInfo } from "@/model/INavInfo";
 
 @Component({
   components: {
@@ -88,6 +90,8 @@ import { Picture } from "@/model/Picture";
   },
 })
 export default class Profil extends Vue {
+  private modify = false;
+
   page = 1;
 
   private pageLimit = 12;
@@ -115,6 +119,22 @@ export default class Profil extends Vue {
       return response.json();
     });
   }
+
+  public async getStudent(uuid: string): Promise<void> {
+    const student: Student = await this.$api.getStudent(uuid);
+    this.authorInfo = {
+      title: `${student.firstname} ${student.lastname}`,
+      subtitle: "IT Engineer",
+      section: [
+        {
+          id: 1,
+          title: "description",
+          content: student.description,
+        },
+      ],
+    };
+  }
+
   public async getProjects() {
     this.projectsLoading = true;
     this.projects.push(
@@ -126,23 +146,14 @@ export default class Profil extends Vue {
     );
     this.projectsLoading = false;
   }
+
   public async mounted() {
     this.scroll();
     await this.getProjects();
+    await this.getStudent(this.$route.params.uuid);
   }
 
-  private authorInfo = {
-    title: "Kylian Bourcoud",
-    subtitle: "IT Engineer",
-    section: [
-      {
-        id: 1,
-        title: "About me",
-        content:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus, purus sed luctus porta, libero arcu tincidunt dolor, nec ullamcorper turpis mi ut ipsum. Donec ac eros pulvinar, dapibus nisi vel, molestie ligula. ",
-      },
-    ],
-  };
+  private authorInfo: INavInfo | null = null;
 }
 </script>
 
