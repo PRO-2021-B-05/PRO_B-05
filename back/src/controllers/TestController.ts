@@ -19,7 +19,6 @@ export class TestController {
   @OnlyAdmin()
   async adminTest(@Req() request: Req){
     const admin = request.user as Admin;
-    admin.
     return request.user;
   }
 
