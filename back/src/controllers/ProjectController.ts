@@ -1,4 +1,4 @@
-import { BodyParams, Context, Controller, Delete, Get, PathParams, Post, Put, Req } from "@tsed/common";
+import { BodyParams, Controller, Delete, Get, PathParams, Post, Put, Response } from "@tsed/common";
 import { NotFound } from "@tsed/exceptions";
 import { Status } from "@tsed/schema";
 import { getRepository } from "typeorm";
@@ -13,14 +13,16 @@ export class ProjectController {
 
     @Get('/')
     async listAll() {
-        const projects = await this.projectRepository.find();
-        return projects.map(({ uuid, title, description, publishAt, updateAt }) => ({
+        const projects = await this.projectRepository.find({ relations: ["student"] });
+        return projects.map(({ uuid, title, description, publishAt, updateAt, student }) => ({
             uuid,
             title,
             description,
             publishAt,
             updateAt,
             thumbnailUrl: "",
+            firstname: student.firstname,
+            lastname: student.lastname,
         }));
     }
 
@@ -64,7 +66,7 @@ export class ProjectController {
     async post(
         @PathParams("userId") userId: string,
         @BodyParams(Project) project: Project,
-        @Context() ctx: Context,
+        @Response() response: Response,
     ) {
         const student = await this.studentRepository.findOne({ uuid: userId });
 
@@ -80,15 +82,15 @@ export class ProjectController {
         });
         await this.projectRepository.save(createdProject);
 
-        // TODO: Ne pas hardcoder l'url.
-        ctx.response.location(`/api/v1/projects/${createdProject.uuid}`);
+        response.location(`/api/v1/projects/${createdProject.uuid}`);
     }
 
     @Put('/:uuid')
     @Status(204)
     async put(
         @PathParams("uuid") uuid: string,
-        @BodyParams(Project) project: Project) {
+        @BodyParams(Project) project: Project,
+    ) {
         const existingProject = await this.projectRepository.findOne({ uuid });
         if (!existingProject) {
             throw new NotFound("Could not find requested project");
