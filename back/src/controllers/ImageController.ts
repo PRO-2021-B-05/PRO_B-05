@@ -1,10 +1,9 @@
-import { BodyParams, Context, Controller, Delete, Get, Inject, MultipartFile, PathParams, PlatformMulterFile, Post, Put, Req, Response } from "@tsed/common";
+import { BodyParams, Controller, Delete, Get, Inject, MultipartFile, PathParams, PlatformMulterFile, Post, Put, Response } from "@tsed/common";
 import { NotFound } from "@tsed/exceptions";
 import { Status } from "@tsed/schema";
 import { getRepository } from "typeorm";
 import { Image } from "../entities/Image";
 import { Project } from "../entities/Project";
-import { Student } from "../entities/Student";
 import * as uuid from 'uuid';
 import { SMS3StorageService } from "../services/SMS3StorageService";
 import Jimp from 'jimp';
@@ -86,8 +85,6 @@ export class ImageController {
         });
         await this.imageRepository.save(createdImage);
 
-        // TODO: Supporter l'upload sur S3.
-
         this.s3.putFile("start", `${projectId}/${createdImage.uuid}`, file.buffer, {
             'Content-Type': file.mimetype,
         });
@@ -100,7 +97,6 @@ export class ImageController {
             'Content-Type': Jimp.MIME_PNG,
         });
 
-        // TODO: Ne pas hardcoder l'url.
         response.location(`/api/v1/projects/${projectId}/images/${createdImage.uuid}`);
     }
 
