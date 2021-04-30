@@ -1,4 +1,5 @@
 import { ConnectionOptions } from 'typeorm';
+import {Env} from "@tsed/core";
 
 export default (): ConnectionOptions => ({
   name: 'default',
@@ -10,12 +11,5 @@ export default (): ConnectionOptions => ({
   database: process.env.DATABASE_DB,
   synchronize: true,
   logging: process.env.DATABASE_LOGIN === 'true',
-  entities: ['${rootDir}/entities/**/*.ts'],
-  migrations: ['${rootDir}/migration/**/*.ts'],
-  subscribers: ['${rootDir}/subscriber/**/*.ts'],
-  cli: {
-    entitiesDir: '${rootDir}/entity',
-    migrationsDir: '${rootDir}/migration',
-    subscribersDir: '${rootDir}/subscriber',
-  },
+  entities: ['${rootDir}/entities/**/*{.ts,.js}'],
 });
