@@ -10,14 +10,15 @@
           dark
           outlined
           elevation="2"
-          href="/createUser"
+          @click="createUser"
         >
           <v-icon>mdi-plus</v-icon>
           Create User
         </v-btn>
-        <v-container fluid v-if="students">
+        <v-container fluid v-if="!uuidsLoading">
           <v-data-iterator
             :items="students"
+            item-key="username"
             :items-per-page.sync="itemsPerPage"
             :page.sync="page"
             :search="search"
@@ -50,52 +51,50 @@
                 </template>
               </v-toolbar>
             </template>
+
             <template v-slot:default="props">
               <v-row>
                 <v-col
                   v-for="item in props.items"
-                  :key="item.name"
+                  :key="item.username"
                   cols="12"
                   sm="6"
                   md="4"
                   lg="3"
                 >
-                  <v-card flat>
-                    <v-content class="px-4 pt-2 pb-2">
+                  <v-card>
+                    <v-card-text class="px-4 pt-2 pb-2">
+                      <v-card-title>
+                        {{ item.firstname }} {{ item.lastname }}
+                      </v-card-title>
+                      <v-divider />
                       <v-list dense>
-                        <v-list-item dense>
-                          <v-list-item-content>
-                            {{ item.name }}
-                          </v-list-item-content>
-                          <v-list-item-content>
-                            <v-container class="pt-0 pb-0">
-                              <v-btn icon>
-                                <v-icon> mdi-delete </v-icon>
-                              </v-btn>
-                              <v-btn icon>
-                                <v-icon> mdi-pencil </v-icon>
-                              </v-btn>
-                            </v-container>
-                          </v-list-item-content>
-                        </v-list-item>
                         <v-list-item
                           dense
                           v-for="(key, index) in filteredKeys"
                           :key="index"
                         >
                           <v-list-item-content
-                            :class="{ 'primary--text': sortBy === key }"
+                            :class="{ 'primary--text small': sortBy === key }"
                           >
                             {{ key }} : {{ item[key.toLowerCase()] }}
                           </v-list-item-content>
                         </v-list-item>
-                        <v-divider />
+                        <v-container class="pt-0 pb-0 text-right">
+                          <v-btn icon>
+                            <v-icon> mdi-delete </v-icon>
+                          </v-btn>
+                          <v-btn @click="modifyUser(item)" icon>
+                            <v-icon> mdi-pencil </v-icon>
+                          </v-btn>
+                        </v-container>
                       </v-list>
-                    </v-content>
+                    </v-card-text>
                   </v-card>
                 </v-col>
               </v-row>
             </template>
+
             <template v-slot:footer>
               <v-row
                 v-if="numberOfPages > 1"
@@ -131,6 +130,12 @@
         </v-container>
       </v-card>
     </v-container>
+    <CRUD_User
+      :user="currentUser"
+      :title="crudUser"
+      :overlay="overlay"
+      @close="overlay = false"
+    />
   </div>
 </template>
 
@@ -138,21 +143,40 @@
 import { Component, Vue } from "vue-property-decorator";
 import Header from "@/components/Header.vue";
 import Heading1 from "@/components/Heading1.vue";
-import { User } from "@/model/User";
+import CRUD_User from "@/components/CRUD_User.vue";
+import { UserAPI } from "@/model/IUserAPI";
+import { Student } from "@/model/IStudent";
 
 @Component({
-  components: { Heading1, Header },
+  components: { Heading1, Header, CRUD_User },
 })
 export default class Admin extends Vue {
+  private blankUser: Student = {
+    username: "",
+    password: "",
+    firstname: "",
+    lastname: "",
+    description: "",
+  };
+  private currentUser = this.blankUser;
+  private infos?: UserAPI = undefined;
+  private overlay = false;
+  private crudUser = "";
+  public createUser(): void {
+    this.overlay = true;
+    this.crudUser = "Create User";
+    this.currentUser = this.blankUser;
+  }
+  public modifyUser(user: Student): void {
+    this.overlay = true;
+    this.crudUser = "Modify User: " + user.username;
+    this.currentUser = user;
+  }
+  private uuidsLoading = true;
   private usersLoading = true;
-  private students = [
-    { id: 1, name: "Jean Michel Antoine", userName: "JMA" },
-    { id: 3, name: "Antoine Smith", userName: "AS" },
-    { id: 4, name: "Nathalie Smart", userName: "NS" },
-    { id: 5, name: "Baba Torino", userName: "BT" },
-    { id: 6, name: "Lawrence Plank", userName: "LP" },
-  ];
-  private keys = ["id"];
+  private uuids?: { uuid: string }[] | null;
+  private students: Student[] = [];
+  private keys = ["username", "firstname", "lastname"];
   private search = "";
   private sortDesc = false;
   private page = 1;
@@ -170,21 +194,23 @@ export default class Admin extends Vue {
   public formerPage(): void {
     if (this.page - 1 >= 1) this.page -= 1;
   }
-  public getApi<T>(url: string): Promise<T> {
-    return fetch(url).then((response) => {
-      return response.json();
-    });
+  public async getStudentsUuids(): Promise<void> {
+    this.uuidsLoading = true;
+    this.uuids = await this.$api.getStudentsUuid();
+    this.uuidsLoading = false;
   }
   public async getStudents(): Promise<void> {
     this.usersLoading = true;
-    /*
-    this.students.push(
-      ...(await this.getApi<User[]>())
-    );
-    */
+    if (this.uuids && this.uuids.length > 0) {
+      console.log("nb students : " + this.uuids.length);
+      for (let i = 0; i < this.uuids.length; ++i) {
+        this.students.push(...[await this.$api.getStudent(this.uuids[i].uuid)]);
+      }
+    }
     this.usersLoading = false;
   }
   public async mounted(): Promise<void> {
+    await this.getStudentsUuids();
     await this.getStudents();
   }
 }
