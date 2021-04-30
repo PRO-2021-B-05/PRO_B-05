@@ -2,9 +2,11 @@
   <v-container>
     <heading1>Events</heading1>
     <v-row>
-      <v-spacer/>
-      <div class="subtitle-1 text-center">The event page will be implemented in further iteration</div>
-      <v-spacer/>
+      <v-spacer />
+      <div class="subtitle-1 text-center">
+        The event page will be implemented in further iteration
+      </div>
+      <v-spacer />
     </v-row>
   </v-container>
 </template>
@@ -13,10 +15,8 @@
 import Heading1 from "@/components/Heading1";
 export default {
   name: "Events",
-  components: { Heading1 }
+  components: { Heading1 },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
