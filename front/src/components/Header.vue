@@ -64,7 +64,7 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-    <Login :overlay="overlay" @close="overlay = false" />
+    <Login :overlay="overlay" @close="overlay = false" @connected="connected = true" />
   </div>
 </template>
 
@@ -94,7 +94,10 @@ export default class Header extends Vue {
   overlay = false;
   drawer = false;
   group = null;
-  connected = true;
+  connected = false;
+  public mounted(): void {
+    if (document.cookie.length > 0) this.connected = true;
+  }
 }
 </script>
 

@@ -7,8 +7,8 @@
       <v-form>
         <v-container>
           <v-col>
-            <v-text-field label="First Name" />
-            <v-text-field label="Last Name" />
+            <v-text-field label="First Name" :value="user.firstname" />
+            <v-text-field label="Last Name" :value="user.lastname" />
             <v-text-field label="Password" type="password" />
             <v-text-field label="Confirm Password" type="password" />
             <v-row class="mt-2">
@@ -18,7 +18,7 @@
               </v-btn>
               <v-spacer />
               <v-btn color="primary" outlined elevation="2" @click="confirm">
-                <v-icon>mdi-yes</v-icon>
+                <v-icon>mdi-check</v-icon>
                 Confirm
               </v-btn>
             </v-row>
@@ -31,6 +31,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { Student } from "@/model/IStudent";
 
 @Component({
   components: {},
@@ -38,6 +39,16 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 export default class CRUD_User extends Vue {
   @Prop({ default: false }) private overlay!: boolean;
   @Prop({ default: "Create User" }) private title!: string;
+  @Prop({
+    default: {
+      username: "",
+      password: "",
+      firstname: "",
+      lastname: "",
+      description: "",
+    },
+  })
+  private user!: Student;
   public close(): void {
     this.$emit("close");
   }
