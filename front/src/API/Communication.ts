@@ -17,10 +17,19 @@ export class Communication {
     return response.data;
   }
   async getStudent(uuid: string): Promise<Student> {
-    const response = await this.axiosServer.get<Student>(
-      "/students/" + uuid
-    );
+    const response = await this.axiosServer.get<Student>("/students/" + uuid);
     return response.data;
+  }
+  async sendCreateStudent(student: Student): Promise<AxiosResponse> {
+    const newStudent = {
+      username: student.username,
+      password: student.password,
+      firstname: student.firstname,
+      lastname: student.lastname,
+      createAt: "",
+      updateAt: "",
+    };
+    return this.axiosServer.post("/auth/register", newStudent);
   }
   async sendLogin(login: ILogin): Promise<AxiosResponse> {
     return this.axiosServer.post("/auth/login", login);
