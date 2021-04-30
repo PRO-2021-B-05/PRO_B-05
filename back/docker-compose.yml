@@ -1,4 +1,7 @@
 version: '3.3'
+networks:
+  project-net:
+    driver: bridge
 services:
   server:
     build:
@@ -8,9 +11,27 @@ services:
         - http_proxy
         - https_proxy
         - no_proxy
-    image: streamboard-appstore/server:latest
+    image: stArt/server:latest
+    environment:
+      - DATABASE_HOST=localhost
+      - DATABASE_PORT=3308
+      - PORT=8081
     ports:
       - "8081:8081"
     stdin_open: true  # -i
     tty: true         # -t
+
+  mariadb:
+    image: 'linuxserver/mariadb'
+    container_name: project-mariadb
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MYSQL_ROOT_PASSWORD=itK9@EqtT!3E6m@r
+      - TZ=Europe/Berlin
+      - MYSQL_DATABASE=project #optional
+    ports:
+      - 3308:3306
+    networks:
+      - project-net
 
