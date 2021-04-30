@@ -1,9 +1,15 @@
-import {Controller, Get, PathParams} from "@tsed/common";
+import {Controller, Get, PathParams, UseBefore, UseBeforeEach} from "@tsed/common";
 import {getRepository} from "typeorm";
 import {User} from "../entities/User";
 import {NotFound} from "@tsed/exceptions";
+import {Authenticate} from "@tsed/passport";
+import {OnlyAdmin} from "../decorators/OnlyAdmin";
+import {OnlyAdminMiddleware} from "../middlewares/OnlyAdminMiddleware";
 
 @Controller('/users')
+@Authenticate()
+@OnlyAdmin()
+//@UseBeforeEach(OnlyAdminMiddleware)
 export  class UserController{
     private userRepository = getRepository(User);
 
