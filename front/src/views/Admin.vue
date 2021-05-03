@@ -214,8 +214,8 @@ export default class Admin extends Vue {
     }
     this.usersLoading = false;
   }
-  public async deleteStudent(): Promise<void> {
-    await this.$api.deleteStudent(this.currentUser.uuid);
+  public async deleteStudent(uuid: string): Promise<void> {
+    await this.$api.deleteStudent(uuid);
   }
   public async mounted(): Promise<void> {
     await this.getStudentsUuids();
