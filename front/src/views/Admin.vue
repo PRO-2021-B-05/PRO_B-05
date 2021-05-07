@@ -81,7 +81,7 @@
                           </v-list-item-content>
                         </v-list-item>
                         <v-container class="pt-0 pb-0 text-right">
-                          <v-btn icon>
+                          <v-btn @click="deleteStudent(item.uuid)" icon>
                             <v-icon> mdi-delete </v-icon>
                           </v-btn>
                           <v-btn @click="modifyUser(item)" icon>
@@ -131,6 +131,7 @@
       </v-card>
     </v-container>
     <CRUD_User
+      :crudAction="crudAction"
       :user="currentUser"
       :title="crudUser"
       :overlay="overlay"
@@ -152,12 +153,14 @@ import { Student } from "@/model/IStudent";
 })
 export default class Admin extends Vue {
   private blankUser: Student = {
+    uuid: "",
     username: "",
     password: "",
     firstname: "",
     lastname: "",
     description: "",
   };
+  private crudAction: "modify" | "create" = "modify";
   private currentUser = this.blankUser;
   private infos?: UserAPI = undefined;
   private overlay = false;
@@ -166,11 +169,13 @@ export default class Admin extends Vue {
     this.overlay = true;
     this.crudUser = "Create User";
     this.currentUser = this.blankUser;
+    this.crudAction = "create";
   }
   public modifyUser(user: Student): void {
     this.overlay = true;
     this.crudUser = "Modify User: " + user.username;
     this.currentUser = user;
+    this.crudAction = "modify";
   }
   private uuidsLoading = true;
   private usersLoading = true;
@@ -208,6 +213,9 @@ export default class Admin extends Vue {
       }
     }
     this.usersLoading = false;
+  }
+  public async deleteStudent(uuid: string): Promise<void> {
+    await this.$api.deleteStudent(uuid);
   }
   public async mounted(): Promise<void> {
     await this.getStudentsUuids();

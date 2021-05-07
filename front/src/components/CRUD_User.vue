@@ -7,10 +7,18 @@
       <v-form>
         <v-container>
           <v-col>
-            <v-text-field label="First Name" :value="user.firstname" />
-            <v-text-field label="Last Name" :value="user.lastname" />
-            <v-text-field label="Password" type="password" />
-            <v-text-field label="Confirm Password" type="password" />
+            <v-text-field label="First Name" v-model="user.firstname" />
+            <v-text-field label="Last Name" v-model="user.lastname" />
+            <v-text-field
+              label="Password"
+              type="password"
+              v-model="user.password"
+            />
+            <v-text-field
+              label="Confirm Password"
+              type="password"
+              v-model="passwordConfirm"
+            />
             <v-row class="mt-2">
               <v-btn class="mr-2" outlined elevation="2" @click="close">
                 <v-icon>mdi-close</v-icon>
@@ -32,15 +40,19 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Student } from "@/model/IStudent";
+import { AxiosError, AxiosResponse } from "axios";
 
 @Component({
   components: {},
 })
 export default class CRUD_User extends Vue {
+  private passwordConfirm = "";
   @Prop({ default: false }) private overlay!: boolean;
+  @Prop({ default: null }) private crudAction: "modify" | "create";
   @Prop({ default: "Create User" }) private title!: string;
   @Prop({
     default: {
+      uuid: "",
       username: "",
       password: "",
       firstname: "",
@@ -52,9 +64,22 @@ export default class CRUD_User extends Vue {
   public close(): void {
     this.$emit("close");
   }
-  public confirm(): void {
-    //todo
-    this.close();
+  public async confirm(): void {
+    try {
+      if (this.crudAction != null) {
+        switch (this.crudAction) {
+          case "create":
+            await this.$api.sendCreateStudent(this.user);
+            break;
+          case "modify":
+            await this.$api.sendModifyStudent(this.user);
+            break;
+        }
+      }
+      this.close();
+    } catch (error) {
+      console.log(error.response.data);
+    }
   }
 }
 </script>
