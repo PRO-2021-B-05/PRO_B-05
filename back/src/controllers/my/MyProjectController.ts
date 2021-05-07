@@ -1,4 +1,16 @@
-import {BodyParams, Context, Controller, Delete, Get, PathParams, Post, Put, Req, Request} from "@tsed/common";
+import {
+    BodyParams,
+    Context,
+    Controller,
+    Delete,
+    Get,
+    PathParams,
+    Post,
+    Put,
+    QueryParams,
+    Req,
+    Request
+} from "@tsed/common";
 import {Authenticate} from "@tsed/passport";
 import {getRepository} from "typeorm";
 import {Student} from "../../entities/Student";
@@ -7,26 +19,49 @@ import {NotFound} from "@tsed/exceptions";
 import {Status} from "@tsed/schema";
 import * as uuid from "uuid";
 import {User} from "../../entities/User";
+import {Image} from "../../entities/Image";
 
 @Controller('/projects')
 @Authenticate()
-export class MyProfileController {
+export class MyProjectController {
 
-
-    private studentRepository = getRepository(Student);
     private projectRepository = getRepository(Project);
+    private imageRepository = getRepository(Image);
 
     @Get('/')
-    async listAll(@Req() req: Request) {
-        const user = req.user as Student;
-        const projects = await this.projectRepository.find({student: user});
-        return projects.map(({uuid, title, description, publishAt, updateAt}) => ({
-            uuid,
-            title,
-            description,
-            publishAt,
-            updateAt,
-            thumbnailUrl: "",
+    async listUser(
+        @Req() req: Request,
+        @QueryParams("offset") offset: number,
+        @QueryParams("limit") limit: number,
+    ) {
+        const student = req.user as Student;
+
+        if (!student) {
+            throw new NotFound("Could not find requested user");
+        }
+
+        const projects = await this.projectRepository.find({
+            where: { student },
+            order: { publishAt: "ASC" },
+            relations: ["images"],
+            skip: offset,
+            take: limit,
+        });
+        return Promise.all(projects.map(async (project) => {
+            const { uuid, title, description, publishAt, updateAt } = project;
+            const images = await this.imageRepository.find({
+                where: { project },
+                relations: ["project"],
+            });
+
+            return {
+                uuid,
+                title,
+                description,
+                publishAt,
+                updateAt,
+                thumbnailUrl: images[0]?.thumbnailUrl ?? "",
+            };
         }));
     }
 
