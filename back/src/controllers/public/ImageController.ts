@@ -2,10 +2,10 @@ import { BodyParams, Controller, Delete, Get, Inject, MultipartFile, PathParams,
 import { NotFound } from "@tsed/exceptions";
 import { Status } from "@tsed/schema";
 import { getRepository } from "typeorm";
-import { Image } from "../entities/Image";
-import { Project } from "../entities/Project";
+import { Image } from "../../entities/Image";
+import { Project } from "../../entities/Project";
 import * as uuid from 'uuid';
-import { SMS3StorageService } from "../services/SMS3StorageService";
+import { SMS3StorageService } from "../../services/SMS3StorageService";
 import Jimp from 'jimp';
 
 @Controller('/projects/:projectId/images')

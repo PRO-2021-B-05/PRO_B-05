@@ -1,4 +1,4 @@
-import {MaxLength, Min, MinLength, Pattern, Property, Required} from '@tsed/schema';
+import {Ignore, MaxLength, Min, MinLength, Pattern, Property, Required, WriteOnly} from '@tsed/schema';
 import bcrypt from 'bcrypt';
 import {
   Column,
@@ -25,6 +25,7 @@ export class User {
 
   @Column()
   @MinLength(8)
+  @WriteOnly()
   password: string;
 
   @Column()

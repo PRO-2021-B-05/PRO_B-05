@@ -5,9 +5,9 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {getRepository} from 'typeorm';
 
-import {Admin} from "../../entities/Admin";
-import {Student} from "../../entities/Student";
-import {User} from "../../entities/User";
+import {Admin} from "../../../entities/Admin";
+import {Student} from "../../../entities/Student";
+import {User} from "../../../entities/User";
 
 @Controller('/auth')
 export class AuthController {

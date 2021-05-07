@@ -2,8 +2,8 @@ import { BodyParams, Context, Controller, Delete, Get, PathParams, Post, Put, Re
 import { NotFound } from "@tsed/exceptions";
 import { Status } from "@tsed/schema";
 import { getRepository } from "typeorm";
-import { Project } from "../entities/Project";
-import { Student } from "../entities/Student";
+import { Project } from "../../entities/Project";
+import { Student } from "../../entities/Student";
 import * as uuid from 'uuid';
 
 @Controller('/projects')
