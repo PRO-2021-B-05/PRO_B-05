@@ -1,18 +1,17 @@
-import {BodyParams, Controller, Delete, Get, PathParams, Put} from "@tsed/common";
-import {getRepository} from "typeorm";
-import {User} from "../entities/User";
-import {NotFound} from "@tsed/exceptions";
-import {Student} from "../entities/Student";
-import {Status} from "@tsed/schema";
+import { BodyParams, Controller, Delete, Get, PathParams, Put } from "@tsed/common";
+import { getRepository } from "typeorm";
+import { NotFound } from "@tsed/exceptions";
+import { Student } from "../entities/Student";
+import { Status } from "@tsed/schema";
 
 @Controller('/students')
-export  class StudentController{
+export class StudentController {
     private studentRepository = getRepository(Student);
 
     @Get('/')
-    async  listAll(){
+    async listAll() {
         const users = await this.studentRepository.find();
-        return users.map(({ uuid }) => ({ uuid }));
+        return users.map(({ uuid, firstname, lastname }) => ({ uuid, firstname, lastname }));
     }
 
     @Get("/:uuid")
@@ -25,7 +24,6 @@ export  class StudentController{
 
         return {
             username: student.username,
-            password: student.password,
             firstname: student.firstname,
             lastname: student.lastname,
             description: student.description
