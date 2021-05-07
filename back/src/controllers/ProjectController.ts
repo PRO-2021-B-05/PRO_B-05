@@ -1,4 +1,4 @@
-import { BodyParams, Controller, Delete, Get, PathParams, Post, Put, Response } from "@tsed/common";
+import { BodyParams, Controller, Delete, Get, PathParams, Post, Put, QueryParams, Response } from "@tsed/common";
 import { NotFound } from "@tsed/exceptions";
 import { Status } from "@tsed/schema";
 import { getRepository } from "typeorm";
@@ -14,11 +14,17 @@ export class ProjectController {
     private imageRepository = getRepository(Image);
 
     @Get('/')
-    async listAll() {
+    async listAll(
+        @QueryParams("offset") offset: number,
+        @QueryParams("limit") limit: number,
+    ) {
         const projects = await this.projectRepository.find({
             order: { publishAt: "ASC" },
             relations: ["student"],
+            skip: offset,
+            take: limit,
         });
+
         return Promise.all(projects.map(async (project) => {
             const { uuid, title, description, publishAt, updateAt, student } = project;
             const images = await this.imageRepository.find({
@@ -41,7 +47,11 @@ export class ProjectController {
     }
 
     @Get('/users/:userId')
-    async listUser(@PathParams("userId") userId: string) {
+    async listUser(
+        @PathParams("userId") userId: string,
+        @QueryParams("offset") offset: number,
+        @QueryParams("limit") limit: number,
+    ) {
         const student = await this.studentRepository.findOne({ uuid: userId });
 
         if (!student) {
@@ -52,6 +62,8 @@ export class ProjectController {
             where: { student },
             order: { publishAt: "ASC" },
             relations: ["images"],
+            skip: offset,
+            take: limit,
         });
         return Promise.all(projects.map(async (project) => {
             const { uuid, title, description, publishAt, updateAt } = project;
