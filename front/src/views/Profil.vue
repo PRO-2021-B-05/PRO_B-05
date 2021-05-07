@@ -59,11 +59,10 @@
             />
           </div>
           <SmallProject
-            description="true"
+            :authorDisplay="false"
+            :descriptionDisplay="true"
             v-else
-            titre="hello"
-            :id="id"
-            :picture="projects[id]"
+            :project="projects[id - 1]"
           />
         </v-col>
       </v-row>
@@ -81,6 +80,7 @@ import SmallProject from "@/components/SmallProject.vue";
 import { Picture } from "@/model/Picture";
 import { Student } from "@/model/IStudent";
 import { INavInfo } from "@/model/INavInfo";
+import { SimpleProject } from "@/model/SimpleProject";
 
 @Component({
   components: {
@@ -91,13 +91,14 @@ import { INavInfo } from "@/model/INavInfo";
 })
 export default class Profil extends Vue {
   private modify = false;
+  private uuid?: string;
 
   page = 1;
 
   private pageLimit = 12;
   private nbLoaded = this.pageLimit;
   private pageLoaded = 1;
-  private projects: Picture[] = [];
+  private projects: SimpleProject[] = [];
   private projectsLoading = true;
 
   scroll() {
@@ -114,12 +115,13 @@ export default class Profil extends Vue {
       }
     };
   }
+
   public getApi<T>(url: string): Promise<T> {
     return fetch(url).then((response) => {
       return response.json();
     });
   }
-
+  */
   public async getStudent(uuid: string): Promise<void> {
     const student: Student = await this.$api.getStudent(uuid);
     this.authorInfo = {
@@ -135,22 +137,17 @@ export default class Profil extends Vue {
     };
   }
 
-  public async getProjects() {
+  public async getProjects(): Promise<void> {
     this.projectsLoading = true;
-    this.projects.push(
-      ...(await this.getApi<Picture[]>(
-        `https://picsum.photos/v2/list?page=${this.pageLoaded}&limit=${
-          1 + this.pageLimit
-        }`
-      ))
-    );
+    this.projects = await this.$api.getStudentProjects(this.uuid);
     this.projectsLoading = false;
   }
 
-  public async mounted() {
-    this.scroll();
+  public async mounted(): Promise<void> {
+    //this.scroll();
+    this.uuid = this.$route.params.uuid;
     await this.getProjects();
-    await this.getStudent(this.$route.params.uuid);
+    await this.getStudent(this.uuid);
   }
 
   private authorInfo: INavInfo | null = null;
