@@ -5,7 +5,7 @@ export interface INavInfo {
     {
       id: number;
       title: string;
-      content: string;
+      content: string | null;
     }
   ];
 }

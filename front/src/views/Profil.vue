@@ -101,6 +101,7 @@ export default class Profil extends Vue {
   private projects: SimpleProject[] = [];
   private projectsLoading = true;
 
+  /*
   scroll() {
     window.onscroll = () => {
       if (

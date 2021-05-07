@@ -14,8 +14,12 @@ export class Communication {
   }
 
   async getProjects(): Promise<SimpleProject[]> {
+    const response = await this.axiosServer.get<SimpleProject[]>("/projects");
+    return response.data;
+  }
+  async getStudentProjects(studentUuid: string): Promise<SimpleProject[]> {
     const response = await this.axiosServer.get<SimpleProject[]>(
-      "/projects"
+      "/projects/users/" + studentUuid
     );
     return response.data;
   }
