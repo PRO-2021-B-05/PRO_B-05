@@ -2,6 +2,8 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { ILogin } from "@/model/Login";
 import { Student } from "@/model/IStudent";
 import { SimpleProject } from "@/model/SimpleProject";
+import { IProject } from "@/model/IProject";
+import { Image } from "@/model/IImage";
 
 export class Communication {
   private token?: string;
@@ -17,6 +19,21 @@ export class Communication {
     const response = await this.axiosServer.get<SimpleProject[]>("/projects");
     return response.data;
   }
+
+  async getProject(projectUuid: string): Promise<IProject> {
+    const response = await this.axiosServer.get<IProject>(
+      "/projects/" + projectUuid
+    );
+    return response.data;
+  }
+
+  async getProjectImages(projectUuid: string): Promise<Image[]> {
+    const response = await this.axiosServer.get<Image[]>(
+      "/projects/" + projectUuid + "/images"
+    );
+    return response.data;
+  }
+
   async getStudentProjects(studentUuid: string): Promise<SimpleProject[]> {
     const response = await this.axiosServer.get<SimpleProject[]>(
       "/projects/users/" + studentUuid
