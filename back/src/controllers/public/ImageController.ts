@@ -102,7 +102,7 @@ export class ImageController {
             'Content-Type': Jimp.MIME_PNG,
         });
 
-        response.location(`/api/v1/projects/${projectId}/images/${createdImage.uuid}`);
+        response.location(`/api/v1/public/projects/${projectId}/images/${createdImage.uuid}`);
     }
 
     @Put('/:uuid')

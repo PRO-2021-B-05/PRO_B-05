@@ -7,6 +7,7 @@ import { Student } from "../../entities/Student";
 import * as uuid from 'uuid';
 import { Image } from "../../entities/Image";
 
+//TODO: Enlever les requêtes redondantes (effectuées déjà par MyProjectController)
 @Controller('/projects')
 export class ProjectController {
     private studentRepository = getRepository(Student);
@@ -126,7 +127,7 @@ export class ProjectController {
         });
         await this.projectRepository.save(createdProject);
 
-        response.location(`/api/v1/projects/${createdProject.uuid}`);
+        response.location(`/api/v1/public/projects/${createdProject.uuid}`);
     }
 
     @Put('/:uuid')

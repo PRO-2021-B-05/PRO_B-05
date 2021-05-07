@@ -105,7 +105,7 @@ export class MyProjectController {
         await this.projectRepository.save(createdProject);
 
         // TODO: Ne pas hardcoder l'url.
-        ctx.response.location(`/api/v1/projects/${createdProject.uuid}`);
+        ctx.response.location(`/api/v1/my/projects/${createdProject.uuid}`);
         return true;
     }
 
