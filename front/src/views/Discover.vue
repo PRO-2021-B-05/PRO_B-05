@@ -21,12 +21,10 @@
             />
           </div>
           <SmallProject
-            author="true"
-            descripton="false"
+            authorDisplay="true"
+            descriptionDisplay="false"
             v-else
-            titre="hello"
-            :id="id"
-            :picture="projects[id]"
+            :project="projects[id - 1]"
           />
         </v-col>
       </v-row>
@@ -40,6 +38,7 @@ import Header from "@/components/Header.vue";
 import SmallProject from "@/components/SmallProject.vue";
 import { Picture } from "@/model/Picture.ts";
 import Heading1 from "@/components/Heading1.vue";
+import { SimpleProject } from "@/model/SimpleProject";
 
 @Component({
   components: { Heading1, SmallProject, Header },
@@ -48,9 +47,9 @@ export default class Discover extends Vue {
   private pageLimit = 12;
   private nbLoaded = this.pageLimit;
   private pageLoaded = 1;
-  private projects: Picture[] = [];
+  private projects: SimpleProject[] = [];
   private projectsLoading = true;
-  scroll() {
+  scroll(): void {
     window.onscroll = () => {
       if (
         window.innerHeight + window.pageYOffset >=
@@ -64,11 +63,13 @@ export default class Discover extends Vue {
       }
     };
   }
+  /*
   public getApi<T>(url: string): Promise<T> {
     return fetch(url).then((response) => {
       return response.json();
     });
   }
+ 
   public async getProjects() {
     this.projectsLoading = true;
     this.projects.push(
@@ -79,9 +80,14 @@ export default class Discover extends Vue {
       ))
     );
     this.projectsLoading = false;
+  }*/
+  public async getProjects(): Promise<void> {
+    this.projectsLoading = true;
+    this.projects = await this.$api.getProjects();
+    this.projectsLoading = false;
   }
-  public async mounted() {
-    this.scroll();
+  public async mounted(): Promise<void> {
+    //this.scroll();
     await this.getProjects();
   }
 }

@@ -1,8 +1,10 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { ILogin } from "@/model/Login";
 import { Student } from "@/model/IStudent";
+import { SimpleProject } from "@/model/SimpleProject";
 
 export class Communication {
+  private token?: string;
   private axiosServer: AxiosInstance;
   constructor() {
     this.axiosServer = axios.create({
@@ -10,6 +12,12 @@ export class Communication {
     });
   }
 
+  async getProjects(): Promise<SimpleProject[]> {
+    const response = await this.axiosServer.get<SimpleProject[]>(
+      "/projects"
+    );
+    return response.data;
+  }
   async getStudentsUuid(): Promise<{ uuid: string }[]> {
     const response = await this.axiosServer.get<{ uuid: string }[]>(
       "/students"
@@ -58,6 +66,20 @@ export class Communication {
     await this.axiosServer.put("/students/" + student.uuid, newStudent);
   }
   async sendLogin(login: ILogin): Promise<AxiosResponse> {
-    return this.axiosServer.post("/auth/login", login);
+    const response = await this.axiosServer.post("/auth/login", login);
+    this.setToken(response.data.token);
+    return response;
+  }
+  public setToken(token: string) {
+    this.token = token;
+    localStorage.setItem("token", token);
+    this.axiosServer.defaults.headers.common.Authorization = `Bearer ${token}`;
+  }
+  public clearToken() {
+    localStorage.removeItem("token");
+    this.axiosServer.defaults.headers.common.Authorization = ``;
+  }
+  public async isConnected(): Promise<boolean> {
+    return !!this.token;
   }
 }
