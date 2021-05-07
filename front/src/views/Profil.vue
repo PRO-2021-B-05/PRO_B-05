@@ -90,37 +90,11 @@ import { SimpleProject } from "@/model/SimpleProject";
 export default class Profil extends Vue {
   private modify = false;
   private uuid?: string;
-
-  page = 1;
-
   private pageLimit = 12;
   private nbLoaded = this.pageLimit;
   private pageLoaded = 1;
   private projects: SimpleProject[] = [];
   private projectsLoading = true;
-
-  /*
-  scroll() {
-    window.onscroll = () => {
-      if (
-        window.innerHeight + window.pageYOffset >=
-        document.body.offsetHeight
-      ) {
-        if (this.nbLoaded < 200) {
-          this.nbLoaded += this.pageLimit;
-          this.pageLoaded += 1;
-          this.getProjects();
-        }
-      }
-    };
-  }
-
-  public getApi<T>(url: string): Promise<T> {
-    return fetch(url).then((response) => {
-      return response.json();
-    });
-  }
-  */
   public async getStudent(uuid: string): Promise<void> {
     const student: Student = await this.$api.getStudent(uuid);
     this.authorInfo = {
