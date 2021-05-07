@@ -14,7 +14,7 @@ export class Project {
     @Required()
     title: string;
 
-    @Column()
+    @Column({type : "text"})
     @Required()
     description: string;
 

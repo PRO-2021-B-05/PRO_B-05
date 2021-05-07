@@ -8,6 +8,10 @@ import {MulterError} from "multer";
 import {OnlyAdmin} from "../decorators/OnlyAdmin";
 import {Authenticate} from "@tsed/passport";
 import {Admin} from "../entities/Admin";
+import {Student} from "../entities/Student";
+import faker from "faker";
+import bcrypt from "bcrypt";
+import {getRepository} from "typeorm";
 
 @Controller('/test')
 export class TestController {
@@ -59,4 +63,5 @@ export class TestController {
       'Original-Name': file.originalname
     });
   }
+
 }
