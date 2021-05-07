@@ -4,6 +4,7 @@
       <v-row>
         <v-col>
           <v-carousel
+            v-if="images"
             v-model="model"
             hide-delimiter-background
             show-arrows-on-hover
@@ -35,7 +36,7 @@
         </v-row>
       </div>
     </v-container>
-    <NavInfo :info="ProjectInfo" />
+    <NavInfo v-if="projectInfo" :info="projectInfo" />
   </div>
 </template>
 
@@ -44,45 +45,45 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import NavInfo from "@/components/NavInfo.vue";
 import { INavInfo } from "@/model/INavInfo";
+import { IProject } from "@/model/IProject";
+import { Image } from "@/model/IImage";
+
 @Component({
   components: {
     NavInfo,
   },
 })
 export default class Project extends Vue {
-  private ProjectInfo: INavInfo = {
-    title: "Project Name",
-    section: [
-      {
-        id: 1,
-        title: "Description",
-        content:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus, purus sed luctus porta, libero arcu tincidunt dolor, nec ullamcorper turpis mi ut ipsum. Donec ac eros pulvinar, dapibus nisi vel, molestie ligula. ",
-      },
-    ],
-  };
+  private uuid?: string;
+  private model = 0;
+  private project?: IProject;
+  private projectInfo: INavInfo | null = null;
+  private images: Image[] = [];
 
-  model = 0;
-  images = [
-    {
-      id: 1,
-      title: "Image Title 1",
-      src:
-        "https://i.pinimg.com/originals/ad/84/a5/ad84a52f49126f41ce0b537edb6d7770.jpg",
-    },
-    {
-      id: 2,
-      title: "Image Title 2",
-      src:
-        "https://static.wikia.nocookie.net/bakemonogatari1645/images/a/ab/Yotsugi_profile.jpg",
-    },
-    {
-      id: 3,
-      title: "Image Title 3",
-      src:
-        "https://static.wikia.nocookie.net/nisioisin/images/9/97/YotsugiOnonoki_anime.png",
-    },
-  ];
+  public async getProject(): Promise<void> {
+    this.project = await this.$api.getProject(this.uuid);
+    this.projectInfo = {
+      title: this.project?.title,
+      section: [
+        {
+          id: 1,
+          title: "description",
+          content: this.project?.description,
+        },
+      ],
+    };
+  }
+
+  public async getImages(): Promise<void> {
+    this.images = await this.$api.getProjectImages(this.uuid);
+    console.log(this.images[0].url);
+  }
+
+  public async mounted(): Promise<void> {
+    this.uuid = this.$route.params.uuid;
+    await this.getProject();
+    await this.getImages();
+  }
 }
 </script>
 
