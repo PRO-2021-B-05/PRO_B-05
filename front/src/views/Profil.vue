@@ -3,22 +3,20 @@
     <v-container>
       <v-row class="d-lg-none">
         <v-col>
-          <v-card>
-            <v-card-title> Kylian Bourcoud </v-card-title>
-            <v-card-subtitle> IT Engineer </v-card-subtitle>
+          <v-card v-if="authorInfo">
+            <v-card-title>
+              {{ authorInfo.title }}
+            </v-card-title>
+            <v-card-subtitle>
+              {{ authorInfo.subtitle }}
+            </v-card-subtitle>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header> About Me </v-expansion-panel-header>
+                <v-expansion-panel-header>
+                  Description
+                </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Aenean eu quam eget lorem scelerisque suscipit non varius
-                  tortor. In hac habitasse platea dictumst. In ullamcorper velit
-                  sed neque posuere, ac varius odio feugiat. Vestibulum et odio
-                  turpis. Nunc finibus euismod luctus. Sed tristique velit sit
-                  amet turpis elementum, vitae gravida purus ullamcorper. Nullam
-                  vulputate sed mi a imperdiet. Curabitur tincidunt, neque nec
-                  fringilla varius, lacus nunc sagittis leo, vitae condimentum
-                  lectus ipsum vitae ex.
+                  {{ authorInfo.section[0].content }}
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
@@ -127,7 +125,7 @@ export default class Profil extends Vue {
     const student: Student = await this.$api.getStudent(uuid);
     this.authorInfo = {
       title: `${student.firstname} ${student.lastname}`,
-      subtitle: "IT Engineer",
+      subtitle: null,
       section: [
         {
           id: 1,

@@ -1,6 +1,6 @@
 export interface INavInfo {
-  title: string;
-  subtitle: string;
+  title: string | null;
+  subtitle: string | null;
   section: [
     {
       id: number;
