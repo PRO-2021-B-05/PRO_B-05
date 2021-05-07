@@ -64,17 +64,4 @@ export class TestController {
     });
   }
 
-  @Get('/faker')
-  async populateDb(){
-    const  studentRepository = getRepository(Student);
-    for (let i = 0; i < 100; ++i){
-      const student = new Student();
-      student.firstname = faker.name.firstName();
-      student.lastname = faker.name.lastName();
-      student.username = faker.internet.userName(student.firstname, student.lastname);
-      student.description = faker.lorem.paragraph();
-      student.password = await bcrypt.hash("password", 10);
-      await studentRepository.save(student);
-    }
-  }
 }
