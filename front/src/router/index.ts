@@ -26,7 +26,7 @@ const routes: Array<RouteConfig> = [
     component: Admin,
   },
   {
-    path: "/project",
+    path: "/project/:uuid",
     name: "Project",
     component: Project,
   },
