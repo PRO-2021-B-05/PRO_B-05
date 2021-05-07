@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { ILogin } from "@/model/Login";
 import { Student } from "@/model/IStudent";
 import { SimpleProject } from "@/model/SimpleProject";
@@ -10,11 +10,16 @@ export class Communication {
     this.axiosServer = axios.create({
       baseURL: "http://localhost:8083/api/v1",
     });
+    this.setToken(localStorage.getItem("token") ?? "");
   }
 
   async getProjects(): Promise<SimpleProject[]> {
+    const response = await this.axiosServer.get<SimpleProject[]>("/projects");
+    return response.data;
+  }
+  async getStudentProjects(studentUuid: string): Promise<SimpleProject[]> {
     const response = await this.axiosServer.get<SimpleProject[]>(
-      "/projects"
+      "/projects/users/" + studentUuid
     );
     return response.data;
   }
@@ -70,12 +75,12 @@ export class Communication {
     this.setToken(response.data.token);
     return response;
   }
-  public setToken(token: string) {
+  public setToken(token: string): void {
     this.token = token;
     localStorage.setItem("token", token);
     this.axiosServer.defaults.headers.common.Authorization = `Bearer ${token}`;
   }
-  public clearToken() {
+  public clearToken(): void {
     localStorage.removeItem("token");
     this.axiosServer.defaults.headers.common.Authorization = ``;
   }

@@ -16,7 +16,7 @@ const routes: Array<RouteConfig> = [
     component: Discover,
   },
   {
-    path: "/profil",
+    path: "/profil/:uuid",
     name: "Profil",
     component: Profil,
   },

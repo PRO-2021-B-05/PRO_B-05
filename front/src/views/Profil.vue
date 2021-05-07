@@ -3,22 +3,20 @@
     <v-container>
       <v-row class="d-lg-none">
         <v-col>
-          <v-card>
-            <v-card-title> Kylian Bourcoud </v-card-title>
-            <v-card-subtitle> IT Engineer </v-card-subtitle>
+          <v-card v-if="authorInfo">
+            <v-card-title>
+              {{ authorInfo.title }}
+            </v-card-title>
+            <v-card-subtitle>
+              {{ authorInfo.subtitle }}
+            </v-card-subtitle>
             <v-expansion-panels>
               <v-expansion-panel>
-                <v-expansion-panel-header> About Me </v-expansion-panel-header>
+                <v-expansion-panel-header>
+                  Description
+                </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Aenean eu quam eget lorem scelerisque suscipit non varius
-                  tortor. In hac habitasse platea dictumst. In ullamcorper velit
-                  sed neque posuere, ac varius odio feugiat. Vestibulum et odio
-                  turpis. Nunc finibus euismod luctus. Sed tristique velit sit
-                  amet turpis elementum, vitae gravida purus ullamcorper. Nullam
-                  vulputate sed mi a imperdiet. Curabitur tincidunt, neque nec
-                  fringilla varius, lacus nunc sagittis leo, vitae condimentum
-                  lectus ipsum vitae ex.
+                  {{ authorInfo.section[0].content }}
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
@@ -26,7 +24,7 @@
         </v-col>
       </v-row>
       <Heading1>Projects</Heading1>
-      <v-row>
+      <v-row v-if="modify">
         <v-spacer></v-spacer>
         <v-btn
           class="my-3 mx-3"
@@ -59,16 +57,15 @@
             />
           </div>
           <SmallProject
-            description="true"
+            :authorDisplay="false"
+            :descriptionDisplay="true"
             v-else
-            titre="hello"
-            :id="id"
-            :picture="projects[id]"
+            :project="projects[id - 1]"
           />
         </v-col>
       </v-row>
     </v-container>
-    <NavInfo :info="authorInfo" modify="true" />
+    <NavInfo v-if="authorInfo" :info="authorInfo" />
   </div>
 </template>
 
@@ -78,7 +75,9 @@ import Component from "vue-class-component";
 import Heading1 from "@/components/Heading1.vue";
 import NavInfo from "@/components/NavInfo.vue";
 import SmallProject from "@/components/SmallProject.vue";
-import { Picture } from "@/model/Picture";
+import { Student } from "@/model/IStudent";
+import { INavInfo } from "@/model/INavInfo";
+import { SimpleProject } from "@/model/SimpleProject";
 
 @Component({
   components: {
@@ -88,61 +87,42 @@ import { Picture } from "@/model/Picture";
   },
 })
 export default class Profil extends Vue {
-  page = 1;
-
+  private modify = true;
+  private uuid?: string;
   private pageLimit = 12;
   private nbLoaded = this.pageLimit;
   private pageLoaded = 1;
-  private projects: Picture[] = [];
+  private projects: SimpleProject[] = [];
   private projectsLoading = true;
-
-  scroll() {
-    window.onscroll = () => {
-      if (
-        window.innerHeight + window.pageYOffset >=
-        document.body.offsetHeight
-      ) {
-        if (this.nbLoaded < 200) {
-          this.nbLoaded += this.pageLimit;
-          this.pageLoaded += 1;
-          this.getProjects();
-        }
-      }
+  public async getStudent(uuid: string): Promise<void> {
+    const student: Student = await this.$api.getStudent(uuid);
+    this.authorInfo = {
+      title: `${student.firstname} ${student.lastname}`,
+      subtitle: null,
+      section: [
+        {
+          id: 1,
+          title: "description",
+          content: student.description,
+        },
+      ],
     };
   }
-  public getApi<T>(url: string): Promise<T> {
-    return fetch(url).then((response) => {
-      return response.json();
-    });
-  }
-  public async getProjects() {
+
+  public async getProjects(): Promise<void> {
     this.projectsLoading = true;
-    this.projects.push(
-      ...(await this.getApi<Picture[]>(
-        `https://picsum.photos/v2/list?page=${this.pageLoaded}&limit=${
-          1 + this.pageLimit
-        }`
-      ))
-    );
+    this.projects = await this.$api.getStudentProjects(this.uuid);
     this.projectsLoading = false;
   }
-  public async mounted() {
-    this.scroll();
+
+  public async mounted(): Promise<void> {
+    //this.scroll();
+    this.uuid = this.$route.params.uuid;
     await this.getProjects();
+    await this.getStudent(this.uuid);
   }
 
-  private authorInfo = {
-    title: "Kylian Bourcoud",
-    subtitle: "IT Engineer",
-    section: [
-      {
-        id: 1,
-        title: "About me",
-        content:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus, purus sed luctus porta, libero arcu tincidunt dolor, nec ullamcorper turpis mi ut ipsum. Donec ac eros pulvinar, dapibus nisi vel, molestie ligula. ",
-      },
-    ],
-  };
+  private authorInfo: INavInfo | null = null;
 }
 </script>
 

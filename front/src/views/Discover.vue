@@ -21,8 +21,8 @@
             />
           </div>
           <SmallProject
-            authorDisplay="true"
-            descriptionDisplay="false"
+            :authorDisplay="true"
+            :descriptionDisplay="false"
             v-else
             :project="projects[id - 1]"
           />
@@ -88,7 +88,7 @@ export default class Discover extends Vue {
   }
   public async mounted(): Promise<void> {
     //this.scroll();
-    await this.getProjects();
+    await this.getProjects()
   }
 }
 </script>
