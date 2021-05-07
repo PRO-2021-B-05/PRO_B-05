@@ -7,9 +7,6 @@
             <v-card-title>
               {{ authorInfo.title }}
             </v-card-title>
-            <v-card-subtitle>
-              {{ authorInfo.subtitle }}
-            </v-card-subtitle>
             <v-expansion-panels>
               <v-expansion-panel>
                 <v-expansion-panel-header>
@@ -98,7 +95,6 @@ export default class Profil extends Vue {
     const student: Student = await this.$api.getStudent(uuid);
     this.authorInfo = {
       title: `${student.firstname} ${student.lastname}`,
-      subtitle: null,
       section: [
         {
           id: 1,

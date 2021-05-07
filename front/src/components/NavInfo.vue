@@ -3,9 +3,6 @@
     <v-card-title class="mb-0">
       {{ info.title }}
     </v-card-title>
-    <v-card-subtitle>
-      {{ info.subtitle }}
-    </v-card-subtitle>
     <v-col cols="12" v-for="sect in info.section" :key="sect.id">
       <v-divider class="mx-4 my-4"></v-divider>
       <v-row class="mx-4 my-2">
