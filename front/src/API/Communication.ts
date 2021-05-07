@@ -75,12 +75,12 @@ export class Communication {
     this.setToken(response.data.token);
     return response;
   }
-  public setToken(token: string) {
+  public setToken(token: string): void {
     this.token = token;
     localStorage.setItem("token", token);
     this.axiosServer.defaults.headers.common.Authorization = `Bearer ${token}`;
   }
-  public clearToken() {
+  public clearToken(): void {
     localStorage.removeItem("token");
     this.axiosServer.defaults.headers.common.Authorization = ``;
   }

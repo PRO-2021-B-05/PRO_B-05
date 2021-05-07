@@ -65,7 +65,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <NavInfo :info="authorInfo" />
+    <NavInfo v-if="authorInfo" :info="authorInfo" />
   </div>
 </template>
 
