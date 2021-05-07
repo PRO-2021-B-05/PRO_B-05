@@ -16,7 +16,7 @@ import methodOverride from 'method-override';
 
 import SMS3Config from './config/SMS3Config';
 import typeormConfig from './config/typeorm';
-import {IndexCtrl} from './controllers/pages/IndexCtrl';
+import {IndexCtrl} from './controllers/public/pages/IndexCtrl';
 import {User} from './entities/User';
 
 dotenv.config();
@@ -51,7 +51,8 @@ if (isProduction) {
     disableRoutesSummary: isProduction,
   },
   mount: {
-    '/api/v1': [`${rootDir}/controllers/**/*.ts`],
+    '/api/v1': [`${rootDir}/controllers/public/**/*{.ts,.js}`],
+    '/api/v1/my': [`${rootDir}/controllers/my/**/*{.ts,.js}`],
     '/': [IndexCtrl],
   },
   componentsScan: [

@@ -3,15 +3,11 @@ import * as uuid from 'uuid';
 import {Controller, Err, Get, MulterOptions, MultipartFile, PlatformMulterFile, Post, Req, Res} from '@tsed/common';
 import {Inject} from '@tsed/di';
 
-import {SMS3StorageService} from '../services/SMS3StorageService';
+import {SMS3StorageService} from '../../services/SMS3StorageService';
 import {MulterError} from "multer";
-import {OnlyAdmin} from "../decorators/OnlyAdmin";
+import {OnlyAdmin} from "../../decorators/OnlyAdmin";
 import {Authenticate} from "@tsed/passport";
-import {Admin} from "../entities/Admin";
-import {Student} from "../entities/Student";
-import faker from "faker";
-import bcrypt from "bcrypt";
-import {getRepository} from "typeorm";
+import {Admin} from "../../entities/Admin";
 
 @Controller('/test')
 export class TestController {
@@ -63,5 +59,4 @@ export class TestController {
       'Original-Name': file.originalname
     });
   }
-
 }

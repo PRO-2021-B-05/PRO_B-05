@@ -1,11 +1,10 @@
-import { Controller, Get, PathParams, QueryParams, UseBefore, UseBeforeEach } from "@tsed/common";
-import { getRepository } from "typeorm";
-import { User } from "../entities/User";
-import { NotFound } from "@tsed/exceptions";
-import { Authenticate } from "@tsed/passport";
-import { OnlyAdmin } from "../decorators/OnlyAdmin";
-import { OnlyAdminMiddleware } from "../middlewares/OnlyAdminMiddleware";
-import { off } from "node:process";
+import {Controller, Get, PathParams, QueryParams, UseBefore, UseBeforeEach} from "@tsed/common";
+import {getRepository} from "typeorm";
+import {User} from "../../entities/User";
+import {NotFound} from "@tsed/exceptions";
+import {Authenticate} from "@tsed/passport";
+import {OnlyAdmin} from "../../decorators/OnlyAdmin";
+import {OnlyAdminMiddleware} from "../../middlewares/OnlyAdminMiddleware";
 
 @Controller('/users')
 @Authenticate()

@@ -1,8 +1,9 @@
-import { BodyParams, Controller, Delete, Get, PathParams, Put, QueryParams } from "@tsed/common";
-import { getRepository } from "typeorm";
-import { NotFound } from "@tsed/exceptions";
-import { Student } from "../entities/Student";
-import { Status } from "@tsed/schema";
+import {BodyParams, Controller, Delete, Get, PathParams, Put, QueryParams} from "@tsed/common";
+import {getRepository} from "typeorm";
+import {User} from "../../entities/User";
+import {NotFound} from "@tsed/exceptions";
+import {Student} from "../../entities/Student";
+import {Status} from "@tsed/schema";
 
 @Controller('/students')
 export class StudentController {
