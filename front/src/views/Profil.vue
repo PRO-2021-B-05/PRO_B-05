@@ -75,7 +75,6 @@ import Component from "vue-class-component";
 import Heading1 from "@/components/Heading1.vue";
 import NavInfo from "@/components/NavInfo.vue";
 import SmallProject from "@/components/SmallProject.vue";
-import { Picture } from "@/model/Picture";
 import { Student } from "@/model/IStudent";
 import { INavInfo } from "@/model/INavInfo";
 import { SimpleProject } from "@/model/SimpleProject";
@@ -88,7 +87,7 @@ import { SimpleProject } from "@/model/SimpleProject";
   },
 })
 export default class Profil extends Vue {
-  private modify = false;
+  private modify = true;
   private uuid?: string;
   private pageLimit = 12;
   private nbLoaded = this.pageLimit;
