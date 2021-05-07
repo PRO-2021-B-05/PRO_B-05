@@ -1,8 +1,9 @@
 export interface SimpleProject {
-  id: number;
+  uuid: number;
+  title: string;
+  description: string;
+  publishAt: string;
+  updateAt: string;
+  thumbnailUrl: string;
   author: string;
-  width: number;
-  height: number;
-  url: string;
-  download_url: string;
 }
