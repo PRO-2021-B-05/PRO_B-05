@@ -6,13 +6,20 @@ import {Student} from "../../entities/Student";
 import {Status} from "@tsed/schema";
 
 @Controller('/students')
-export  class StudentController{
+export class StudentController {
     private studentRepository = getRepository(Student);
 
     @Get('/')
-    async  listAll(){
-        const users = await this.studentRepository.find();
-        return users.map(({ uuid }) => ({ uuid }));
+    async listAll(
+        @QueryParams("offset") offset: number,
+        @QueryParams("limit") limit: number,
+    ) {
+        const users = await this.studentRepository.find({
+            skip: offset,
+            take: limit,
+        });
+
+        return users.map(({ uuid, firstname, lastname }) => ({ uuid, firstname, lastname }));
     }
 
     @Get("/:uuid")
@@ -25,7 +32,6 @@ export  class StudentController{
 
         return {
             username: student.username,
-            password: student.password,
             firstname: student.firstname,
             lastname: student.lastname,
             description: student.description
@@ -59,5 +65,4 @@ export  class StudentController{
 
         await this.studentRepository.delete({ uuid });
     }
-
 }

@@ -5,7 +5,7 @@ import { Nullable } from "@tsed/schema";
 
 @ChildEntity()
 export class Student extends User {
-    @Column()
+    @Column({type : "text"})
     @Nullable()
     description?: string;
 

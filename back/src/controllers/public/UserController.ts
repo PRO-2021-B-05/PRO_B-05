@@ -10,12 +10,19 @@ import {OnlyAdminMiddleware} from "../../middlewares/OnlyAdminMiddleware";
 @Authenticate()
 @OnlyAdmin()
 //@UseBeforeEach(OnlyAdminMiddleware)
-export  class UserController{
+export class UserController {
     private userRepository = getRepository(User);
 
     @Get('/')
-    async  listAll(){
-        const users = await this.userRepository.find();
+    async listAll(
+        @QueryParams("offset") offset: number,
+        @QueryParams("limit") limit: number,
+    ) {
+        const users = await this.userRepository.find({
+            skip: offset,
+            take: limit,
+        });
+
         return users.map(({ uuid }) => ({ uuid }));
     }
 
@@ -34,6 +41,4 @@ export  class UserController{
             lastname: user.lastname
         };
     }
-
-
 }
