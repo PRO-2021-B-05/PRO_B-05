@@ -5,7 +5,7 @@ import { getRepository } from "typeorm";
 import { Project } from "../../entities/Project";
 import { Student } from "../../entities/Student";
 import * as uuid from 'uuid';
-import { Image } from "../entities/Image";
+import { Image } from "../../entities/Image";
 
 @Controller('/projects')
 export class ProjectController {

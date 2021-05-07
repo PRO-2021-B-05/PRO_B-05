@@ -1,4 +1,4 @@
-import {Controller, Get, PathParams, UseBefore, UseBeforeEach} from "@tsed/common";
+import {Controller, Get, PathParams, QueryParams, UseBefore, UseBeforeEach} from "@tsed/common";
 import {getRepository} from "typeorm";
 import {User} from "../../entities/User";
 import {NotFound} from "@tsed/exceptions";

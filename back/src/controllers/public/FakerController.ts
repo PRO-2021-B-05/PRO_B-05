@@ -1,9 +1,9 @@
 import {Controller, Get} from "@tsed/common";
 import {getRepository} from "typeorm";
-import {Student} from "../entities/Student";
+import {Student} from "../../entities/Student";
 import faker from "faker";
 import bcrypt from "bcrypt";
-import {Project} from "../entities/Project";
+import {Project} from "../../entities/Project";
 
 @Controller('/faker')
 export class FakerController{
