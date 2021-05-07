@@ -8,6 +8,7 @@ import {getRepository} from 'typeorm';
 import {Admin} from "../../../entities/Admin";
 import {Student} from "../../../entities/Student";
 import {User} from "../../../entities/User";
+import {UserRegister} from "../../../entities/UserRegister";
 
 @Controller('/auth')
 export class AuthController {
@@ -36,15 +37,23 @@ export class AuthController {
   }
 
   @Post('/register')
-  async registerAdmin(@BodyParams(Admin) user: Admin) {
-    user.password = await bcrypt.hash(user.password, 10);
-    return this.adminRepository.save(user);
+  async registerAdmin(@BodyParams(UserRegister) user: UserRegister) {
+    const admin = new Admin();
+    admin.username = user.username;
+    admin.password = await bcrypt.hash(user.password, 10);
+    admin.firstname = user.firstname;
+    admin.lastname = user.lastname;
+    return this.adminRepository.save(admin);
   }
 
   @Post('/register2')
-  async registerStudent(@BodyParams(Student) user: Student) {
-    user.password = await bcrypt.hash(user.password, 10);
-    return this.studentRepository.save(user);
+  async registerStudent(@BodyParams(UserRegister) user: UserRegister) {
+    const student = new Student();
+    student.username = user.username;
+    student.password = await bcrypt.hash(user.password, 10);
+    student.firstname = user.firstname;
+    student.lastname = user.lastname;
+    return this.studentRepository.save(student);
   }
 
   @Get('/')

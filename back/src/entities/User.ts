@@ -1,4 +1,4 @@
-import {Ignore, MaxLength, Min, MinLength, Pattern, Property, Required, WriteOnly} from '@tsed/schema';
+import {Ignore, MaxLength, Min, MinLength, Pattern, Property, ReadOnly, Required, WriteOnly} from '@tsed/schema';
 import bcrypt from 'bcrypt';
 import {
   Column,
@@ -24,8 +24,6 @@ export class User {
   username: string;
 
   @Column()
-  @MinLength(8)
-  @WriteOnly()
   password: string;
 
   @Column()
@@ -38,12 +36,12 @@ export class User {
 
   @Column()
   @CreateDateColumn()
-  @Property()
+  @ReadOnly()
   createAt: Date
 
   @Column()
   @UpdateDateColumn()
-  @Property()
+  @ReadOnly()
   updateAt: Date;
 
   @Column()
