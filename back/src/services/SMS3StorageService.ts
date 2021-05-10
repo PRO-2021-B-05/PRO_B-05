@@ -71,4 +71,8 @@ export class SMS3StorageService {
   public fileInfo(bucketName: string, name: string): Promise<BucketItemStat> {
     return this.client.statObject(bucketName, name);
   }
+
+  public deleteFile(bucketName: string, name: string): Promise<void> {
+    return this.client.removeObject(bucketName, name);
+  }
 }
