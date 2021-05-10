@@ -87,6 +87,44 @@ export class Communication {
     };
     await this.axiosServer.put("/students/" + student.uuid, newStudent);
   }
+  async sendCreateProject(
+    studentUuid: string,
+    project: { title: string; description: string }
+  ): Promise<string> {
+    const response = await this.axiosServer.post<string>(
+      "/projects/users/" + studentUuid,
+      project
+    );
+    return response.data;
+  }
+  async sendModifyProject(
+    uuid: string,
+    project: { title: string; description: string }
+  ): Promise<void> {
+    await this.axiosServer.put("/projects/" + uuid, project);
+  }
+  async sendImage(
+    projectUuid: string,
+    fileObject: { file: File; title: string }
+  ): Promise<void> {
+    const formData = new FormData();
+    formData.append("file", fileObject.file);
+    formData.append("title", fileObject.title);
+    await this.axiosServer.post(
+      "/projects/" + projectUuid + "/images",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+  }
+  async deleteImage(projectUuid: string, imageUuid: string): Promise<void> {
+    await this.axiosServer.delete(
+      "/projects/" + projectUuid + "/images/" + imageUuid
+    );
+  }
   async sendLogin(login: ILogin): Promise<AxiosResponse> {
     const response = await this.axiosServer.post("/auth/login", login);
     this.setToken(response.data.token);
