@@ -105,21 +105,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { Image } from "@/model/IImage";
 
-type ImageObj = { file: File; src: string; description?: string };
+type ImageObj = { file: File; src: string; title?: string };
 
 @Component({
   components: {},
 })
 export default class ProjectForm extends Vue {
-  test: File | null = null;
-  projectName: string | null = null;
-  projectDescription: string | null = null;
-  tmpFiles: File[] = [];
-  images: ImageObj[] = [];
+  @Prop({ default: false }) private modify!: boolean;
+  private userUUID?: string = "451c5c6a-72a7-4c0c-aa26-7c3c0b7a7792";
+  private projectName: string | null = null;
+  private projectDescription: string | null = null;
+  private tmpFiles: File[] = [];
+  private images: ImageObj[] = [];
 
-  load(imagesLoaded: File[]): void {
+  public load(imagesLoaded: File[]): void {
     const filteredFiles = imagesLoaded.filter((image) => {
       return (
         image && (image.type === "image/png" || image.type === "image/jpeg")
@@ -132,17 +134,36 @@ export default class ProjectForm extends Vue {
     this.tmpFiles = [];
   }
 
-  deleteImage(image: ImageObj): void {
+  public deleteImage(image: ImageObj): void {
     const index = this.images.findIndex((i) => i === image);
     this.images.splice(index, 1);
     URL.revokeObjectURL(image.src);
   }
 
-  destroy(): void {
+  public destroy(): void {
     this.images.forEach((image) => {
       URL.revokeObjectURL(image.src);
     });
   }
+  public async createProject(): Promise<void> {
+    const projectUuid = await this.$api.sendCreateProject(this.userUUID, {
+      title: this.projectName,
+      description: this.projectDescription,
+    });
+
+    for (let i = 0; i < this.images.length; ++i) {
+      await this.$api.sendImage(projectUuid, {
+        file: this.images[i].file,
+        title: this.images[i].title,
+      });
+    }
+  }
+  /*
+  public async mounted() : Promise<void> {
+    if (this.modify){
+
+    }
+  }*/
 }
 </script>
 

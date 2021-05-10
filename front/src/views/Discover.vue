@@ -36,7 +36,6 @@
 import { Component, Vue } from "vue-property-decorator";
 import Header from "@/components/Header.vue";
 import SmallProject from "@/components/SmallProject.vue";
-import { Picture } from "@/model/Picture.ts";
 import Heading1 from "@/components/Heading1.vue";
 import { SimpleProject } from "@/model/SimpleProject";
 

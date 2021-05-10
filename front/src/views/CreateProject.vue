@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <Heading1>Create Project</Heading1>
+    <Heading1 :modify="false">Create Project</Heading1>
     <ProjectForm></ProjectForm>
   </v-container>
 </template>
@@ -16,4 +16,4 @@ import ProjectForm from "@/components/ProjectForm.vue";
 export default class CreateProject extends Vue {}
 </script>
 
-<style scoped></style>
+<style></style>
