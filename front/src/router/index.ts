@@ -5,6 +5,7 @@ import Profil from "../views/Profil.vue";
 import Project from "@/views/Project.vue";
 import Events from "@/views/Events.vue";
 import CreateProject from "../views/CreateProject.vue";
+import ModifyProject from "../views/ModifyProject.vue";
 import Admin from "@/views/Admin.vue";
 
 Vue.use(VueRouter);
@@ -34,6 +35,11 @@ const routes: Array<RouteConfig> = [
     path: "/createProject",
     name: "CreateProject",
     component: CreateProject,
+  },
+  {
+    path: "/modifyProject/:uuid",
+    name: "ModifyProject",
+    component: ModifyProject,
   },
   {
     path: "/events",

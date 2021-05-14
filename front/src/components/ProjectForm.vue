@@ -38,7 +38,7 @@
                   <v-row>
                     <v-col sm="3" md="4" lg="3">
                       <v-card class="pa-0" elevation="0">
-                        <v-img :src="image.src" height="75px"> </v-img>
+                        <v-img :src="image.url" height="75px"></v-img>
                       </v-card>
                     </v-col>
                     <v-col sm="7" md="5" lg="7" class="pr-0">
@@ -62,7 +62,7 @@
                 <v-card class="my-1 pa-0 d-sm-none">
                   <v-container>
                     <v-row>
-                      <v-img :src="image.src" height="150px"> </v-img>
+                      <v-img :src="image.url" height="150px"></v-img>
                     </v-row>
                   </v-container>
                   <v-container>
@@ -93,7 +93,7 @@
         <v-divider class="mb-6" />
         <v-row>
           <v-spacer />
-          <v-btn color="primary" outlined>
+          <v-btn color="primary" outlined @click="sendProject">
             <v-icon>mdi-folder-plus-outline</v-icon>
             Create
           </v-btn>
@@ -108,63 +108,100 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Image } from "@/model/IImage";
 
-type ImageObj = { file: File; src: string; title?: string };
+interface ImageObj extends Image {
+  uuid?: string; // j'existe en db
+  file?: File; // dois etre ajouter
+}
 
 @Component({
   components: {},
 })
 export default class ProjectForm extends Vue {
   @Prop({ default: false }) private modify!: boolean;
+  @Prop({ default: "" }) private projectUuid!: string;
   private userUUID?: string = "451c5c6a-72a7-4c0c-aa26-7c3c0b7a7792";
   private projectName: string | null = null;
   private projectDescription: string | null = null;
+  //ancien trucs images qui ne sont plus utilisés
   private tmpFiles: File[] = [];
+  //
+  private imagesToDelete: ImageObj[] = [];
   private images: ImageObj[] = [];
 
+  // ------------------------------ méthodes -----------------------------
   public load(imagesLoaded: File[]): void {
-    const filteredFiles = imagesLoaded.filter((image) => {
-      return (
+    const filteredFiles = imagesLoaded.filter(
+      (image) =>
         image && (image.type === "image/png" || image.type === "image/jpeg")
-      );
-    });
-    const mappedFiles = filteredFiles.map((image) => {
-      return { file: image, src: URL.createObjectURL(image) };
-    });
+    );
+    const mappedFiles = filteredFiles.map((image) => ({
+      file: image,
+      url: URL.createObjectURL(image),
+    }));
     this.images.push(...mappedFiles);
     this.tmpFiles = [];
   }
 
   public deleteImage(image: ImageObj): void {
-    const index = this.images.findIndex((i) => i === image);
-    this.images.splice(index, 1);
-    URL.revokeObjectURL(image.src);
+    if (image.uuid) {
+      this.imagesToDelete.push(image);
+    }
+    URL.revokeObjectURL(image.url);
+    this.images = this.images.filter((i) => i !== image);
   }
 
   public destroy(): void {
     this.images.forEach((image) => {
-      URL.revokeObjectURL(image.src);
+      URL.revokeObjectURL(image.url);
     });
   }
-  public async createProject(): Promise<void> {
-    const projectUuid = await this.$api.sendCreateProject(this.userUUID, {
+
+  public sendProject(): void {
+    if (this.modify) {
+      this.modifyProject();
+    } else {
+      this.createProject();
+    }
+  }
+
+  private sendDeleteImagesToServer(projectUuid: string) {
+    this.imagesToDelete.forEach((image) => {
+      this.$api.deleteImage(projectUuid, image.uuid);
+    });
+    this.images.forEach((image) => {
+      if (!image.file) return;
+      this.$api.sendImage(projectUuid, {
+        file: image.file,
+        title: image.title,
+      });
+    });
+  }
+
+  private async createProject(): Promise<void> {
+    const createdProjectUUID = await this.$api.sendCreateProject(
+      this.userUUID,
+      {
+        title: this.projectName,
+        description: this.projectDescription,
+      }
+    );
+    this.sendDeleteImagesToServer(createdProjectUUID);
+  }
+
+  private async modifyProject(): Promise<void> {
+    await this.$api.sendModifyProject(this.projectUuid, {
       title: this.projectName,
       description: this.projectDescription,
     });
+    // send new
+    this.sendDeleteImagesToServer(this.projectUuid);
+  }
 
-    for (let i = 0; i < this.images.length; ++i) {
-      await this.$api.sendImage(projectUuid, {
-        file: this.images[i].file,
-        title: this.images[i].title,
-      });
+  public async mounted(): Promise<void> {
+    if (this.modify) {
+      // obtenir les images
+      this.images.push(...(await this.$api.getProjectImages(this.projectUuid)));
     }
   }
-  /*
-  public async mounted() : Promise<void> {
-    if (this.modify){
-
-    }
-  }*/
 }
 </script>
-
-<style scoped></style>
