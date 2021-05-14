@@ -31,7 +31,7 @@
               </v-row>
               <v-row
                 v-for="image in images"
-                :key="image.src"
+                :key="image.url"
                 class="d-flex justify-center"
               >
                 <v-card class="my-1 pa-0 d-none d-sm-block">

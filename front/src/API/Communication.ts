@@ -8,9 +8,10 @@ import { Image } from "@/model/IImage";
 export class Communication {
   private token?: string;
   private axiosServer: AxiosInstance;
+
   constructor() {
     this.axiosServer = axios.create({
-      baseURL: "http://localhost:8083/api/v1",
+      baseURL: "http://localhost:8083/api/v1"
     });
     this.setToken(localStorage.getItem("token") ?? "");
   }
@@ -40,12 +41,14 @@ export class Communication {
     );
     return response.data;
   }
+
   async getStudentsUuid(): Promise<{ uuid: string }[]> {
     const response = await this.axiosServer.get<{ uuid: string }[]>(
       "/students"
     );
     return response.data;
   }
+
   async getStudent(uuid: string): Promise<Student> {
     const response = await this.axiosServer.get<Student>("/students/" + uuid);
     return {
@@ -54,12 +57,14 @@ export class Communication {
       password: "",
       firstname: response.data.firstname,
       lastname: response.data.lastname,
-      description: response.data.description,
+      description: response.data.description
     };
   }
+
   async deleteStudent(uuid: string): Promise<void> {
     await this.axiosServer.delete("/students/" + uuid);
   }
+
   async sendCreateStudent(student: Student): Promise<void> {
     const newStudent = {
       username:
@@ -71,10 +76,11 @@ export class Communication {
       lastname: student.lastname,
       createAt: "12-12-2020",
       updateAt: "12-12-2020",
-      description: student.description,
+      description: student.description
     };
     await this.axiosServer.post("/auth/register2", newStudent);
   }
+
   async sendModifyStudent(student: Student): Promise<void> {
     const newStudent = {
       username: student.username,
@@ -83,10 +89,11 @@ export class Communication {
       lastname: student.lastname,
       createAt: "12-12-2020",
       updateAt: "12-12-2020",
-      description: "", //student.description,
+      description: "" //student.description,
     };
     await this.axiosServer.put("/students/" + student.uuid, newStudent);
   }
+
   async sendCreateProject(
     studentUuid: string,
     project: { title: string; description: string }
@@ -97,12 +104,14 @@ export class Communication {
     );
     return response.data;
   }
+
   async sendModifyProject(
     uuid: string,
     project: { title: string; description: string }
   ): Promise<void> {
     await this.axiosServer.put("/projects/" + uuid, project);
   }
+
   async sendImage(
     projectUuid: string,
     fileObject: { file: File; title: string }
@@ -110,35 +119,41 @@ export class Communication {
     const formData = new FormData();
     formData.append("file", fileObject.file);
     formData.append("title", fileObject.title);
+    formData.append("description", "");
     await this.axiosServer.post(
       "/projects/" + projectUuid + "/images",
       formData,
       {
         headers: {
-          "Content-Type": "multipart/form-data",
-        },
+          "Content-Type": "multipart/form-data"
+        }
       }
     );
   }
+
   async deleteImage(projectUuid: string, imageUuid: string): Promise<void> {
     await this.axiosServer.delete(
       "/projects/" + projectUuid + "/images/" + imageUuid
     );
   }
+
   async sendLogin(login: ILogin): Promise<AxiosResponse> {
     const response = await this.axiosServer.post("/auth/login", login);
     this.setToken(response.data.token);
     return response;
   }
+
   public setToken(token: string): void {
     this.token = token;
     localStorage.setItem("token", token);
     this.axiosServer.defaults.headers.common.Authorization = `Bearer ${token}`;
   }
+
   public clearToken(): void {
     localStorage.removeItem("token");
     this.axiosServer.defaults.headers.common.Authorization = ``;
   }
+
   public async isConnected(): Promise<boolean> {
     return !!this.token;
   }

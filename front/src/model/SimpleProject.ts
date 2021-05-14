@@ -1,5 +1,5 @@
 export interface SimpleProject {
-  uuid: number;
+  uuid: string;
   title: string;
   description: string;
   publishAt: string;
