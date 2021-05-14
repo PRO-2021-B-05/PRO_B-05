@@ -75,4 +75,12 @@ export class SMS3StorageService {
   public deleteFile(bucketName: string, name: string): Promise<void> {
     return this.client.removeObject(bucketName, name);
   }
+
+  public async deleteFolder(bucketName: string, name: string): Promise<void> {
+    const items = await this.listFiles(bucketName, name, true);
+    await Promise.allSettled(items.map(item => {
+      return this.client.removeObject(bucketName, item.name);
+    }))
+
+  }
 }

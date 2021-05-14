@@ -144,7 +144,7 @@ export class MyProjectController {
         }
 
         await this.projectRepository.delete({uuid});
-        this.s3.deleteFile("start", `${uuid}`);
+        this.s3.deleteFolder("start", `${uuid}`);
     }
 
     //TODO: Gestion des images
@@ -230,7 +230,7 @@ export class MyProjectController {
         }
 
         await this.imageRepository.delete({ uuid : imageId });
-        this.s3.deleteFile("start", `${projectId}/${existingImage.uuid}`);
+        this.s3.deleteFolder("start", `${projectId}/${existingImage.uuid}`);
     }
 
 }

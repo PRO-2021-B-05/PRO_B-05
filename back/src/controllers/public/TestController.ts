@@ -22,6 +22,11 @@ export class TestController {
     return request.user;
   }
 
+  @Get('/deleteTest')
+  async deleteTest(){
+    await this.s3.deleteFolder('start', 'd339b014-1fde-4e80-889e-4ba6873ec8dc/4cca4b0d-08d8-4eb2-a96e-d8596c6434b9');
+  }
+
   @Get('/')
   async index(@Res() response: Res) {
     //return await this.s3.client.fPutObject("streamboard", "test.sbplugin", "./test.sbplugin", {});
