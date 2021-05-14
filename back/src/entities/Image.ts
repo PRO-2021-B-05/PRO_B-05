@@ -17,14 +17,16 @@ export class Image {
 
     @Property()
     get url() {
-        return `https://s3.studimax.ch/start/${this.project.uuid}/${this.uuid}`;
+        return `https://s3.studimax.ch/start/${this.project.uuid}/${this.uuid}/original`;
     }
 
     @Property()
     get thumbnailUrl() {
-        return `https://s3.studimax.ch/start/${this.project.uuid}/${this.uuid}-thumbnail`;
+        return `https://s3.studimax.ch/start/${this.project.uuid}/${this.uuid}/thumbnail`;
     }
 
-    @ManyToOne(() => Project, project => project.images)
+    @ManyToOne(() => Project, project => project.images, {
+        onDelete: 'CASCADE',
+    })
     project: Project;
 }

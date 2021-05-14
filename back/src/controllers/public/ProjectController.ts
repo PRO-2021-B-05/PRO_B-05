@@ -106,55 +106,5 @@ export class ProjectController {
         };
     }
 
-    @Post('/users/:userId')
-    @Status(201)
-    async post(
-        @PathParams("userId") userId: string,
-        @BodyParams(Project) project: Project,
-        @Response() response: Response,
-    ) {
-        const student = await this.studentRepository.findOne({ uuid: userId });
 
-        if (!student) {
-            throw new NotFound("Could not find requested user");
-        }
-
-        const createdProject = await this.projectRepository.create({
-            uuid: uuid.v4(),
-            title: project.title,
-            description: project.description,
-            student,
-        });
-        await this.projectRepository.save(createdProject);
-
-        response.location(`/api/v1/public/projects/${createdProject.uuid}`);
-    }
-
-    @Put('/:uuid')
-    @Status(204)
-    async put(
-        @PathParams("uuid") uuid: string,
-        @BodyParams(Project) project: Project,
-    ) {
-        const existingProject = await this.projectRepository.findOne({ uuid });
-        if (!existingProject) {
-            throw new NotFound("Could not find requested project");
-        }
-
-        await this.projectRepository.update({ uuid }, {
-            title: project.title,
-            description: project.description,
-        });
-    }
-
-    @Delete('/:uuid')
-    @Status(200)
-    async delete(@PathParams("uuid") uuid: string) {
-        const existingProject = await this.projectRepository.findOne({ uuid });
-        if (!existingProject) {
-            throw new NotFound("Could not find requested project");
-        }
-
-        await this.projectRepository.delete({ uuid });
-    }
 }
