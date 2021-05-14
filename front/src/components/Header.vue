@@ -82,7 +82,7 @@ import { Student } from "@/model/IStudent";
   components: { Login },
 })
 export default class Header extends Vue {
-  links = [
+  private links = [
     {
       id: 1,
       name: "Discover",
