@@ -3,4 +3,5 @@ export interface IProject {
   description: string;
   publishAt: string;
   updateAt: string;
+  uuid: string;
 }

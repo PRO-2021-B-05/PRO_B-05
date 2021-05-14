@@ -11,7 +11,7 @@ export class Communication {
 
   constructor() {
     this.axiosServer = axios.create({
-      baseURL: "http://localhost:8083/api/v1"
+      baseURL: "http://localhost:8083/api/v1",
     });
     this.setToken(localStorage.getItem("token") ?? "");
   }
@@ -20,7 +20,6 @@ export class Communication {
     const response = await this.axiosServer.get<SimpleProject[]>("/projects");
     return response.data;
   }
-
   async getProject(projectUuid: string): Promise<IProject> {
     const response = await this.axiosServer.get<IProject>(
       "/projects/" + projectUuid
@@ -57,7 +56,7 @@ export class Communication {
       password: "",
       firstname: response.data.firstname,
       lastname: response.data.lastname,
-      description: response.data.description
+      description: response.data.description,
     };
   }
 
@@ -76,7 +75,7 @@ export class Communication {
       lastname: student.lastname,
       createAt: "12-12-2020",
       updateAt: "12-12-2020",
-      description: student.description
+      description: student.description,
     };
     await this.axiosServer.post("/auth/register2", newStudent);
   }
@@ -89,7 +88,7 @@ export class Communication {
       lastname: student.lastname,
       createAt: "12-12-2020",
       updateAt: "12-12-2020",
-      description: "" //student.description,
+      description: "", //student.description,
     };
     await this.axiosServer.put("/students/" + student.uuid, newStudent);
   }
@@ -99,7 +98,7 @@ export class Communication {
     project: { title: string; description: string }
   ): Promise<string> {
     const response = await this.axiosServer.post<string>(
-      "/projects/users/" + studentUuid,
+      "/my/projects",
       project
     );
     return response.data;
@@ -109,7 +108,7 @@ export class Communication {
     uuid: string,
     project: { title: string; description: string }
   ): Promise<void> {
-    await this.axiosServer.put("/projects/" + uuid, project);
+    await this.axiosServer.put("/my/projects/" + uuid, project);
   }
 
   async sendImage(
@@ -121,12 +120,12 @@ export class Communication {
     formData.append("title", fileObject.title);
     formData.append("description", "");
     await this.axiosServer.post(
-      "/projects/" + projectUuid + "/images",
+      "/my/projects/" + projectUuid + "/images",
       formData,
       {
         headers: {
-          "Content-Type": "multipart/form-data"
-        }
+          "Content-Type": "multipart/form-data",
+        },
       }
     );
   }

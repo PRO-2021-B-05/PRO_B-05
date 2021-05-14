@@ -10,13 +10,13 @@
         {{ project.title }}
       </v-card-title>
       <v-btn
-        :href="`/profil/${project.author}`"
+        :href="`/profil/${project.userId}`"
         small
         text
         class="px-4"
         v-if="authorDisplay"
       >
-        by {{ project.author }}
+        by {{ project.firstname }} {{ project.lastname }}
       </v-btn>
       <div v-if="descriptionDisplay">
         <v-card-text>
@@ -35,20 +35,12 @@ import { SimpleProject } from "@/model/SimpleProject";
   components: {},
 })
 export default class SmallProject extends Vue {
-  @Prop({
-    default: {
-      uuid: "",
-      title: "",
-      description: "",
-      publishAt: "",
-      updateAt: "",
-      thumbnailUrl:
-        "https://www.wwf.ch/sites/default/files/styles/facebook/public/2017-04/tiger-in-petchaburi.jpg?itok=untdSI_O",
-      author: "",
-    },
-  })
-  private project?: SimpleProject;
+  @Prop({ required: true }) private project?: IProject;
   @Prop({ default: false }) private authorDisplay!: boolean;
   @Prop({ default: false }) private descriptionDisplay!: boolean;
+  private thumbnailURL = "";
+  public async mounted(): Promise<void> {
+    this.thumbnailURL = (await this.$api.getProjectImages(this.project?.uuid))[0].thumbnailUrl;
+  }
 }
 </script>

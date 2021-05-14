@@ -119,9 +119,9 @@ interface ImageObj extends Image {
 export default class ProjectForm extends Vue {
   @Prop({ default: false }) private modify!: boolean;
   @Prop({ default: "" }) private projectUuid!: string;
-  private userUUID?: string = "451c5c6a-72a7-4c0c-aa26-7c3c0b7a7792";
-  private projectName: string | null = null;
-  private projectDescription: string | null = null;
+  private crudText: "Modify" | "Create" = "Modify";
+  private projectName?: string;
+  private projectDescription?: string;
   //ancien trucs images qui ne sont plus utilisés
   private tmpFiles: File[] = [];
   //
@@ -200,7 +200,9 @@ export default class ProjectForm extends Vue {
   public async mounted(): Promise<void> {
     if (this.modify) {
       // obtenir les images
-      this.images.push(...(await this.$api.getProjectImages(this.projectUuid)));
+      this.images.push(...images);
+    } else {
+      this.crudText = "Create";
     }
   }
 }
