@@ -1,7 +1,7 @@
 export interface Student {
-  uuid: string;
+  uuid?: string;
   username: string;
-  password: string;
+  password?: string;
   firstname: string;
   lastname: string;
   description: string | null;

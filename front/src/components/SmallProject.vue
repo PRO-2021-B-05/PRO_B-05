@@ -4,7 +4,7 @@
     elevation="hover? 12 2"
     hover="hover"
   >
-    <v-img height="250" :src="project.thumbnailUrl" />
+    <v-img height="250" :src="thumbnailURL" />
     <v-container class="px-1 py-4">
       <v-card-title href="/project" class="py-0 text--primary">
         {{ project.title }}
@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { SimpleProject } from "@/model/SimpleProject";
+import { IProject } from "@/model/IProject";
 
 @Component({
   components: {},

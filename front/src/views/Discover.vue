@@ -37,7 +37,7 @@ import { Component, Vue } from "vue-property-decorator";
 import Header from "@/components/Header.vue";
 import SmallProject from "@/components/SmallProject.vue";
 import Heading1 from "@/components/Heading1.vue";
-import { SimpleProject } from "@/model/SimpleProject";
+import { IProject } from "@/model/IProject";
 
 @Component({
   components: { Heading1, SmallProject, Header },
@@ -46,7 +46,7 @@ export default class Discover extends Vue {
   private pageLimit = 12;
   private nbLoaded = this.pageLimit;
   private pageLoaded = 1;
-  private projects: SimpleProject[] = [];
+  private projects: IProject[] = [];
   private projectsLoading = true;
   scroll(): void {
     window.onscroll = () => {
@@ -62,24 +62,6 @@ export default class Discover extends Vue {
       }
     };
   }
-  /*
-  public getApi<T>(url: string): Promise<T> {
-    return fetch(url).then((response) => {
-      return response.json();
-    });
-  }
- 
-  public async getProjects() {
-    this.projectsLoading = true;
-    this.projects.push(
-      ...(await this.getApi<Picture[]>(
-        `https://picsum.photos/v2/list?page=${this.pageLoaded}&limit=${
-          1 + this.pageLimit
-        }`
-      ))
-    );
-    this.projectsLoading = false;
-  }*/
   public async getProjects(): Promise<void> {
     this.projectsLoading = true;
     this.projects = await this.$api.getProjects();
@@ -87,7 +69,7 @@ export default class Discover extends Vue {
   }
   public async mounted(): Promise<void> {
     //this.scroll();
-    await this.getProjects()
+    await this.getProjects();
   }
 }
 </script>

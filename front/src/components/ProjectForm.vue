@@ -95,7 +95,7 @@
           <v-spacer />
           <v-btn color="primary" outlined @click="sendProject">
             <v-icon>mdi-folder-plus-outline</v-icon>
-            Create
+            {{ crudText }}
           </v-btn>
           <v-spacer />
         </v-row>
@@ -172,19 +172,17 @@ export default class ProjectForm extends Vue {
       if (!image.file) return;
       this.$api.sendImage(projectUuid, {
         file: image.file,
-        title: image.title,
+        title: image.title ? image.title : "",
       });
     });
   }
 
   private async createProject(): Promise<void> {
-    const createdProjectUUID = await this.$api.sendCreateProject(
-      this.userUUID,
-      {
-        title: this.projectName,
-        description: this.projectDescription,
-      }
-    );
+    const userUUID = (await this.$api.getMyProfile()).uuid;
+    const createdProjectUUID = await this.$api.sendCreateProject(userUUID, {
+      title: this.projectName,
+      description: this.projectDescription,
+    });
     this.sendDeleteImagesToServer(createdProjectUUID);
   }
 
@@ -199,6 +197,11 @@ export default class ProjectForm extends Vue {
 
   public async mounted(): Promise<void> {
     if (this.modify) {
+      this.crudText = "Modify";
+      const project = await this.$api.getProject(this.projectUuid);
+      this.projectName = project.title;
+      this.projectDescription = project.description;
+      const images = await this.$api.getProjectImages(this.projectUuid);
       // obtenir les images
       this.images.push(...images);
     } else {

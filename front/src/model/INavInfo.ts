@@ -1,10 +1,10 @@
 export interface INavInfo {
-  title: string | null;
+  title?: string | null;
   section: [
     {
       id: number;
-      title: string;
-      content: string | null;
+      title?: string;
+      content?: string;
     }
   ];
 }

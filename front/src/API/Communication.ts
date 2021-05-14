@@ -16,8 +16,8 @@ export class Communication {
     this.setToken(localStorage.getItem("token") ?? "");
   }
 
-  async getProjects(): Promise<SimpleProject[]> {
-    const response = await this.axiosServer.get<SimpleProject[]>("/projects");
+  async getProjects(): Promise<IProject[]> {
+    const response = await this.axiosServer.get<IProject[]>("/projects");
     return response.data;
   }
   async getProject(projectUuid: string): Promise<IProject> {
@@ -52,6 +52,18 @@ export class Communication {
     const response = await this.axiosServer.get<Student>("/students/" + uuid);
     return {
       uuid: uuid,
+      username: response.data.username,
+      password: "",
+      firstname: response.data.firstname,
+      lastname: response.data.lastname,
+      description: response.data.description,
+    };
+  }
+
+  async getMyProfile(): Promise<Student> {
+    const response = await this.axiosServer.get<Student>("/my/profile/");
+    return {
+      uuid: "b081f3ca-ef85-4c09-8bec-c94ce7e101a8", // TODO supprimer
       username: response.data.username,
       password: "",
       firstname: response.data.firstname,
@@ -132,7 +144,7 @@ export class Communication {
 
   async deleteImage(projectUuid: string, imageUuid: string): Promise<void> {
     await this.axiosServer.delete(
-      "/projects/" + projectUuid + "/images/" + imageUuid
+      "/my/projects/" + projectUuid + "/images/" + imageUuid
     );
   }
 
