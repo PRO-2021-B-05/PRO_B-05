@@ -20,7 +20,7 @@
           {{ link.name }}
         </v-btn>
         <span v-if="connected">
-          <v-btn href="/Profil" text>
+          <v-btn :href="`/profil/${profileUuid}`" text>
             <v-icon>mdi-account-outline</v-icon>
             Profil
           </v-btn>
@@ -39,7 +39,7 @@
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
-          <v-list-item v-if="connected" href="/profil">
+          <v-list-item v-if="connected" :href="`/profil/${profileUuid}`">
             <v-list-item-title>
               <v-icon>mdi-account-outline</v-icon>
               Profil
@@ -76,6 +76,7 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import Login from "@/components/Login.vue";
+import { Student } from "@/model/IStudent";
 
 @Component({
   components: { Login },
@@ -95,12 +96,16 @@ export default class Header extends Vue {
       address: "/events",
     },
   ];
-  overlay = false;
-  drawer = false;
-  group = null;
-  connected = false;
-  public async mounted(): void {
+  private overlay = false;
+  private drawer = false;
+  private group = null;
+  private connected = false;
+  private profileUuid = "";
+  public async mounted(): Promise<void> {
     this.connected = await this.$api.isConnected();
+    if (this.connected) {
+      this.profileUuid = (await this.$api.getMyProfile()).uuid;
+    }
   }
 }
 </script>
