@@ -1,11 +1,11 @@
-import { BodyParams, Controller, Delete, Get, Inject, MultipartFile, PathParams, PlatformMulterFile, Post, Put, Response } from "@tsed/common";
+import { BodyParams, Controller, Delete, Get, Inject, MultipartFile, PathParams, PlatformMulterFile, Post, Put, QueryParams, Response } from "@tsed/common";
 import { NotFound } from "@tsed/exceptions";
 import { Status } from "@tsed/schema";
 import { getRepository } from "typeorm";
-import { Image } from "../entities/Image";
-import { Project } from "../entities/Project";
+import { Image } from "../../entities/Image";
+import { Project } from "../../entities/Project";
 import * as uuid from 'uuid';
-import { SMS3StorageService } from "../services/SMS3StorageService";
+import { SMS3StorageService } from "../../services/SMS3StorageService";
 import Jimp from 'jimp';
 
 @Controller('/projects/:projectId/images')
@@ -18,6 +18,8 @@ export class ImageController {
     @Get('/')
     async listAll(
         @PathParams("projectId") projectId: string,
+        @QueryParams("offset") offset: number,
+        @QueryParams("limit") limit: number,
     ) {
         const project = await this.projectRepository.findOne({ uuid: projectId });
 
@@ -28,7 +30,10 @@ export class ImageController {
         const images = await this.imageRepository.find({
             where: { project },
             relations: ["project"],
+            skip: offset,
+            take: limit,
         });
+
         return images.map(({ uuid, title, url, thumbnailUrl }) => ({
             uuid,
             title,
@@ -97,7 +102,7 @@ export class ImageController {
             'Content-Type': Jimp.MIME_PNG,
         });
 
-        response.location(`/api/v1/projects/${projectId}/images/${createdImage.uuid}`);
+        response.location(`/api/v1/public/projects/${projectId}/images/${createdImage.uuid}`);
     }
 
     @Put('/:uuid')

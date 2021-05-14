@@ -3,11 +3,11 @@ import * as uuid from 'uuid';
 import {Controller, Err, Get, MulterOptions, MultipartFile, PlatformMulterFile, Post, Req, Res} from '@tsed/common';
 import {Inject} from '@tsed/di';
 
-import {SMS3StorageService} from '../services/SMS3StorageService';
+import {SMS3StorageService} from '../../services/SMS3StorageService';
 import {MulterError} from "multer";
-import {OnlyAdmin} from "../decorators/OnlyAdmin";
+import {OnlyAdmin} from "../../decorators/OnlyAdmin";
 import {Authenticate} from "@tsed/passport";
-import {Admin} from "../entities/Admin";
+import {Admin} from "../../entities/Admin";
 
 @Controller('/test')
 export class TestController {
@@ -20,6 +20,11 @@ export class TestController {
   async adminTest(@Req() request: Req){
     const admin = request.user as Admin;
     return request.user;
+  }
+
+  @Get('/deleteTest')
+  async deleteTest(){
+    await this.s3.deleteFolder('start', 'd339b014-1fde-4e80-889e-4ba6873ec8dc/4cca4b0d-08d8-4eb2-a96e-d8596c6434b9');
   }
 
   @Get('/')
