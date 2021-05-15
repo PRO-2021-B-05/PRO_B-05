@@ -61,13 +61,19 @@
               {{ link.name }}
             </v-list-item-title>
           </v-list-item>
+          <v-list-item v-if="connected" href="/" @click="disconnect">
+            <v-list-item-title>
+              <v-icon>mdi-logout</v-icon>
+              Log out
+            </v-list-item-title>
+          </v-list-item>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
     <Login
       :overlay="overlay"
       @close="overlay = false"
-      @connected="connected = true"
+      @connected="connect"
     />
   </div>
 </template>
