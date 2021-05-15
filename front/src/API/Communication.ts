@@ -1,7 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { ILogin } from "@/model/Login";
 import { Student } from "@/model/IStudent";
-import { SimpleProject } from "@/model/SimpleProject";
 import { IProject } from "@/model/IProject";
 import { Image } from "@/model/IImage";
 
@@ -34,8 +33,8 @@ export class Communication {
     return response.data;
   }
 
-  async getStudentProjects(studentUuid: string): Promise<SimpleProject[]> {
-    const response = await this.axiosServer.get<SimpleProject[]>(
+  async getStudentProjects(studentUuid: string): Promise<IProject[]> {
+    const response = await this.axiosServer.get<IProject[]>(
       "/projects/users/" + studentUuid
     );
     return response.data;
@@ -121,6 +120,9 @@ export class Communication {
     project: { title: string; description: string }
   ): Promise<void> {
     await this.axiosServer.put("/my/projects/" + uuid, project);
+  }
+  async sendDeleteProject(uuid: string): Promise<void> {
+    await this.axiosServer.delete("/my/projects/" + uuid);
   }
 
   async sendImage(

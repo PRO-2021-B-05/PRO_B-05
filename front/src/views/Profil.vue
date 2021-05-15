@@ -58,7 +58,16 @@
             :descriptionDisplay="true"
             :modify="modify"
             v-else
-            :project="projects[id - 1]"
+            :project="{
+              userId: uuid,
+              firstname: projects[id - 1].firstname,
+              lastname: projects[id - 1].lastname,
+              title: projects[id - 1].title,
+              description: projects[id - 1].description,
+              publishAt: projects[id - 1].publishAt,
+              updateAt: projects[id - 1].updateAt,
+              uuid: projects[id - 1].uuid,
+            }"
           />
         </v-col>
       </v-row>
@@ -100,12 +109,11 @@ export default class Profil extends Vue {
         {
           id: 1,
           title: "description",
-          content: student.description,
+          content: student.description ? student.description : "",
         },
       ],
     };
   }
-
   public async getProjects(): Promise<void> {
     this.projectsLoading = true;
     this.projects = await this.$api.getStudentProjects(this.uuid);
