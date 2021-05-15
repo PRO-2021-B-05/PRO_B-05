@@ -156,12 +156,13 @@ export default class ProjectForm extends Vue {
     });
   }
 
-  public sendProject(): void {
+  public async sendProject(): Promise<void> {
     if (this.modify) {
-      this.modifyProject();
+      await this.modifyProject();
     } else {
-      this.createProject();
+      await this.createProject();
     }
+    window.location.href = `/project/${this.projectUuid}`;
   }
 
   private sendDeleteImagesToServer(projectUuid: string) {
