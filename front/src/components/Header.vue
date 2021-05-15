@@ -24,11 +24,15 @@
             <v-icon>mdi-account-outline</v-icon>
             Profil
           </v-btn>
+          <v-btn href="/" @click="disconnect" text>
+            <v-icon>mdi-logout</v-icon>
+            Log out
+          </v-btn>
         </span>
         <span v-else>
           <v-btn @click="overlay = !overlay" text>
             <v-icon>mdi-login</v-icon>
-            Login
+            Log in
           </v-btn>
         </span>
       </div>
@@ -48,7 +52,7 @@
           <v-list-item v-else @click="(overlay = !overlay), (drawer = false)">
             <v-list-item-title>
               <v-icon>mdi-login</v-icon>
-              Login
+              Log in
             </v-list-item-title>
           </v-list-item>
           <v-list-item
@@ -112,6 +116,14 @@ export default class Header extends Vue {
     if (this.connected) {
       this.profileUuid = (await this.$api.getMyProfile()).uuid;
     }
+  }
+  public async connect(): Promise<void> {
+    this.connected = true;
+    this.profileUuid = (await this.$api.getMyProfile()).uuid;
+  }
+  public disconnect(): void {
+    this.$api.clearToken();
+    this.connected = false;
   }
 }
 </script>
