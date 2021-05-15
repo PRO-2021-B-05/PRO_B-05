@@ -93,7 +93,11 @@
         <v-divider class="mb-6" />
         <v-row>
           <v-spacer />
-          <v-btn color="primary" outlined @click="sendProject">
+          <v-btn
+            color="primary"
+            outlined
+            @click="sendProject"
+          >
             <v-icon>mdi-folder-plus-outline</v-icon>
             {{ crudText }}
           </v-btn>
@@ -120,8 +124,8 @@ export default class ProjectForm extends Vue {
   @Prop({ default: false }) private modify!: boolean;
   @Prop({ default: "" }) private projectUuid!: string;
   private crudText: "Modify" | "Create" = "Modify";
-  private projectName?: string;
-  private projectDescription?: string;
+  private projectName = "";
+  private projectDescription = "";
   //ancien trucs images qui ne sont plus utilisés
   private tmpFiles: File[] = [];
   //
@@ -185,6 +189,7 @@ export default class ProjectForm extends Vue {
       description: this.projectDescription,
     });
     this.sendDeleteImagesToServer(createdProjectUUID);
+    this.projectUuid = createdProjectUUID;
   }
 
   private async modifyProject(): Promise<void> {
