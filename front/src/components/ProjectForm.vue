@@ -108,11 +108,6 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Image } from "@/model/IImage";
 
-interface ImageObj extends Image {
-  uuid?: string; // j'existe en db
-  file?: File; // dois etre ajouter
-}
-
 @Component({
   components: {},
 })
@@ -125,8 +120,8 @@ export default class ProjectForm extends Vue {
   //ancien trucs images qui ne sont plus utilisés
   private tmpFiles: File[] = [];
   //
-  private imagesToDelete: ImageObj[] = [];
-  private images: ImageObj[] = [];
+  private imagesToDelete: Image[] = [];
+  private images: Image[] = [];
 
   // ------------------------------ méthodes -----------------------------
   public load(imagesLoaded: File[]): void {
@@ -142,7 +137,7 @@ export default class ProjectForm extends Vue {
     this.tmpFiles = [];
   }
 
-  public deleteImage(image: ImageObj): void {
+  public deleteImage(image: Image): void {
     if (image.uuid) {
       this.imagesToDelete.push(image);
     }
@@ -158,27 +153,32 @@ export default class ProjectForm extends Vue {
 
   public async sendProject(): Promise<void> {
     if (this.modify) {
-      await this.modifyProject().then(
-        () => (window.location.href = `/project/${this.projectUuid}`)
-      );
+      await this.modifyProject();
     } else {
       await this.createProject().then(
         () => (window.location.href = `/project/${this.projectUuid}`)
       );
     }
+    await this.$router.push({
+      name: "Project",
+      params: {
+        uuid: this.projectUuid,
+      },
+    });
   }
 
   private async sendDeleteImagesToServer(projectUuid: string): Promise<void> {
-    this.imagesToDelete.forEach((image) => {
-      this.$api.deleteImage(projectUuid, image.uuid);
-    });
-    this.images.forEach((image) => {
-      if (!image.file) return;
-      this.$api.sendImage(projectUuid, {
+    console.log(this.images);
+    for (const image of this.imagesToDelete) {
+      await this.$api.deleteImage(projectUuid, image.uuid);
+    }
+    for (const image of this.images) {
+      if (!image.file) continue;
+      await this.$api.sendImage(projectUuid, {
         file: image.file,
         title: image.title ? image.title : "",
       });
-    });
+    }
   }
 
   private async createProject(): Promise<void> {

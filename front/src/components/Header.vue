@@ -15,18 +15,14 @@
         @click.stop="drawer = !drawer"
       ></v-app-bar-nav-icon>
       <div class="d-none d-lg-block">
-        <v-btn v-for="link in links" :key="link.id" :href="link.address" text>
+        <v-btn v-for="link in links" :key="link.id" :to="link.address" text>
           <v-icon>{{ link.icon }}</v-icon>
           {{ link.name }}
         </v-btn>
         <span v-if="connected">
-          <v-btn :href="`/profil/${profileUuid}`" text>
+          <v-btn :to="`/profil/${profileUuid}`" text>
             <v-icon>mdi-account-outline</v-icon>
             Profil
-          </v-btn>
-          <v-btn href="/" @click="disconnect" text>
-            <v-icon>mdi-logout</v-icon>
-            Log out
           </v-btn>
         </span>
         <span v-else>
@@ -43,7 +39,7 @@
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
-          <v-list-item v-if="connected" :href="`/profil/${profileUuid}`">
+          <v-list-item v-if="connected" :to="`/profil/${profileUuid}`">
             <v-list-item-title>
               <v-icon>mdi-account-outline</v-icon>
               Profil
@@ -58,14 +54,14 @@
           <v-list-item
             v-for="link in links"
             :key="link.id"
-            :href="link.address"
+            :to="link.address"
           >
             <v-list-item-title>
               <v-icon>{{ link.icon }}</v-icon>
               {{ link.name }}
             </v-list-item-title>
           </v-list-item>
-          <v-list-item v-if="connected" href="/" @click="disconnect">
+          <v-list-item v-if="connected" to="/" @click="disconnect">
             <v-list-item-title>
               <v-icon>mdi-logout</v-icon>
               Log out

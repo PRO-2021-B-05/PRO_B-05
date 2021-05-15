@@ -1,7 +1,7 @@
 <template>
   <v-card elevation="hover? 12 2" hover="hover">
-    <v-img height="250" :src="thumbnailURL" />
-    <v-card flat class="px-1 py-4" :href="`/project/${project.uuid}`">
+    <v-card flat class="px-0 py-0" :href="`/project/${project.uuid}`">
+      <v-img height="250" :src="thumbnailURL" />
       <v-card-title class="py-0 text--primary">
         {{ project.title }}
       </v-card-title>
@@ -59,10 +59,10 @@ export default class SmallProject extends Vue {
     }
   }
   public async deleteProject(): Promise<void> {
-    console.log(this.project);
-    await this.$api
-      .sendDeleteProject(this.project?.uuid)
-      .then(() => (window.location.href = `/profil/${this.project?.userId}`));
+    if (!this.project) return;
+    if (!this.project.userId) return;
+    await this.$api.sendDeleteProject(this.project.uuid);
+    this.$emit("delete");
   }
 }
 </script>

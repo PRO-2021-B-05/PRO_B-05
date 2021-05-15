@@ -54,6 +54,7 @@
             />
           </div>
           <SmallProject
+              @delete="getProjects"
             :authorDisplay="false"
             :descriptionDisplay="true"
             :modify="modify"
