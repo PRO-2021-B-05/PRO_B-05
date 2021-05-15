@@ -24,6 +24,10 @@
             <v-icon>mdi-account-outline</v-icon>
             Profil
           </v-btn>
+          <v-btn to="/" @click="disconnect" text>
+            <v-icon>mdi-logout</v-icon>
+            Log out
+          </v-btn>
         </span>
         <span v-else>
           <v-btn @click="overlay = !overlay" text>

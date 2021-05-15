@@ -5,7 +5,6 @@
       <v-card-title class="py-0 text--primary">
         {{ project.title }}
       </v-card-title>
-      <v-spacer />
       <v-btn
         :href="`/profil/${project.userId}`"
         small

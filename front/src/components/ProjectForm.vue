@@ -155,9 +155,7 @@ export default class ProjectForm extends Vue {
     if (this.modify) {
       await this.modifyProject();
     } else {
-      await this.createProject().then(
-        () => (window.location.href = `/project/${this.projectUuid}`)
-      );
+      await this.createProject();
     }
     await this.$router.push({
       name: "Project",
@@ -176,7 +174,7 @@ export default class ProjectForm extends Vue {
       if (!image.file) continue;
       await this.$api.sendImage(projectUuid, {
         file: image.file,
-        title: image.title ? image.title : "",
+        title: image.title ?? "",
       });
     }
   }

@@ -1,6 +1,7 @@
 export interface Image {
-  uuid: string;
+  uuid?: string;
+  file?: File;
   title?: string;
   url: string;
-  thumbnailUrl: string;
+  thumbnailUrl?: string;
 }
