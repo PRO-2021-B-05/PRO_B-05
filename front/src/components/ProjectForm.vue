@@ -93,11 +93,7 @@
         <v-divider class="mb-6" />
         <v-row>
           <v-spacer />
-          <v-btn
-            color="primary"
-            outlined
-            @click="sendProject"
-          >
+          <v-btn color="primary" outlined @click="sendProject">
             <v-icon>mdi-folder-plus-outline</v-icon>
             {{ crudText }}
           </v-btn>
@@ -162,14 +158,17 @@ export default class ProjectForm extends Vue {
 
   public async sendProject(): Promise<void> {
     if (this.modify) {
-      await this.modifyProject();
+      await this.modifyProject().then(
+        () => (window.location.href = `/project/${this.projectUuid}`)
+      );
     } else {
-      await this.createProject();
+      await this.createProject().then(
+        () => (window.location.href = `/project/${this.projectUuid}`)
+      );
     }
-    window.location.href = `/project/${this.projectUuid}`;
   }
 
-  private sendDeleteImagesToServer(projectUuid: string) {
+  private async sendDeleteImagesToServer(projectUuid: string): Promise<void> {
     this.imagesToDelete.forEach((image) => {
       this.$api.deleteImage(projectUuid, image.uuid);
     });
@@ -188,7 +187,7 @@ export default class ProjectForm extends Vue {
       title: this.projectName,
       description: this.projectDescription,
     });
-    this.sendDeleteImagesToServer(createdProjectUUID);
+    await this.sendDeleteImagesToServer(createdProjectUUID);
     this.projectUuid = createdProjectUUID;
   }
 
@@ -198,7 +197,7 @@ export default class ProjectForm extends Vue {
       description: this.projectDescription,
     });
     // send new
-    this.sendDeleteImagesToServer(this.projectUuid);
+    await this.sendDeleteImagesToServer(this.projectUuid);
   }
 
   public async mounted(): Promise<void> {

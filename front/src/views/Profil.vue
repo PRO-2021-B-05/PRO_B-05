@@ -56,6 +56,7 @@
           <SmallProject
             :authorDisplay="false"
             :descriptionDisplay="true"
+            :modify="modify"
             v-else
             :project="projects[id - 1]"
           />
@@ -74,7 +75,7 @@ import NavInfo from "@/components/NavInfo.vue";
 import SmallProject from "@/components/SmallProject.vue";
 import { Student } from "@/model/IStudent";
 import { INavInfo } from "@/model/INavInfo";
-import { SimpleProject } from "@/model/SimpleProject";
+import { IProject } from "@/model/IProject";
 
 @Component({
   components: {
@@ -84,12 +85,12 @@ import { SimpleProject } from "@/model/SimpleProject";
   },
 })
 export default class Profil extends Vue {
-  private modify = true;
+  private modify = false;
   private uuid?: string;
   private pageLimit = 12;
   private nbLoaded = this.pageLimit;
   private pageLoaded = 1;
-  private projects: SimpleProject[] = [];
+  private projects: IProject[] = [];
   private projectsLoading = true;
   public async getStudent(uuid: string): Promise<void> {
     const student: Student = await this.$api.getStudent(uuid);
@@ -114,6 +115,10 @@ export default class Profil extends Vue {
   public async mounted(): Promise<void> {
     //this.scroll();
     this.uuid = this.$route.params.uuid;
+    const myUuid = (await this.$api.getMyProfile()).uuid;
+    if (this.$route.params.uuid === myUuid) {
+      this.modify = true;
+    }
     await this.getProjects();
     await this.getStudent(this.uuid);
   }
@@ -122,4 +127,3 @@ export default class Profil extends Vue {
 }
 </script>
 
-<style scoped></style>
