@@ -165,6 +165,7 @@ export default class Admin extends Vue {
   private infos?: UserAPI = undefined;
   private overlay = false;
   private crudUser = "";
+  // --------------------- méthodes crud users ----------------------
   public createUser(): void {
     this.overlay = true;
     this.crudUser = "Create User";
