@@ -4,5 +4,5 @@ export interface Student {
   password?: string;
   firstname: string;
   lastname: string;
-  description: string | null;
+  description?: string;
 }

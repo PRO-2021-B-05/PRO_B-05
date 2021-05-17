@@ -145,7 +145,6 @@ import { Component, Vue } from "vue-property-decorator";
 import Header from "@/components/Header.vue";
 import Heading1 from "@/components/Heading1.vue";
 import CRUD_User from "@/components/CRUD_User.vue";
-import { UserAPI } from "@/model/IUserAPI";
 import { Student } from "@/model/IStudent";
 
 @Component({
@@ -162,7 +161,6 @@ export default class Admin extends Vue {
   };
   private crudAction: "modify" | "create" = "modify";
   private currentUser = this.blankUser;
-  private infos?: UserAPI = undefined;
   private overlay = false;
   private crudUser = "";
   // --------------------- méthodes crud users ----------------------
@@ -202,7 +200,10 @@ export default class Admin extends Vue {
   }
   public async getStudentsUuids(): Promise<void> {
     this.uuidsLoading = true;
-    this.uuids = await this.$api.getStudentsUuid();
+    this.uuids = await this.$api.getStudentsUuid(
+      this.itemsPerPage * (this.page - 1),
+      this.itemsPerPage
+    );
     this.uuidsLoading = false;
   }
   public async getStudents(): Promise<void> {

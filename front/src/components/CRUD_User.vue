@@ -40,7 +40,6 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Student } from "@/model/IStudent";
-import { AxiosError, AxiosResponse } from "axios";
 
 @Component({
   components: {},
@@ -48,7 +47,7 @@ import { AxiosError, AxiosResponse } from "axios";
 export default class CRUD_User extends Vue {
   private passwordConfirm = "";
   @Prop({ default: false }) private overlay!: boolean;
-  @Prop({ default: null }) private crudAction: "modify" | "create";
+  @Prop({ default: null }) private crudAction?: "modify" | "create";
   @Prop({ default: "Create User" }) private title!: string;
   @Prop({
     default: {
@@ -64,7 +63,7 @@ export default class CRUD_User extends Vue {
   public close(): void {
     this.$emit("close");
   }
-  public async confirm(): void {
+  public async confirm(): Promise<void> {
     try {
       if (this.crudAction != null) {
         switch (this.crudAction) {

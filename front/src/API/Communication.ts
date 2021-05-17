@@ -40,9 +40,13 @@ export class Communication {
     return response.data;
   }
 
-  async getStudentsUuid(): Promise<{ uuid: string }[]> {
+  async getStudentsUuid(
+    //todo : adapter car ça renvoie plus de trucs maintenant
+    offset: number,
+    limit: number
+  ): Promise<{ uuid: string }[]> {
     const response = await this.axiosServer.get<{ uuid: string }[]>(
-      "/students"
+      "/students?offset=" + offset + "&limit=" + limit
     );
     return response.data;
   }
