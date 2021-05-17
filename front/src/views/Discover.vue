@@ -28,7 +28,19 @@
           />
         </v-col>
       </v-row>
+      <v-row>
+        <v-divider class="my-6" />
+      </v-row>
+      <v-row> </v-row>
     </v-container>
+    <div class="text-center mb-6" v-if="numberOfPages > 1">
+      <v-pagination
+        @input="getProjects"
+        v-model="page"
+        :length="numberOfPages"
+        :total-visible="pageLimit"
+      ></v-pagination>
+    </div>
   </div>
 </template>
 
@@ -43,29 +55,23 @@ import { IProject } from "@/model/IProject";
   components: { Heading1, SmallProject, Header },
 })
 export default class Discover extends Vue {
-  private pageLimit = 12;
-  private nbLoaded = this.pageLimit;
-  private pageLoaded = 1;
+  private nProjects = 24;
+  private pageLimit = 7;
+  private numberOfPages = 10;
+  private page = 1;
   private projects: IProject[] = [];
   private projectsLoading = true;
-  scroll(): void {
-    window.onscroll = () => {
-      if (
-        window.innerHeight + window.pageYOffset >=
-        document.body.offsetHeight
-      ) {
-        if (this.nbLoaded < 200) {
-          this.nbLoaded += this.pageLimit;
-          this.pageLoaded += 1;
-          this.getProjects();
-        }
-      }
-    };
-  }
+  // méthodes
   public async getProjects(): Promise<void> {
     this.projectsLoading = true;
-    this.projects = await this.$api.getProjects();
+    this.projects = await this.$api.getProjects(
+      this.nProjects * (this.page - 1),
+      this.nProjects
+    );
     this.projectsLoading = false;
+    if (this.projects.length < 1) {
+      this.numberOfPages = this.page - 1;
+    }
   }
   public async mounted(): Promise<void> {
     //this.scroll();
