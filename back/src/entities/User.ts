@@ -1,4 +1,15 @@
-import {Ignore, MaxLength, Min, MinLength, Pattern, Property, ReadOnly, Required, WriteOnly} from '@tsed/schema';
+import {
+  Groups,
+  Ignore,
+  MaxLength,
+  Min,
+  MinLength,
+  Pattern,
+  Property,
+  ReadOnly,
+  Required,
+  WriteOnly
+} from '@tsed/schema';
 import bcrypt from 'bcrypt';
 import {
   Column,
@@ -28,10 +39,12 @@ export class User {
 
   @Column()
   @Required()
+  @Groups("test")
   firstname: string;
 
   @Column()
   @Required()
+  @Groups("test")
   lastname: string;
 
   @Column()

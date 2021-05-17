@@ -1,12 +1,13 @@
 import { User } from "./User";
 import { ChildEntity, Column, Entity, OneToMany } from "typeorm";
 import { Project } from "./Project";
-import { Nullable } from "@tsed/schema";
+import {Groups, Nullable, RequiredGroups} from "@tsed/schema";
 
 @ChildEntity()
 export class Student extends User {
     @Column({type : "text"})
-    @Nullable()
+    @Nullable(String)
+    @Groups("updateStudent")
     description?: string;
 
     @OneToMany(() => Project, project => project.student)
