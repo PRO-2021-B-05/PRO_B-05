@@ -32,63 +32,6 @@ export class MyProjectController {
     private projectRepository = getRepository(Project);
     private imageRepository = getRepository(Image);
 
-    @Get('/')
-    async listUser(
-        @Req() req: Request,
-        @QueryParams("offset") offset: number,
-        @QueryParams("limit") limit: number,
-    ) {
-        const student = req.user as Student;
-
-        if (!student) {
-            throw new NotFound("Could not find requested user");
-        }
-
-        const projects = await this.projectRepository.find({
-            where: { student },
-            order: { publishAt: "ASC" },
-            relations: ["images"],
-            skip: offset,
-            take: limit,
-        });
-        return Promise.all(projects.map(async (project) => {
-            const { uuid, title, description, publishAt, updateAt } = project;
-            const images = await this.imageRepository.find({
-                where: { project },
-                relations: ["project"],
-            });
-
-            return {
-                uuid,
-                title,
-                description,
-                publishAt,
-                updateAt,
-                thumbnailUrl: images[0]?.thumbnailUrl ?? "",
-            };
-        }));
-    }
-
-
-    @Get("/:uuid")
-    async get(@PathParams("uuid") uuid: string,
-              @Req() req: Request
-    ) {
-        const student = req.user as Student;
-        const project = await this.projectRepository.findOne({uuid, student});
-
-        if (!project) {
-            throw new NotFound("Could not find requested project");
-        }
-
-        return {
-            title: project.title,
-            description: project.description,
-            publishAt: project.publishAt,
-            updateAt: project.updateAt,
-        };
-    }
-
     @Post('/')
     @Status(201)
     async post(
