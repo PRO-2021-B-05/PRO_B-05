@@ -4,6 +4,8 @@ import {User} from "../../entities/User";
 import {NotFound} from "@tsed/exceptions";
 import {Student} from "../../entities/Student";
 import {Status} from "@tsed/schema";
+import {Authenticate} from "@tsed/passport";
+import {OnlyAdmin} from "../../decorators/OnlyAdmin";
 
 @Controller('/students')
 export class StudentController {
@@ -39,6 +41,8 @@ export class StudentController {
     }
 
     @Put('/:uuid')
+    @Authenticate()
+    @OnlyAdmin()
     @Status(204)
     async put(@PathParams("uuid") uuid: string, @BodyParams(Student) student: Student) {
         const existingStudent = await this.studentRepository.findOne({ uuid });
@@ -56,6 +60,8 @@ export class StudentController {
     }
 
     @Delete('/:uuid')
+    @Authenticate()
+    @OnlyAdmin()
     @Status(200)
     async delete(@PathParams("uuid") uuid: string) {
         const existingEvent = await this.studentRepository.findOne({ uuid });

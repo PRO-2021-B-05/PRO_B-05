@@ -9,6 +9,7 @@ import {Admin} from "../../../entities/Admin";
 import {Student} from "../../../entities/Student";
 import {User} from "../../../entities/User";
 import {UserRegister} from "../../../entities/UserRegister";
+import {OnlyAdmin} from "../../../decorators/OnlyAdmin";
 
 @Controller('/auth')
 export class AuthController {
@@ -47,6 +48,8 @@ export class AuthController {
   }
 
   @Post('/register2')
+  @Authenticate()
+  @OnlyAdmin()
   async registerStudent(@BodyParams(UserRegister) user: UserRegister) {
     const student = new Student();
     student.username = user.username;
