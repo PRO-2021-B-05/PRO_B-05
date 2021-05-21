@@ -52,12 +52,13 @@ export default class SmallProject extends Vue {
   @Prop({ default: false }) private modify!: boolean;
   private thumbnailURL? = "";
   public async updateImages(): Promise<void> {
-    const images = await this.$api.getProjectImages(this.project?.uuid);
+    this.thumbnailURL = this.project?.thumbnailUrl;
+    /*const images = await this.$api.getProjectImages(this.project?.uuid);
     if (images.length) {
       this.thumbnailURL = images[0].thumbnailUrl;
     } else {
       this.thumbnailURL = "";
-    }
+    }*/
   }
   public async beforeUpdate(): Promise<void> {
     await this.updateImages();
