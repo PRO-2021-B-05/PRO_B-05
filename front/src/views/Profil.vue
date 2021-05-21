@@ -119,7 +119,10 @@ export default class Profil extends Vue {
   }
   public async mounted(): Promise<void> {
     this.uuid = this.$route.params.uuid;
-    const myUuid = (await this.$api.getMyProfile()).uuid;
+    let myUuid = "";
+    if (await this.$api.isConnected()) {
+      myUuid = (await this.$api.getMyProfile()).uuid;
+    }
     if (this.$route.params.uuid === myUuid) {
       this.modify = true;
     }
