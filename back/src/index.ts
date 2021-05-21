@@ -3,7 +3,6 @@ import {PlatformExpress} from '@tsed/platform-express';
 
 import {Server} from './Server';
 
-
 async function bootstrap() {
   try {
     $log.debug('Start server...');
