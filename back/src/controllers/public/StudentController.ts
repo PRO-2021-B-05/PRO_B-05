@@ -1,11 +1,12 @@
 import {BodyParams, Controller, Delete, Get, PathParams, Put, QueryParams, Req, Request} from "@tsed/common";
 import {getRepository} from "typeorm";
-import {User} from "../../entities/User";
 import {NotFound} from "@tsed/exceptions";
 import {Student} from "../../entities/Student";
 import {Groups, Returns, Status} from "@tsed/schema";
 import {Authenticate} from "@tsed/passport";
 import {OnlyAdmin} from "../../decorators/OnlyAdmin";
+import bcrypt from "bcrypt";
+import {deserialize} from "@tsed/json-mapper";
 
 @Controller('/students')
 export class StudentController {
@@ -21,12 +22,12 @@ export class StudentController {
             take: limit,
         });
 
-        return users.map(({ uuid, firstname, lastname }) => ({ uuid, firstname, lastname }));
+        return users.map(({uuid, firstname, lastname}) => ({uuid, firstname, lastname}));
     }
 
     @Get("/:uuid")
     async get(@PathParams("uuid") uuid: string) {
-        const student = await this.studentRepository.findOne({ uuid });
+        const student = await this.studentRepository.findOne({uuid});
 
         if (!student) {
             throw new NotFound("Could not find requested student");
@@ -62,11 +63,11 @@ export class StudentController {
     @OnlyAdmin()
     @Status(200)
     async delete(@PathParams("uuid") uuid: string) {
-        const existingEvent = await this.studentRepository.findOne({ uuid });
+        const existingEvent = await this.studentRepository.findOne({uuid});
         if (!existingEvent) {
             throw new NotFound("Could not find requested student");
         }
 
-        await this.studentRepository.delete({ uuid });
+        await this.studentRepository.delete({uuid});
     }
 }

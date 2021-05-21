@@ -7,7 +7,7 @@ import {Groups, Nullable, RequiredGroups} from "@tsed/schema";
 export class Student extends User {
     @Column({type : "text"})
     @Nullable(String)
-    @Groups("updateStudent")
+    @Groups("update", "show","register")
     description?: string;
 
     @OneToMany(() => Project, project => project.student)

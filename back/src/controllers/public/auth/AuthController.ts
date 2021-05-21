@@ -10,32 +10,36 @@ import {Student} from "../../../entities/Student";
 import {User} from "../../../entities/User";
 import {UserRegister} from "../../../entities/UserRegister";
 import {OnlyAdmin} from "../../../decorators/OnlyAdmin";
+import {Groups, Returns} from "@tsed/schema";
+import {deserialize} from "@tsed/json-mapper";
 
 @Controller('/auth')
 export class AuthController {
-  private adminRepository = getRepository(Admin);
-  private studentRepository = getRepository(Student);
-  private userRepository = getRepository(User);
+    private adminRepository = getRepository(Admin);
+    private studentRepository = getRepository(Student);
+    private userRepository = getRepository(User);
 
-  @Post('/login')
-  async login(
-    @BodyParams('username') username: string,
-    @BodyParams('password') password: string
-  ) {
-    const user = await this.userRepository.findOne({username});
-    if (!user || !(await user.verifyPassword(password))) {
-      throw new Unauthorized('Wrong credentials');
+    @Post('/login')
+    async login(
+        @BodyParams('username') username: string,
+        @BodyParams('password') password: string
+    ) {
+        const user = await this.userRepository.findOne({username});
+        if (!user || !(await user.verifyPassword(password))) {
+            throw new Unauthorized('Wrong credentials');
+        }
+        const secret = process.env.JWT_SECRET;
+        if(!secret) throw new Error("Need JWT secret");
+        const token = jwt.sign(
+            {
+                uuid: user.uuid,
+                type: user.type
+            },
+            secret,
+            {expiresIn: '1d'}
+        );
+        return {type: user.type, token};
     }
-    const token = jwt.sign(
-      {
-        uuid: user.uuid,
-        type: user.type
-      },
-      'secret',
-      {expiresIn: '1d'}
-    );
-    return {type : user.type, token};
-  }
 
     @Post('/registerAdmin')
     @Authenticate()

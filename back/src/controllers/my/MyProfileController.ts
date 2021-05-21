@@ -4,6 +4,7 @@ import {Student} from "../../entities/Student";
 import {NotFound} from "@tsed/exceptions";
 import {Groups, RequiredGroups, Returns, string} from "@tsed/schema";
 import {getRepository} from "typeorm";
+import {deserialize} from "@tsed/json-mapper";
 
 @Controller('/profile')
 @Authenticate()
@@ -12,21 +13,26 @@ export class MyProfileController {
     private studentRepository = getRepository(Student);
 
     @Get('/')
+    @Returns(200, Student).Groups("show")
     async profile(@Req() req: Request) {
-        return req.user;
+        const student = await this.studentRepository.findOne({uuid: (req.user as Student).uuid});
+        if (!student) {
+            throw new NotFound("Could not find requested student");
+        }
+        return deserialize(student, {type: Student, groups: ['show']});
     }
 
     @Put('/')
-    @Returns(200, Student).Groups("updateStudent")
-    async put(@Req() req: Request,  @BodyParams(Student) @Groups("updateStudent") student: Partial<Student>) {
+    @Returns(200, Student).Groups("show")
+    async put(@Req() req: Request, @BodyParams(Student) @Groups("update") student: Partial<Student>) {
 
-       const existingStudent = req.user as Student;
+        const existingStudent = req.user as Student;
         if (!existingStudent) {
             throw new NotFound("Could not find requested student");
         }
 
-        await this.studentRepository.update({ uuid:existingStudent.uuid }, student);
-        return await this.studentRepository.findOne({ uuid:existingStudent.uuid });
+        await this.studentRepository.update({uuid: existingStudent.uuid}, student);
+        return deserialize(await this.studentRepository.findOne({uuid: existingStudent.uuid}), {type: Student, groups: ['show']});
     }
 
 }

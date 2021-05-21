@@ -12,7 +12,7 @@ import {Student} from "../entities/Student";
   useStrategy: Strategy,
   settings: {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: 'secret',
+    secretOrKey: process.env.JWT_SECRET,
     ignoreExpiration: false,
   },
 })
