@@ -1,9 +1,9 @@
-import {BodyParams, Controller, Delete, Get, PathParams, Put, QueryParams} from "@tsed/common";
+import {BodyParams, Controller, Delete, Get, PathParams, Put, QueryParams, Req, Request} from "@tsed/common";
 import {getRepository} from "typeorm";
 import {User} from "../../entities/User";
 import {NotFound} from "@tsed/exceptions";
 import {Student} from "../../entities/Student";
-import {Status} from "@tsed/schema";
+import {Groups, Returns, Status} from "@tsed/schema";
 import {Authenticate} from "@tsed/passport";
 import {OnlyAdmin} from "../../decorators/OnlyAdmin";
 
@@ -43,20 +43,18 @@ export class StudentController {
     @Put('/:uuid')
     @Authenticate()
     @OnlyAdmin()
-    @Status(204)
-    async put(@PathParams("uuid") uuid: string, @BodyParams(Student) student: Student) {
-        const existingStudent = await this.studentRepository.findOne({ uuid });
+    @Returns(200, Student).Groups("show")
+    async put(@PathParams("uuid") uuid: string, @BodyParams(Student) @Groups("update", "admin") student: Partial<Student>) {
+        const existingStudent = await this.studentRepository.findOne({uuid});
         if (!existingStudent) {
             throw new NotFound("Could not find requested student");
         }
+        if (student.password)
+            student.password = await bcrypt.hash(student.password, 10);
 
-        await this.studentRepository.update({ uuid }, {
-            username: student.username,
-            password: student.password,
-            firstname: student.firstname,
-            lastname: student.lastname,
-            description: student.description
-        });
+        await this.studentRepository.update({uuid: existingStudent.uuid}, student);
+
+        return deserialize(await this.studentRepository.findOne({uuid: existingStudent.uuid}), {type: Student, groups: ['show']});
     }
 
     @Delete('/:uuid')
