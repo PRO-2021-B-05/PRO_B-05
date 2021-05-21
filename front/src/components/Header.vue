@@ -73,7 +73,7 @@
               {{ link.name }}
             </v-list-item-title>
           </v-list-item>
-          <v-list-item v-if="studentConnected || adminConnected" to="/" @click="disconnect">
+          <v-list-item v-if="studentConnected || adminConnected" @click="disconnect">
             <v-list-item-title>
               <v-icon>mdi-logout</v-icon>
               Log out
