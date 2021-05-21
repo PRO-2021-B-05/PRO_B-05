@@ -44,19 +44,19 @@ export class AuthController {
     @Post('/registerAdmin')
     @Authenticate()
     @OnlyAdmin()
-    @Returns(201, Admin).Groups("show")
-    async registerAdmin(@BodyParams(Admin) @Groups("register") admin: Partial<Admin>) {
+    @Returns(201, Admin).Groups("user.show")
+    async registerAdmin(@BodyParams(Admin) @Groups("user.register") admin: Partial<Admin>) {
         admin.password = await bcrypt.hash(admin.password, 10);
-        return deserialize(await this.adminRepository.save(admin), {type: Admin, groups: ['show']});
+        return deserialize(await this.adminRepository.save(admin), {type: Admin, groups: ['user.show']});
     }
 
     @Post('/registerStudent')
     @Authenticate()
     @OnlyAdmin()
-    @Returns(201, Student).Groups("show")
-    async registerStudent(@BodyParams(Student) @Groups("register") student: Partial<Student>) {
+    @Returns(201, Student).Groups("user.show")
+    async registerStudent(@BodyParams(Student) @Groups("user.register") student: Partial<Student>) {
         student.password = await bcrypt.hash(student.password, 10);
-        return deserialize(await this.studentRepository.save(student), {type: Student, groups: ['show']});
+        return deserialize(await this.studentRepository.save(student), {type: Student, groups: ['user.show']});
     }
 
 }
