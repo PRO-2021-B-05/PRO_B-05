@@ -91,6 +91,13 @@
           </v-col>
         </v-row>
         <v-divider class="mb-6" />
+        <v-row class="mb-2">
+          <v-spacer />
+          <div class="subtitle-1 red--text" v-if="error">
+            Error : Title, description or image files are missing.
+          </div>
+          <v-spacer />
+        </v-row>
         <v-row>
           <v-spacer />
           <v-btn color="primary" outlined @click="sendProject">
@@ -122,6 +129,7 @@ export default class ProjectForm extends Vue {
   //
   private imagesToDelete: Image[] = [];
   private images: Image[] = [];
+  private error = false;
 
   // ------------------------------ méthodes -----------------------------
   public load(imagesLoaded: File[]): void {
@@ -152,17 +160,25 @@ export default class ProjectForm extends Vue {
   }
 
   public async sendProject(): Promise<void> {
-    if (this.modify) {
-      await this.modifyProject();
+    if (
+      this.projectDescription != "" &&
+      this.projectName != "" &&
+      this.images.length > 0
+    ) {
+      if (this.modify) {
+        await this.modifyProject();
+      } else {
+        await this.createProject();
+      }
+      await this.$router.push({
+        name: "Project",
+        params: {
+          uuid: this.projectUuid,
+        },
+      });
     } else {
-      await this.createProject();
+      this.error = true;
     }
-    await this.$router.push({
-      name: "Project",
-      params: {
-        uuid: this.projectUuid,
-      },
-    });
   }
 
   private async sendDeleteImagesToServer(projectUuid: string): Promise<void> {
