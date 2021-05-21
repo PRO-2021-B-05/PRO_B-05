@@ -8,22 +8,27 @@ import { User } from "./User";
 @Entity()
 export class Project {
     @PrimaryGeneratedColumn('uuid')
+    @Groups('project.show', 'project.showAll')
     uuid: string;
 
     @Column()
     @Required()
+    @Groups('project.show', 'project.showAll')
     title: string;
 
     @Column({type : "text"})
     @Required()
+    @Groups('project.show', 'project.showAll')
     description: string;
 
     @Column()
     @CreateDateColumn()
+    @Groups('project.show', 'project.showAll')
     publishAt: Date;
 
     @Column()
     @UpdateDateColumn()
+    @Groups('project.show', 'project.showAll')
     updateAt: Date;
 
     @ManyToOne(() => Student, student => student.projects, {

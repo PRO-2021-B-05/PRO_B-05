@@ -1,6 +1,6 @@
-import { Nullable, Property } from "@tsed/schema";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Project } from "./Project";
+import {Groups, Nullable, Property, ReadOnly} from "@tsed/schema";
+import {Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Project} from "./Project";
 
 @Entity()
 export class Image {
@@ -18,6 +18,9 @@ export class Image {
     @Property()
     get url() {
         return `https://s3.studimax.ch/start/${this.project.uuid}/${this.uuid}/original`;
+    }
+
+    set url(value: string) {
     }
 
     @Property()
