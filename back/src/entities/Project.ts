@@ -1,4 +1,11 @@
-import {Groups, Property, ReadOnly, Required} from '@tsed/schema';
+import {
+  Groups,
+  MinLength,
+  Property,
+  ReadOnly,
+  Required,
+  RequiredGroups,
+} from '@tsed/schema';
 import {
   Column,
   CreateDateColumn,
@@ -22,14 +29,18 @@ export class Project {
 
   @Property()
   @Column()
+  @RequiredGroups('project.create')
   @Required()
-  @Groups('project.show', 'project.showAll')
+  @MinLength(5)
+  @Groups('project.show', 'project.showAll', 'project.create', 'project.update')
   title: string;
 
   @Property()
   @Column({type: 'text'})
+  @RequiredGroups('project.create')
   @Required()
-  @Groups('project.show', 'project.showAll')
+  @MinLength(5)
+  @Groups('project.show', 'project.showAll', 'project.create', 'project.update')
   description: string;
 
   @Property()

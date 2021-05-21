@@ -62,7 +62,7 @@ export class StudentController {
     @PathParams('uuid') uuid: string,
     @BodyParams(Student)
     @Groups('user.update', 'user.admin')
-    student: Partial<Student>
+    student: Student
   ) {
     const existingStudent = await this.studentRepository.findOne({uuid});
     if (!existingStudent) {

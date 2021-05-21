@@ -142,7 +142,7 @@ export class ImageController {
   async put(
     @PathParams('projectId') projectId: string,
     @PathParams('uuid') uuid: string,
-    @BodyParams(Image) @Groups('image.update') image: Partial<Image>
+    @BodyParams(Image) @Groups('image.update') image: Image
   ) {
     const project = await this.projectRepository.findOne({uuid: projectId});
 

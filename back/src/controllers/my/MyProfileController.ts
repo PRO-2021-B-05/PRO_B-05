@@ -28,7 +28,7 @@ export class MyProfileController {
   @(Returns(200, Student).Groups('user.show'))
   async put(
     @Req() req: Request,
-    @BodyParams(Student) @Groups('user.update') student: Partial<Student>
+    @BodyParams(Student) @Groups('user.update') student: Student
   ) {
     const existingStudent = req.user as Student;
     if (!existingStudent) {

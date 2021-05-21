@@ -15,7 +15,7 @@ import {
 import {Inject} from '@tsed/di';
 import {NotFound} from '@tsed/exceptions';
 import {Authenticate} from '@tsed/passport';
-import {Status} from '@tsed/schema';
+import {Groups, Returns, Status} from '@tsed/schema';
 import Jimp from 'jimp';
 import {getRepository} from 'typeorm';
 
@@ -32,17 +32,16 @@ export class MyProjectController {
   private imageRepository = getRepository(Image);
 
   @Post('/')
-  @Status(201)
+  @Returns(201, String)
   async post(
-    @BodyParams(Project) project: Project,
     @Context() ctx: Context,
-    @Req() req: Request
+    @Req() req: Request,
+    @BodyParams(Project) @Groups('project.create') project: Project
   ) {
     const student = req.user as Student;
 
     const createdProject = await this.projectRepository.save({
-      title: project.title,
-      description: project.description,
+      ...project,
       student,
     });
 
@@ -52,10 +51,10 @@ export class MyProjectController {
   }
 
   @Put('/:uuid')
-  @Status(204)
+  @(Returns(204, Project).Groups('project.show', 'user.show', 'image.show'))
   async put(
     @PathParams('uuid') uuid: string,
-    @BodyParams(Project) project: Project,
+    @BodyParams(Project) @Groups('project.update') project: Project,
     @Req() req: Request
   ) {
     const student = req.user as Student;
@@ -67,13 +66,11 @@ export class MyProjectController {
       throw new NotFound('Could not find requested project');
     }
 
-    await this.projectRepository.update(
-      {uuid},
-      {
-        title: project.title,
-        description: project.description,
-      }
-    );
+    await this.projectRepository.update({uuid}, project);
+    return this.projectRepository.findOne({
+      where: {uuid},
+      relations: ['student', 'images', 'event', 'images.project'],
+    });
   }
 
   @Delete('/:uuid')
