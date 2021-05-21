@@ -36,9 +36,14 @@ export class Communication {
     projectUuid: string,
     offset: number,
     limit: number
-  ): Promise<Image[]> {
-    const response = await this.axiosServer.get<Image[]>(
-      "/projects/" + projectUuid + "/images?offset=" + offset + "&limit=" + limit
+  ): Promise<Pagination<Image>> {
+    const response = await this.axiosServer.get<Pagination<Image>>(
+      "/projects/" +
+        projectUuid +
+        "/images?offset=" +
+        offset +
+        "&limit=" +
+        limit
     );
     return response.data;
   }
