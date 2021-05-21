@@ -28,48 +28,48 @@ import {
 export class User {
     @PrimaryGeneratedColumn('uuid')
     @ReadOnly()
-    @Groups("show")
+    @Groups("user.show")
     uuid: string;
 
     @Column()
     @Pattern(/^[a-zA-Z0-9_-]{3,15}$/)
     @MinLength(3)
     @MaxLength(15)
-    @RequiredGroups("register")
+    @RequiredGroups("user.register")
     @Required()
-    @Groups("show", "register")
+    @Groups("user.show", "user.register")
     username: string;
 
     @Column()
-    @RequiredGroups("register")
+    @RequiredGroups("user.register")
     @Required()
-    @Groups("admin", "register")
+    @Groups("user.admin", "user.register")
     @MinLength(8)
     password: string;
 
     @Column()
-    @RequiredGroups("register")
+    @RequiredGroups("user.register")
     @Required()
-    @Groups("show", "update", "register")
+    @Groups("user.show", "user.update", "user.register")
     firstname: string;
 
     @Column()
-    @RequiredGroups("register")
+    @RequiredGroups("user.register")
     @Required()
-    @Groups("show", "update", "register")
+    @Groups("user.show", "user.update", "user.register")
     lastname: string;
 
     @Column()
     @CreateDateColumn()
     @ReadOnly()
-    @Groups("show")
+    @Groups("user.show")
     @DateTime()
     createAt: Date
 
     @Column()
     @UpdateDateColumn()
     @ReadOnly()
-    @Groups("show")
+    @Groups("user.show")
     @DateTime()
     updateAt: Date;
 
