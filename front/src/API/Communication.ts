@@ -32,9 +32,13 @@ export class Communication {
     return response.data;
   }
 
-  async getProjectImages(projectUuid: string): Promise<Image[]> {
+  async getProjectImages(
+    projectUuid: string,
+    offset: number,
+    limit: number
+  ): Promise<Image[]> {
     const response = await this.axiosServer.get<Image[]>(
-      "/projects/" + projectUuid + "/images"
+      "/projects/" + projectUuid + "/images?offset=" + offset + "&limit=" + limit
     );
     return response.data;
   }
