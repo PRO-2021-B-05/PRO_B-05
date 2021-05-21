@@ -68,7 +68,7 @@ export class Communication {
   async getMyProfile(): Promise<Student> {
     const response = await this.axiosServer.get<Student>("/my/profile/");
     return {
-      uuid: response.data.uuid, //"b081f3ca-ef85-4c09-8bec-c94ce7e101a8", // TODO supprimer
+      uuid: "b081f3ca-ef85-4c09-8bec-c94ce7e101a8", // TODO supprimer
       username: response.data.username,
       password: "",
       firstname: response.data.firstname,

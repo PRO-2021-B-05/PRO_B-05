@@ -54,7 +54,7 @@
             />
           </div>
           <SmallProject
-              @delete="getProjects"
+            @delete="getProjects"
             :authorDisplay="false"
             :descriptionDisplay="true"
             :modify="modify"
@@ -73,7 +73,6 @@
         </v-col>
       </v-row>
     </v-container>
-
     <NavInfo v-if="authorInfo" :info="authorInfo" />
   </div>
 </template>
@@ -98,9 +97,6 @@ import { IProject } from "@/model/IProject";
 export default class Profil extends Vue {
   private modify = false;
   private uuid?: string;
-  private pageLimit = 12;
-  private nbLoaded = this.pageLimit;
-  private pageLoaded = 1;
   private projects: IProject[] = [];
   private projectsLoading = true;
   public async getStudent(uuid: string): Promise<void> {
@@ -136,4 +132,3 @@ export default class Profil extends Vue {
   private authorInfo: INavInfo | null = null;
 }
 </script>
-
