@@ -27,7 +27,6 @@ export class Project {
   @Groups('project.show', 'project.showAll')
   uuid: string;
 
-  @Property()
   @Column()
   @RequiredGroups('project.create')
   @Required()
@@ -35,7 +34,6 @@ export class Project {
   @Groups('project.show', 'project.showAll', 'project.create', 'project.update')
   title: string;
 
-  @Property()
   @Column({type: 'text'})
   @RequiredGroups('project.create')
   @Required()
