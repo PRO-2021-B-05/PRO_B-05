@@ -10,7 +10,7 @@ export class Communication {
 
   constructor() {
     this.axiosServer = axios.create({
-      baseURL: "http://localhost:8083/api/v1", // TODO
+      baseURL: "http://localhost:8083/api/v1",
     });
     this.setToken(localStorage.getItem("token") ?? "");
   }
@@ -75,6 +75,7 @@ export class Communication {
       lastname: response.data.lastname,
       description: response.data.description,
     };
+    return response.data;
   }
 
   async deleteStudent(uuid: string): Promise<void> {
@@ -178,6 +179,16 @@ export class Communication {
   }
 
   public async isAdmin(): Promise<boolean> {
-    return true; //TODO modifier avec la bonne requête
+    let admin = false;
+    await this.axiosServer
+      .get("/admin/")
+      .then(() => {
+        admin = true;
+        console.log(admin);
+      })
+      .catch(() => {
+        admin = false;
+      });
+    return admin;
   }
 }

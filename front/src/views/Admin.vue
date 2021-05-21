@@ -1,6 +1,6 @@
 <template>
   <div class="Admin">
-    <v-container>
+    <v-container v-if="admin">
       <heading1> Admin </heading1>
       <v-breadcrumbs light />
       <v-container>
@@ -151,6 +151,7 @@ export default class Admin extends Vue {
     lastname: "",
     description: "",
   };
+  private admin = false;
   private crudAction: "modify" | "create" = "modify";
   private currentUser = this.blankUser;
   private overlay = false;
@@ -176,7 +177,7 @@ export default class Admin extends Vue {
   private search = "";
   private sortDesc = false;
   private page = 1;
-  private itemsPerPage = 90;
+  private itemsPerPage = 30;
   private sortBy = "id";
   public get filteredKeys(): string[] {
     return this.keys.filter((key) => key !== "name");
@@ -210,9 +211,12 @@ export default class Admin extends Vue {
   }
   public async deleteStudent(uuid: string): Promise<void> {
     await this.$api.deleteStudent(uuid);
+    this.$router.go(0);
   }
   public async mounted(): Promise<void> {
-    if (!(await this.$api.isAdmin())) {
+    this.admin = await this.$api.isAdmin();
+    console.log("mounted " + this.admin);
+    if (!this.admin) {
       await this.$router.push({
         name: "ErrorPage",
       });
