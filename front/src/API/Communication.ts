@@ -75,7 +75,6 @@ export class Communication {
       lastname: response.data.lastname,
       description: response.data.description,
     };
-    return response.data;
   }
 
   async deleteStudent(uuid: string): Promise<void> {
