@@ -8,12 +8,24 @@ import {MulterError} from "multer";
 import {OnlyAdmin} from "../../decorators/OnlyAdmin";
 import {Authenticate} from "@tsed/passport";
 import {Admin} from "../../entities/Admin";
+import {getRepository} from "typeorm";
+import {Student} from "../../entities/Student";
+import {Pagination} from "../../entities/Pagination";
+import {Returns} from "@tsed/schema";
 
 @Controller('/test')
 export class TestController {
   @Inject()
   s3: SMS3StorageService;
 
+  @Get('/pageStudents')
+  @Returns(200, Pagination).Of(Student)
+  async pageStudent(){
+    const repository = getRepository(Student);
+    const results = await repository.find({skip: 0, take: 5});
+    const total = await repository.count();
+    return new Pagination<Student>({results, total,offset : 0, limit : 5});
+  }
   @Get('/adminTest')
   @Authenticate()
   @OnlyAdmin()

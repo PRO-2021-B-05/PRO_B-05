@@ -20,7 +20,7 @@ export class ProjectController {
         @QueryParams("limit") limit: number,
     ) {
         const projects = await this.projectRepository.find({
-            order: { publishAt: "ASC" },
+            order: { publishAt: "DESC" },
             relations: ["student"],
             skip: offset,
             take: limit,
@@ -61,7 +61,7 @@ export class ProjectController {
 
         const projects = await this.projectRepository.find({
             where: { student },
-            order: { publishAt: "ASC" },
+            order: { publishAt: "DESC" },
             relations: ["images"],
             skip: offset,
             take: limit,
