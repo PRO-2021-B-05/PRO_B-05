@@ -26,7 +26,9 @@ export class Project {
     @UpdateDateColumn()
     updateAt: Date;
 
-    @ManyToOne(() => Student, student => student.projects)
+    @ManyToOne(() => Student, student => student.projects, {
+        onDelete: 'CASCADE',
+    })
     student: Student;
 
     @ManyToOne(() => Event, event => event.projects)

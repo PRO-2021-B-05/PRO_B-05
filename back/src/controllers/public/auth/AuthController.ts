@@ -1,5 +1,5 @@
 import {BodyParams, Controller, Get, Post, Req, UseAuth} from '@tsed/common';
-import {Unauthorized} from '@tsed/exceptions';
+import {Exception, Unauthorized} from '@tsed/exceptions';
 import {Authenticate, Authorize} from '@tsed/passport';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -9,59 +9,54 @@ import {Admin} from "../../../entities/Admin";
 import {Student} from "../../../entities/Student";
 import {User} from "../../../entities/User";
 import {UserRegister} from "../../../entities/UserRegister";
+import {OnlyAdmin} from "../../../decorators/OnlyAdmin";
+import {Groups, Returns} from "@tsed/schema";
+import {deserialize} from "@tsed/json-mapper";
 
 @Controller('/auth')
 export class AuthController {
-  private adminRepository = getRepository(Admin);
-  private studentRepository = getRepository(Student);
-  private userRepository = getRepository(User);
+    private adminRepository = getRepository(Admin);
+    private studentRepository = getRepository(Student);
+    private userRepository = getRepository(User);
 
-  @Post('/login')
-  async login(
-    @BodyParams('username') username: string,
-    @BodyParams('password') password: string
-  ) {
-    const user = await this.userRepository.findOne({username});
-    if (!user || !(await user.verifyPassword(password))) {
-      throw new Unauthorized('Wrong credentials');
+    @Post('/login')
+    async login(
+        @BodyParams('username') username: string,
+        @BodyParams('password') password: string
+    ) {
+        const user = await this.userRepository.findOne({username});
+        if (!user || !(await user.verifyPassword(password))) {
+            throw new Unauthorized('Wrong credentials');
+        }
+        const secret = process.env.JWT_SECRET;
+        if(!secret) throw new Error("Need JWT secret");
+        const token = jwt.sign(
+            {
+                uuid: user.uuid,
+                type: user.type
+            },
+            secret,
+            {expiresIn: '1d'}
+        );
+        return {type: user.type, token};
     }
-    const token = jwt.sign(
-      {
-        uuid: user.uuid,
-        type: user.type
-      },
-      'secret',
-      {expiresIn: '1d'}
-    );
-    return {type : user.type, token};
-  }
 
-  @Post('/register')
-  async registerAdmin(@BodyParams(UserRegister) user: UserRegister) {
-    const admin = new Admin();
-    admin.username = user.username;
-    admin.password = await bcrypt.hash(user.password, 10);
-    admin.firstname = user.firstname;
-    admin.lastname = user.lastname;
-    return this.adminRepository.save(admin);
-  }
+    @Post('/registerAdmin')
+    @Authenticate()
+    @OnlyAdmin()
+    @Returns(201, Admin).Groups("show")
+    async registerAdmin(@BodyParams(Admin) @Groups("register") admin: Partial<Admin>) {
+        admin.password = await bcrypt.hash(admin.password, 10);
+        return deserialize(await this.adminRepository.save(admin), {type: Admin, groups: ['show']});
+    }
 
-  @Post('/register2')
-  async registerStudent(@BodyParams(UserRegister) user: UserRegister) {
-    const student = new Student();
-    student.username = user.username;
-    student.password = await bcrypt.hash(user.password, 10);
-    student.firstname = user.firstname;
-    student.lastname = user.lastname;
-    return this.studentRepository.save(student);
-  }
+    @Post('/registerStudent')
+    @Authenticate()
+    @OnlyAdmin()
+    @Returns(201, Student).Groups("show")
+    async registerStudent(@BodyParams(Student) @Groups("register") student: Partial<Student>) {
+        student.password = await bcrypt.hash(student.password, 10);
+        return deserialize(await this.studentRepository.save(student), {type: Student, groups: ['show']});
+    }
 
-  @Get('/')
-  @Authorize()
-  async get(@Req() request: Req) {
-    return {
-      auth: request.isAuthenticated(),
-      user: request.user,
-    };
-  }
 }
