@@ -59,16 +59,7 @@
             :descriptionDisplay="true"
             :modify="modify"
             v-else
-            :project="{
-              userId: uuid,
-              firstname: projects[id - 1].student.firstname,
-              lastname: projects[id - 1].student.lastname,
-              title: projects[id - 1].title,
-              description: projects[id - 1].description,
-              publishAt: projects[id - 1].publishAt,
-              updateAt: projects[id - 1].updateAt,
-              uuid: projects[id - 1].uuid,
-            }"
+            :project="projects[id - 1]"
           />
         </v-col>
       </v-row>
@@ -114,9 +105,10 @@ export default class Profil extends Vue {
   }
   public async getProjects(): Promise<void> {
     this.projectsLoading = true;
-    this.projects = (
-      await this.$api.getStudentProjects(this.uuid, 0, 20)
-    ).results;
+    let pagination = (
+      await this.$api.getStudentProjects(this.$route.params.uuid, 0, 20)
+    );
+    this.projects = pagination.results;
     this.projectsLoading = false;
   }
   public async mounted(): Promise<void> {
@@ -128,8 +120,8 @@ export default class Profil extends Vue {
     if (this.$route.params.uuid === myUuid) {
       this.modify = true;
     }
-    await this.getProjects();
     await this.getStudent(this.uuid);
+    await this.getProjects();
   }
 
   private authorInfo: INavInfo | null = null;
