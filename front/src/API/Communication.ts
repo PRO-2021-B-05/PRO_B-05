@@ -176,4 +176,8 @@ export class Communication {
   public async isConnected(): Promise<boolean> {
     return !!this.token;
   }
+
+  public async isAdmin(): Promise<boolean> {
+    return false; //TODO modifier avec la bonne requête
+  }
 }
