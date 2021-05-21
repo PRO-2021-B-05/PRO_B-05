@@ -61,34 +61,26 @@
                   sm="6"
                   md="4"
                   lg="3"
+                  class="px-1 py-1"
                 >
                   <v-card>
                     <v-card-text class="px-4 pt-2 pb-2">
-                      <v-card-title>
-                        {{ item.firstname }} {{ item.lastname }}
+                      <v-card-title class="px-0">
+                        {{ item.lastname }} {{ item.firstname }}
                       </v-card-title>
                       <v-divider />
-                      <v-list dense>
-                        <v-list-item
-                          dense
-                          v-for="(key, index) in filteredKeys"
-                          :key="index"
-                        >
-                          <v-list-item-content
-                            :class="{ 'primary--text small': sortBy === key }"
-                          >
-                            {{ key }} : {{ item[key.toLowerCase()] }}
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-container class="pt-0 pb-0 text-right">
-                          <v-btn @click="deleteStudent(item.uuid)" icon>
+                      <v-container class="pt-0 pb-0">
+                        <v-row class="py-4">
+                          <div class="subtitle-1">{{ item.username }}</div>
+                          <v-spacer />
+                          <v-btn @click="deleteStudent(item.uuid)" icon small>
                             <v-icon> mdi-delete </v-icon>
                           </v-btn>
-                          <v-btn @click="modifyUser(item)" icon>
+                          <v-btn @click="modifyUser(item)" icon small>
                             <v-icon> mdi-pencil </v-icon>
                           </v-btn>
-                        </v-container>
-                      </v-list>
+                        </v-row>
+                      </v-container>
                     </v-card-text>
                   </v-card>
                 </v-col>

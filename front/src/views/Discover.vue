@@ -74,7 +74,6 @@ export default class Discover extends Vue {
     }
   }
   public async mounted(): Promise<void> {
-    //this.scroll();
     await this.getProjects();
   }
 }
