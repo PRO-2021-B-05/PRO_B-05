@@ -19,10 +19,14 @@
           <v-icon>{{ link.icon }}</v-icon>
           {{ link.name }}
         </v-btn>
-        <span v-if="connected">
-          <v-btn @click="loadProfile" text>
+        <span v-if="studentConnected || adminConnected">
+          <v-btn @click="loadProfile" text v-if="studentConnected">
             <v-icon>mdi-account-outline</v-icon>
             Profil
+          </v-btn>
+          <v-btn to="/Admin" text v-if="adminConnected">
+            <v-icon>mdi-account-outline</v-icon>
+            Admin
           </v-btn>
           <v-btn to="/" @click="disconnect" text>
             <v-icon>mdi-logout</v-icon>
@@ -43,12 +47,20 @@
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
-          <v-list-item v-if="connected" @click="loadProfile">
-            <v-list-item-title>
-              <v-icon>mdi-account-outline</v-icon>
-              Profil
-            </v-list-item-title>
-          </v-list-item>
+          <span v-if="studentConnected || adminConnected">
+            <v-list-item v-if="studentConnected" @click="loadProfile">
+              <v-list-item-title>
+                <v-icon>mdi-account-outline</v-icon>
+                Profil
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item v-if="adminConnected" to="/admin">
+              <v-list-item-title>
+                <v-icon>mdi-account-outline</v-icon>
+                admin
+              </v-list-item-title>
+            </v-list-item>
+          </span>
           <v-list-item v-else @click="(overlay = !overlay), (drawer = false)">
             <v-list-item-title>
               <v-icon>mdi-login</v-icon>
@@ -70,7 +82,12 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-    <Login :overlay="overlay" @close="overlay = false" @connected="connect" />
+    <Login
+      :overlay="overlay"
+      @close="overlay = false"
+      @connected="connect"
+      @admin="adminConnect"
+    />
   </div>
 </template>
 
@@ -125,6 +142,9 @@ export default class Header extends Vue {
   public async connect(): Promise<void> {
     this.connected = true;
     this.profileUuid = (await this.$api.getMyProfile()).uuid;
+  }
+  public async adminConnect(): Promise<void> {
+    this.adminConnected = true;
   }
   public disconnect(): void {
     this.$api.clearToken();

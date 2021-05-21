@@ -48,7 +48,7 @@ export default class Login extends Vue {
   private login: ILogin = { username: "", password: "" };
   private error = false;
   @Prop({ default: false }) private overlay!: boolean;
-  close(): void {
+  public close(): void {
     this.error = false;
     this.$emit("close");
   }
