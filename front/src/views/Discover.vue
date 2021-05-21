@@ -57,7 +57,7 @@ import { IProject } from "@/model/IProject";
 export default class Discover extends Vue {
   private nProjects = 24;
   private pageLimit = 7;
-  private numberOfPages = 10;
+  private numberOfPages = 0;
   private page = 1;
   private projects: IProject[] = [];
   private projectsLoading = true;
