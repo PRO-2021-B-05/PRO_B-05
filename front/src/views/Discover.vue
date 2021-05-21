@@ -68,7 +68,7 @@ export default class Discover extends Vue {
       this.nProjects * (this.page - 1),
       this.nProjects
     );
-    this.numberOfPages = pagination.total;
+    this.numberOfPages = (pagination.total - 1) / this.nProjects + 1;
     this.projects = pagination.results;
     this.projectsLoading = false;
   }
