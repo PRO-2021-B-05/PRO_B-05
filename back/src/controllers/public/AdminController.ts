@@ -13,12 +13,12 @@ import {getRepository} from "typeorm";
 export class AdminController{
     private readonly adminRepository = getRepository(Admin);
     @Get("/")
-    @Returns(200, Admin).Groups("show")
+    @Returns(200, Admin).Groups("user.show")
     async profile(@Req() req: Request) {
         const admin = await this.adminRepository.findOne({uuid: (req.user as Admin).uuid});
         if (!admin) {
             throw new NotFound("Could not find this admin");
         }
-        return deserialize(admin, {type: Admin, groups: ['show']});
+        return deserialize(admin, {type: Admin, groups: ['user.show']});
     }
 }

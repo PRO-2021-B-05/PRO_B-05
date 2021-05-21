@@ -7,25 +7,28 @@ import {Authenticate} from "@tsed/passport";
 import {OnlyAdmin} from "../../decorators/OnlyAdmin";
 import bcrypt from "bcrypt";
 import {deserialize} from "@tsed/json-mapper";
+import {Pagination} from "../../entities/Pagination";
 
 @Controller('/students')
 export class StudentController {
     private studentRepository = getRepository(Student);
 
     @Get('/')
+    @Returns(200, Pagination).Of(Student).Groups("user.show")
     async listAll(
         @QueryParams("offset") offset: number,
         @QueryParams("limit") limit: number,
     ) {
-        const users = await this.studentRepository.find({
-            skip: offset,
-            take: limit,
+        const results = deserialize(await this.studentRepository.find({skip: offset, take: limit}), {
+            type: Student,
+            groups: ['user.show']
         });
-
-        return users.map(({uuid, firstname, lastname}) => ({uuid, firstname, lastname}));
+        const total = await this.studentRepository.count();
+        return new Pagination<Student>({results, total, offset, limit});
     }
 
     @Get("/:uuid")
+    @Returns(200, Student).Groups("user.show")
     async get(@PathParams("uuid") uuid: string) {
         const student = await this.studentRepository.findOne({uuid});
 
@@ -33,19 +36,14 @@ export class StudentController {
             throw new NotFound("Could not find requested student");
         }
 
-        return {
-            username: student.username,
-            firstname: student.firstname,
-            lastname: student.lastname,
-            description: student.description
-        };
+        return deserialize(student, {type: Student, groups: ['user.show']});
     }
 
     @Put('/:uuid')
     @Authenticate()
     @OnlyAdmin()
-    @Returns(200, Student).Groups("show")
-    async put(@PathParams("uuid") uuid: string, @BodyParams(Student) @Groups("update", "admin") student: Partial<Student>) {
+    @Returns(200, Student).Groups("user.show")
+    async put(@PathParams("uuid") uuid: string, @BodyParams(Student) @Groups("user.update", "user.admin") student: Partial<Student>) {
         const existingStudent = await this.studentRepository.findOne({uuid});
         if (!existingStudent) {
             throw new NotFound("Could not find requested student");
@@ -55,7 +53,10 @@ export class StudentController {
 
         await this.studentRepository.update({uuid: existingStudent.uuid}, student);
 
-        return deserialize(await this.studentRepository.findOne({uuid: existingStudent.uuid}), {type: Student, groups: ['show']});
+        return deserialize(await this.studentRepository.findOne({uuid: existingStudent.uuid}), {
+            type: Student,
+            groups: ['user.show']
+        });
     }
 
     @Delete('/:uuid')

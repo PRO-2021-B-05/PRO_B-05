@@ -1,11 +1,13 @@
-import { BodyParams, Controller, Delete, Get, PathParams, Post, Put, QueryParams, Response } from "@tsed/common";
-import { NotFound } from "@tsed/exceptions";
-import { Status } from "@tsed/schema";
-import { getRepository } from "typeorm";
-import { Project } from "../../entities/Project";
-import { Student } from "../../entities/Student";
+import {BodyParams, Controller, Delete, Get, PathParams, Post, Put, QueryParams, Response} from "@tsed/common";
+import {NotFound} from "@tsed/exceptions";
+import {Returns, Status} from "@tsed/schema";
+import {getRepository} from "typeorm";
+import {Project} from "../../entities/Project";
+import {Student} from "../../entities/Student";
 import * as uuid from 'uuid';
-import { Image } from "../../entities/Image";
+import {Image} from "../../entities/Image";
+import {Pagination} from "../../entities/Pagination";
+import {deserialize} from "@tsed/json-mapper";
 
 //TODO: Enlever les requêtes redondantes (effectuées déjà par MyProjectController)
 @Controller('/projects')
@@ -15,95 +17,78 @@ export class ProjectController {
     private imageRepository = getRepository(Image);
 
     @Get('/')
+    @Returns(200, Pagination).Of(Project).Groups("project.showAll", "user.show", 'image.show')
     async listAll(
         @QueryParams("offset") offset: number,
         @QueryParams("limit") limit: number,
     ) {
-        const projects = await this.projectRepository.find({
-            order: { publishAt: "DESC" },
-            relations: ["student"],
-            skip: offset,
-            take: limit,
-        });
-
-        return Promise.all(projects.map(async (project) => {
-            const { uuid, title, description, publishAt, updateAt, student } = project;
-            const images = await this.imageRepository.find({
-                where: { project },
-                relations: ["project"],
+        const results = deserialize(
+            await this.projectRepository.find({
+                relations: ["student", "images", "event", "images.project"],
+                order: {publishAt: "DESC"},
+                skip: offset,
+                take: limit,
+            }), {
+                type: Project,
+                groups: ['project.showAll', "user.show", 'image.show']
             });
-
-            return {
-                uuid,
-                title,
-                description,
-                publishAt,
-                updateAt,
-                thumbnailUrl: images[0]?.thumbnailUrl ?? "",
-                userId: student.uuid,
-                firstname: student.firstname,
-                lastname: student.lastname,
-            };
-        }));
+        const total = await this.projectRepository.count();
+        return new Pagination<Project>({results, total, offset, limit});
     }
 
+    /**
+     uuid,
+     title,
+     description,
+     publishAt,
+     updateAt,
+     thumbnailUrl: images[0]?.thumbnailUrl ?? "",
+     userId: student.uuid,
+     firstname: student.firstname,
+     lastname: student.lastname,
+     **/
+
     @Get('/users/:userId')
+    @Returns(200, Pagination).Of(Project).Groups("project.showAll", "user.show", 'image.show')
     async listUser(
         @PathParams("userId") userId: string,
         @QueryParams("offset") offset: number,
         @QueryParams("limit") limit: number,
     ) {
-        const student = await this.studentRepository.findOne({ uuid: userId });
+        const student = await this.studentRepository.findOne({uuid: userId});
 
         if (!student) {
             throw new NotFound("Could not find requested user");
         }
 
-        const projects = await this.projectRepository.find({
-            where: { student },
-            order: { publishAt: "DESC" },
-            relations: ["images"],
-            skip: offset,
-            take: limit,
-        });
-        return Promise.all(projects.map(async (project) => {
-            const { uuid, title, description, publishAt, updateAt } = project;
-            const images = await this.imageRepository.find({
-                where: { project },
-                relations: ["project"],
+        const results = deserialize(
+            await this.projectRepository.find({
+                where: {student},
+                relations: ["student", "images", "event", "images.project"],
+                order: {publishAt: "DESC"},
+                skip: offset,
+                take: limit,
+            }), {
+                type: Project,
+                groups: ['project.showAll', "user.show", 'image.show']
             });
-
-            return {
-                uuid,
-                title,
-                description,
-                publishAt,
-                updateAt,
-                thumbnailUrl: images[0]?.thumbnailUrl ?? "",
-            };
-        }));
+        const total = await this.projectRepository.count({where: {student}});
+        return new Pagination<Project>({results, total, offset, limit});
     }
 
     @Get("/:uuid")
+    @Returns(200, Project).Groups("project.show", "user.show", 'image.show')
     async get(@PathParams("uuid") uuid: string) {
         const project = await this.projectRepository.findOne({
-            where: { uuid },
-            relations: ["student"],
+            where: {uuid},
+            relations: ["student", "images", "event", "images.project"],
         });
 
         if (!project) {
             throw new NotFound("Could not find requested project");
         }
 
-        return {
-            title: project.title,
-            description: project.description,
-            publishAt: project.publishAt,
-            updateAt: project.updateAt,
-            userId: project.student.uuid,
-            firstname: project.student.firstname,
-            lastname: project.student.lastname,
-        };
+        return project;
     }
 
 
