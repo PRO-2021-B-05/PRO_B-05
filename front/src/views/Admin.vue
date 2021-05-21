@@ -189,7 +189,7 @@ export default class Admin extends Vue {
   public formerPage(): void {
     if (this.page - 1 >= 1) this.page -= 1;
   }
-  public async getStudentsUuids(): Promise<void> {
+  public async getStudents(): Promise<void> {
     this.uuidsLoading = true;
     let pagination = await this.$api.getStudents(
       this.itemsPerPage * (this.page - 1),
@@ -197,15 +197,6 @@ export default class Admin extends Vue {
     );
     this.students = pagination.results;
     this.uuidsLoading = false;
-  }
-  public async getStudents(): Promise<void> {
-    this.usersLoading = true;
-    if (this.uuids && this.uuids.length > 0) {
-      for (let i = 0; i < this.uuids.length; ++i) {
-        this.students.push(...[await this.$api.getStudent(this.uuids[i].uuid)]);
-      }
-    }
-    this.usersLoading = false;
   }
   public async deleteStudent(uuid: string): Promise<void> {
     await this.$api.deleteStudent(uuid);
@@ -218,7 +209,6 @@ export default class Admin extends Vue {
         name: "ErrorPage",
       });
     } else {
-      await this.getStudentsUuids();
       await this.getStudents();
     }
   }
