@@ -78,9 +78,17 @@ export class SMS3StorageService {
 
   public async deleteFolder(bucketName: string, name: string): Promise<void> {
     const items = await this.listFiles(bucketName, name, true);
-    await Promise.allSettled(items.map(item => {
-      return this.client.removeObject(bucketName, item.name);
-    }))
+    await Promise.allSettled(
+      items.map(item => {
+        return this.client.removeObject(bucketName, item.name);
+      })
+    );
+  }
 
+  public generateURL(bucketName: string, name: string): string {
+    const c = this.configuration.sms3;
+    return `${c.useSSL ? 'https' : 'http'}://${c.endPoint}:${
+      c.port
+    }/${bucketName}/${name}`;
   }
 }

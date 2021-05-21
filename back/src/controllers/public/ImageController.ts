@@ -1,27 +1,27 @@
 import {
-    BodyParams,
-    Controller,
-    Delete,
-    Get,
-    Inject,
-    MultipartFile,
-    PathParams,
-    PlatformMulterFile,
-    Post,
-    Put,
-    QueryParams,
-    Response
-} from "@tsed/common";
-import {NotFound} from "@tsed/exceptions";
-import {Returns, Status} from "@tsed/schema";
-import {getRepository} from "typeorm";
-import {Image} from "../../entities/Image";
-import {Project} from "../../entities/Project";
-import * as uuid from 'uuid';
-import {SMS3StorageService} from "../../services/SMS3StorageService";
+  BodyParams,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  MultipartFile,
+  PathParams,
+  PlatformMulterFile,
+  Post,
+  Put,
+  QueryParams,
+  Response,
+} from '@tsed/common';
+import {NotFound} from '@tsed/exceptions';
+import {deserialize} from '@tsed/json-mapper';
+import {Groups, Returns, Status} from '@tsed/schema';
 import Jimp from 'jimp';
-import {Pagination} from "../../entities/Pagination";
-import {deserialize} from "@tsed/json-mapper";
+import {getRepository} from 'typeorm';
+
+import {Image} from '../../entities/Image';
+import {Pagination} from '../../entities/Pagination';
+import {Project} from '../../entities/Project';
+import {SMS3StorageService} from '../../services/SMS3StorageService';
 
 @Controller('/projects/:projectId/images')
 export class ImageController {
