@@ -178,6 +178,6 @@ export class Communication {
   }
 
   public async isAdmin(): Promise<boolean> {
-    return false; //TODO modifier avec la bonne requête
+    return true; //TODO modifier avec la bonne requête
   }
 }

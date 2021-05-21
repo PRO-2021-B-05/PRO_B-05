@@ -3,7 +3,7 @@
     <v-container>
       <heading1> Admin </heading1>
       <v-breadcrumbs light />
-      <v-card>
+      <v-container>
         <v-btn
           class="my-3 mx-3"
           color="primary"
@@ -27,7 +27,7 @@
             hide-default-footer
           >
             <template v-slot:header>
-              <v-toolbar dark color="primary darken-1" class="mb-1">
+              <v-toolbar dark color="primary darken-1" class="px-0 pb-2 mb-2">
                 <v-text-field
                   v-model="search"
                   dense
@@ -120,7 +120,7 @@
             </template>
           </v-data-iterator>
         </v-container>
-      </v-card>
+      </v-container>
     </v-container>
     <CRUD_User
       :crudAction="crudAction"
@@ -176,7 +176,7 @@ export default class Admin extends Vue {
   private search = "";
   private sortDesc = false;
   private page = 1;
-  private itemsPerPage = 24;
+  private itemsPerPage = 90;
   private sortBy = "id";
   public get filteredKeys(): string[] {
     return this.keys.filter((key) => key !== "name");
