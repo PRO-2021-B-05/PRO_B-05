@@ -202,7 +202,6 @@ export default class Admin extends Vue {
   public async getStudents(): Promise<void> {
     this.usersLoading = true;
     if (this.uuids && this.uuids.length > 0) {
-      console.log("nb students : " + this.uuids.length);
       for (let i = 0; i < this.uuids.length; ++i) {
         this.students.push(...[await this.$api.getStudent(this.uuids[i].uuid)]);
       }
@@ -215,7 +214,6 @@ export default class Admin extends Vue {
   }
   public async mounted(): Promise<void> {
     this.admin = await this.$api.isAdmin();
-    console.log("mounted " + this.admin);
     if (!this.admin) {
       await this.$router.push({
         name: "ErrorPage",

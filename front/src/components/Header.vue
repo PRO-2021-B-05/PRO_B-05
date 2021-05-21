@@ -73,7 +73,7 @@
               {{ link.name }}
             </v-list-item-title>
           </v-list-item>
-          <v-list-item v-if="connected" to="/" @click="disconnect">
+          <v-list-item v-if="studentConnected || adminConnected" to="/" @click="disconnect">
             <v-list-item-title>
               <v-icon>mdi-logout</v-icon>
               Log out
@@ -95,7 +95,6 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import Login from "@/components/Login.vue";
-import { Student } from "@/model/IStudent";
 
 @Component({
   components: { Login },
@@ -118,11 +117,12 @@ export default class Header extends Vue {
   private overlay = false;
   private drawer = false;
   private group = null;
-  private connected = false;
+  private studentConnected = false;
+  private adminConnected = false;
   private profileUuid = "";
 
   public async loadProfile(): Promise<void> {
-    if (this.connected) {
+    if (this.studentConnected) {
       this.profileUuid = (await this.$api.getMyProfile()).uuid;
       await this.$router.push({
         name: "Profil",
@@ -134,13 +134,15 @@ export default class Header extends Vue {
     }
   }
   public async mounted(): Promise<void> {
-    this.connected = await this.$api.isConnected();
-    if (this.connected) {
+    let connect = await this.$api.isConnected();
+    this.adminConnected = await this.$api.isAdmin();
+    this.studentConnected = connect && !this.adminConnected;
+    if (this.studentConnected) {
       this.profileUuid = (await this.$api.getMyProfile()).uuid;
     }
   }
   public async connect(): Promise<void> {
-    this.connected = true;
+    this.studentConnected = true;
     this.profileUuid = (await this.$api.getMyProfile()).uuid;
   }
   public async adminConnect(): Promise<void> {
@@ -148,7 +150,8 @@ export default class Header extends Vue {
   }
   public disconnect(): void {
     this.$api.clearToken();
-    this.connected = false;
+    this.studentConnected = false;
+    this.adminConnected = false;
   }
 }
 </script>

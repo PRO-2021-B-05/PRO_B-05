@@ -183,7 +183,6 @@ export class Communication {
       .get("/admin/")
       .then(() => {
         admin = true;
-        console.log(admin);
       })
       .catch(() => {
         admin = false;

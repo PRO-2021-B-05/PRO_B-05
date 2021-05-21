@@ -52,17 +52,29 @@ export default class Login extends Vue {
     this.error = false;
     this.$emit("close");
   }
-  send(): void {
-    this.$api
+  public async send(): Promise<void> {
+    let connect = false;
+    await this.$api
       .sendLogin(this.login)
-      .then((response: AxiosResponse) => {
-        this.$emit("connected");
-        this.close();
+      .then(() => {
+        connect = true;
       })
       .catch((error: AxiosError) => {
         this.error = true;
         console.log(error);
       });
+    if (connect) {
+      const isAdmin = await this.$api.isAdmin();
+      if (isAdmin) {
+        this.$emit("admin");
+        await this.$router.push({
+          name: "Admin",
+        });
+      } else {
+        this.$emit("connected");
+      }
+      this.close();
+    }
   }
 }
 </script>
