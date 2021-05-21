@@ -20,7 +20,7 @@
           {{ link.name }}
         </v-btn>
         <span v-if="connected">
-          <v-btn :to="`/profil/${profileUuid}`" text>
+          <v-btn @click="loadProfile" text>
             <v-icon>mdi-account-outline</v-icon>
             Profil
           </v-btn>
@@ -43,7 +43,7 @@
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
-          <v-list-item v-if="connected" :to="`/profil/${profileUuid}`">
+          <v-list-item v-if="connected" @click="loadProfile">
             <v-list-item-title>
               <v-icon>mdi-account-outline</v-icon>
               Profil
@@ -55,11 +55,7 @@
               Log in
             </v-list-item-title>
           </v-list-item>
-          <v-list-item
-            v-for="link in links"
-            :key="link.id"
-            :to="link.address"
-          >
+          <v-list-item v-for="link in links" :key="link.id" :to="link.address">
             <v-list-item-title>
               <v-icon>{{ link.icon }}</v-icon>
               {{ link.name }}
@@ -74,11 +70,7 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-    <Login
-      :overlay="overlay"
-      @close="overlay = false"
-      @connected="connect"
-    />
+    <Login :overlay="overlay" @close="overlay = false" @connected="connect" />
   </div>
 </template>
 
@@ -111,6 +103,19 @@ export default class Header extends Vue {
   private group = null;
   private connected = false;
   private profileUuid = "";
+
+  public async loadProfile(): Promise<void> {
+    if (this.connected) {
+      this.profileUuid = (await this.$api.getMyProfile()).uuid;
+      await this.$router.push({
+        name: "Profil",
+        params: {
+          uuid: this.profileUuid,
+        },
+      });
+      await this.$router.go(0);
+    }
+  }
   public async mounted(): Promise<void> {
     this.connected = await this.$api.isConnected();
     if (this.connected) {
