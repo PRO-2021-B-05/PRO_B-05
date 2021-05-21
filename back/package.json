@@ -10,7 +10,7 @@
     "start:prod": "cross-env NODE_ENV=production node dist/index.js",
     "lint": "gts lint",
     "clean": "gts clean",
-    "fix": "gts fix"
+    "fix": "gts fix ./src/**/*.ts"
   },
   "dependencies": {
     "@tsed/ajv": "^6.34.3",
@@ -76,6 +76,8 @@
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.2.3"
   },
-  "readme": "ERROR: No README data found!",
-  "_id": "streamboard-appstore@1.0.0"
+  "engine": {
+    "node": ">=12.9.0"
+  },
+  "_id": "start@1.0.0"
 }

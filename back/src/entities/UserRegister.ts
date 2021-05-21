@@ -1,21 +1,19 @@
+import {MaxLength, MinLength, Pattern, Required} from '@tsed/schema';
 
-import {MaxLength, Min, MinLength, Pattern, Required} from "@tsed/schema";
+export class UserRegister {
+  @Pattern(/^[a-zA-Z0-9_-]{3,15}$/)
+  @MinLength(3)
+  @MaxLength(15)
+  @Required()
+  username: string;
 
-export class UserRegister{
+  @MinLength(8)
+  @Required()
+  password: string;
 
-    @Pattern(/^[a-zA-Z0-9_-]{3,15}$/)
-    @MinLength(3)
-    @MaxLength(15)
-    @Required()
-    username: string;
+  @Required()
+  firstname: string;
 
-    @MinLength(8)
-    @Required()
-    password: string;
-
-    @Required()
-    firstname: string;
-
-    @Required()
-    lastname: string;
+  @Required()
+  lastname: string;
 }
