@@ -220,8 +220,14 @@ export default class Admin extends Vue {
     await this.$api.deleteStudent(uuid);
   }
   public async mounted(): Promise<void> {
-    await this.getStudentsUuids();
-    await this.getStudents();
+    if (!(await this.$api.isAdmin())) {
+      await this.$router.push({
+        name: "ErrorPage",
+      });
+    } else {
+      await this.getStudentsUuids();
+      await this.getStudents();
+    }
   }
 }
 </script>

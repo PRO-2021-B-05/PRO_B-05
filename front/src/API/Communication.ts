@@ -10,7 +10,7 @@ export class Communication {
 
   constructor() {
     this.axiosServer = axios.create({
-      baseURL: "http://localhost:8083/api/v1",
+      baseURL: "http://localhost:8083/api/v1", // TODO
     });
     this.setToken(localStorage.getItem("token") ?? "");
   }
