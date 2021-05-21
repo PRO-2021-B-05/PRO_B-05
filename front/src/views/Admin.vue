@@ -170,8 +170,6 @@ export default class Admin extends Vue {
     this.crudAction = "modify";
   }
   private uuidsLoading = true;
-  private usersLoading = true;
-  private uuids?: { uuid: string }[] | null;
   private students: Student[] = [];
   private keys = ["username", "firstname", "lastname"];
   private search = "";
@@ -193,10 +191,11 @@ export default class Admin extends Vue {
   }
   public async getStudentsUuids(): Promise<void> {
     this.uuidsLoading = true;
-    this.uuids = await this.$api.getStudentsUuid(
+    let pagination = await this.$api.getStudents(
       this.itemsPerPage * (this.page - 1),
       this.itemsPerPage
     );
+    this.students = pagination.results;
     this.uuidsLoading = false;
   }
   public async getStudents(): Promise<void> {

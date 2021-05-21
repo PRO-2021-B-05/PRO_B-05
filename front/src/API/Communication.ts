@@ -59,12 +59,12 @@ export class Communication {
     return response.data;
   }
 
-  async getStudentsUuid(
+  async getStudents(
     //todo : adapter car ça renvoie plus de trucs maintenant
     offset: number,
     limit: number
-  ): Promise<{ uuid: string }[]> {
-    const response = await this.axiosServer.get<{ uuid: string }[]>(
+  ): Promise<Pagination<Student>> {
+    const response = await this.axiosServer.get<Pagination<Student>>(
       "/students?offset=" + offset + "&limit=" + limit
     );
     return response.data;
@@ -103,7 +103,7 @@ export class Communication {
       username:
         student.firstname.toLowerCase().slice(0, 7) +
         "-" +
-        student.lastname.toLowerCase().slice(0, 8),
+        student.lastname.toLowerCase().slice(0, 7),
       password: student.password,
       firstname: student.firstname,
       lastname: student.lastname,
