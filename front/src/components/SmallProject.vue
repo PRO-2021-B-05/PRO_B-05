@@ -6,13 +6,13 @@
         {{ project.title }}
       </v-card-title>
       <v-btn
-        :href="`/profil/${project.userId}`"
+        :href="`/profil/${project.student.uuid}`"
         small
         text
         class="px-4"
         v-if="authorDisplay"
       >
-        by {{ project.firstname }} {{ project.lastname }}
+        by {{ project.student.firstname }} {{ project.student.lastname }}
       </v-btn>
       <div v-if="descriptionDisplay">
         <v-card-text>

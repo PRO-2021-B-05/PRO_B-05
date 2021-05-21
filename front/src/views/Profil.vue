@@ -61,8 +61,8 @@
             v-else
             :project="{
               userId: uuid,
-              firstname: projects[id - 1].firstname,
-              lastname: projects[id - 1].lastname,
+              firstname: projects[id - 1].student.firstname,
+              lastname: projects[id - 1].student.lastname,
               title: projects[id - 1].title,
               description: projects[id - 1].description,
               publishAt: projects[id - 1].publishAt,

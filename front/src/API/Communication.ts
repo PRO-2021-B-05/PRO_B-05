@@ -3,6 +3,7 @@ import { ILogin } from "@/model/Login";
 import { Student } from "@/model/IStudent";
 import { IProject } from "@/model/IProject";
 import { Image } from "@/model/IImage";
+import { Pagination } from "@/model/Pagination";
 
 export class Communication {
   private token?: string;
@@ -15,8 +16,11 @@ export class Communication {
     this.setToken(localStorage.getItem("token") ?? "");
   }
 
-  async getProjects(offset: number, limit: number): Promise<IProject[]> {
-    const response = await this.axiosServer.get<IProject[]>(
+  async getProjects(
+    offset: number,
+    limit: number
+  ): Promise<Pagination<IProject>> {
+    const response = await this.axiosServer.get<Pagination<IProject>>(
       "/projects?offset=" + offset + "&limit=" + limit
     );
     return response.data;

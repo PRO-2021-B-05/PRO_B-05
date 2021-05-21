@@ -39,7 +39,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { ILogin } from "@/model/Login";
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosError } from "axios";
 
 @Component({
   components: {},
