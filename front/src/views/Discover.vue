@@ -64,16 +64,13 @@ export default class Discover extends Vue {
   // méthodes
   public async getProjects(): Promise<void> {
     this.projectsLoading = true;
-    this.projects = (
-      await this.$api.getProjects(
-        this.nProjects * (this.page - 1),
-        this.nProjects
-      )
-    ).results;
+    let pagination = await this.$api.getProjects(
+      this.nProjects * (this.page - 1),
+      this.nProjects
+    );
+    this.numberOfPages = pagination.total;
+    this.projects = pagination.results;
     this.projectsLoading = false;
-    if (this.projects.length < 1) {
-      this.numberOfPages = this.page - 1;
-    }
   }
   public async mounted(): Promise<void> {
     await this.getProjects();

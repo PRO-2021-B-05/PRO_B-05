@@ -122,6 +122,7 @@ export class Communication {
     studentUuid: string,
     project: { title: string; description: string }
   ): Promise<string> {
+    console.log(project);
     const response = await this.axiosServer.post<string>(
       "/my/projects",
       project
