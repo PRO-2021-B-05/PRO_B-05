@@ -51,11 +51,19 @@ export default class SmallProject extends Vue {
   @Prop({ default: false }) private descriptionDisplay!: boolean;
   @Prop({ default: false }) private modify!: boolean;
   private thumbnailURL? = "";
-  public async mounted(): Promise<void> {
+  public async updateImages(): Promise<void> {
     const images = await this.$api.getProjectImages(this.project?.uuid);
     if (images.length) {
       this.thumbnailURL = images[0].thumbnailUrl;
+    } else {
+      this.thumbnailURL = "";
     }
+  }
+  public async beforeUpdate(): Promise<void> {
+    await this.updateImages();
+  }
+  public async mounted(): Promise<void> {
+    await this.updateImages();
   }
   public async deleteProject(): Promise<void> {
     if (!this.project) return;
