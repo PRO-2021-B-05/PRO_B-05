@@ -94,7 +94,7 @@ export class Communication {
       updateAt: "12-12-2020",
       description: student.description,
     };
-    await this.axiosServer.post("/auth/register2", newStudent);
+    await this.axiosServer.post("/auth/registerStudent", newStudent);
   }
 
   async sendModifyStudent(student: Student): Promise<void> {
