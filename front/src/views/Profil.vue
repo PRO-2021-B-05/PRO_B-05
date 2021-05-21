@@ -114,7 +114,9 @@ export default class Profil extends Vue {
   }
   public async getProjects(): Promise<void> {
     this.projectsLoading = true;
-    this.projects = await this.$api.getStudentProjects(this.uuid);
+    this.projects = (
+      await this.$api.getStudentProjects(this.uuid, 0, 20)
+    ).results;
     this.projectsLoading = false;
   }
   public async mounted(): Promise<void> {

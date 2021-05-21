@@ -39,9 +39,13 @@ export class Communication {
     return response.data;
   }
 
-  async getStudentProjects(studentUuid: string): Promise<IProject[]> {
-    const response = await this.axiosServer.get<IProject[]>(
-      "/projects/users/" + studentUuid
+  async getStudentProjects(
+    studentUuid: string,
+    offset: number,
+    limit: number
+  ): Promise<Pagination<IProject>> {
+    const response = await this.axiosServer.get<Pagination<IProject>>(
+      "/projects/users/" + studentUuid + "?offset=" + offset + "&limit=" + limit
     );
     return response.data;
   }
