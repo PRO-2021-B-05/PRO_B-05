@@ -93,12 +93,12 @@ export default class Profil extends Vue {
   public async getStudent(uuid: string): Promise<void> {
     const student: Student = await this.$api.getStudent(uuid);
     this.authorInfo = {
-      title: `${student.firstname} ${student.lastname}`,
+      title: `${this.student.firstname} ${this.student.lastname}`,
       section: [
         {
           id: 1,
           title: "description",
-          content: student.description ? student.description : "",
+          content: this.student.description ? this.student.description : "",
         },
       ],
     };

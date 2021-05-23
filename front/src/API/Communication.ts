@@ -88,6 +88,19 @@ export class Communication {
     return response.data;
   }
 
+  async modifyDescription(
+    firstname: string,
+    lastname: string,
+    description: string
+  ): Promise<Student> {
+    const response = await this.axiosServer.put<Student>("/my/profile/", {
+      firstname: firstname,
+      lastname: lastname,
+      description: description,
+    });
+    return response.data;
+  }
+
   async deleteStudent(uuid: string): Promise<void> {
     await this.axiosServer.delete("/students/" + uuid);
   }
