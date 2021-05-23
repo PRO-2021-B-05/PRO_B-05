@@ -181,7 +181,7 @@ export default class Admin extends Vue {
   }
   public async getStudents(): Promise<void> {
     this.uuidsLoading = true;
-    let pagination = await this.$api.getStudents(0, 3);
+    let pagination = await this.$api.getStudents(0, 1000);
     this.students = pagination.results;
     this.uuidsLoading = false;
   }
