@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2020",
-    "sourceMap": true,
+    "target": "esNext",
+    "sourceMap": false,
     "declaration": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -23,7 +23,6 @@
       "es7",
       "dom",
       "esnext",
-      "es2020.Promise"
     ],
     "typeRoots": [
       "./node_modules/@types"
