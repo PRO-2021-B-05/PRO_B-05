@@ -64,7 +64,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <NavInfo v-if="authorInfo" :info="authorInfo" />
+    <NavInfo v-if="authorInfo" :info="authorInfo" :user="student" :modify="modify" />
   </div>
 </template>
 
@@ -90,8 +90,10 @@ export default class Profil extends Vue {
   private uuid?: string;
   private projects: IProject[] = [];
   private projectsLoading = true;
+  private student?: Student;
+
   public async getStudent(uuid: string): Promise<void> {
-    const student: Student = await this.$api.getStudent(uuid);
+    this.student = await this.$api.getStudent(uuid);
     this.authorInfo = {
       title: `${this.student.firstname} ${this.student.lastname}`,
       section: [
