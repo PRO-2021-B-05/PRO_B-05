@@ -27,7 +27,7 @@
             hide-default-footer
           >
             <template v-slot:header>
-              <v-toolbar dark color="primary darken-1" class="px-0 pb-2 mb-2">
+              <v-toolbar dark color="primary darken-1" class="mx-1 mb-4">
                 <v-text-field
                   v-model="search"
                   dense
@@ -97,6 +97,7 @@
                   <v-icon>mdi-chevron-left</v-icon>
                 </v-btn>
                 <v-btn
+                  x-small
                   fab
                   dark
                   color="primary darken-2"
@@ -164,7 +165,7 @@ export default class Admin extends Vue {
   private search = "";
   private sortDesc = false;
   private page = 1;
-  private itemsPerPage = 30;
+  private itemsPerPage = 20;
   private sortBy = "id";
   public get filteredKeys(): string[] {
     return this.keys.filter((key) => key !== "name");
