@@ -25,7 +25,7 @@
         text
         color="warning"
         small
-        :href="`/modifyProject/${project.uuid}`"
+        :to="`/modifyProject/${project.uuid}`"
       >
         <v-icon>mdi-pencil</v-icon>
         Modify Project
