@@ -2,9 +2,9 @@
   <div>
     <v-app-bar color="white" clipped-right app>
       <v-img
-        max-height="50px"
-        max-width="50px"
-        src="https://picsum.photos/id/11/500/300"
+        max-height="35px"
+        max-width="35px"
+        src="@/assets/logo.png"
       ></v-img>
       <v-app-bar-title class="ml-3">
         <div>StArt</div>
