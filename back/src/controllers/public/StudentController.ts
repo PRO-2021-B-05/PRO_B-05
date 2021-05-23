@@ -32,7 +32,11 @@ export class StudentController {
     @QueryParams('limit') limit: number
   ) {
     const results = deserialize(
-      await this.studentRepository.find({skip: offset, take: limit}),
+      await this.studentRepository.find({
+        skip: offset,
+        take: limit,
+        order: {lastname: 'ASC'},
+      }),
       {
         type: Student,
         groups: ['user.show'],
