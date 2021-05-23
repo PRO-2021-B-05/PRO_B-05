@@ -61,7 +61,6 @@ export class Communication {
   }
 
   async getStudents(
-    //todo : adapter car ça renvoie plus de trucs maintenant
     offset: number,
     limit: number
   ): Promise<Pagination<Student>> {
