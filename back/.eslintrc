@@ -7,7 +7,7 @@
     "./node_modules/gts"
   ],
   "parserOptions": {
-    "ecmaVersion": 2018,
+    "ecmaVersion": 2020,
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
@@ -15,13 +15,16 @@
     "node": true,
     "es6": true
   },
-  "plugins": ["simple-import-sort"],
+  "plugins": [
+    "simple-import-sort"
+  ],
   "rules": {
     "@typescript-eslint/no-unused-vars": 2,
     "@typescript-eslint/no-var-requires": 0,
     "@typescript-eslint/member-ordering": "error",
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
-    "@typescript-eslint/no-namespace": "off"
+    "@typescript-eslint/no-namespace": "off",
+    "node/no-unsupported-features/es-builtins": "off"
   }
 }
