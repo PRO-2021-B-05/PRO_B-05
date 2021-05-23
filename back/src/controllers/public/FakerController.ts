@@ -28,7 +28,7 @@ export class FakerController {
         student.firstname,
         student.lastname
       );
-      student.description = faker.lorem.paragraph(255);
+      student.description = faker.commerce.productDescription();
       student.password = await bcrypt.hash('password', 10);
       await this.studentRepository.save(student);
     }
@@ -39,8 +39,8 @@ export class FakerController {
     const students = await this.studentRepository.find();
     for (let i = 0; i < 20; ++i) {
       const project = new Project();
-      project.title = faker.lorem.paragraph(1);
-      project.description = faker.lorem.paragraph(255);
+      project.title = faker.commerce.productName();
+      project.description = faker.commerce.productDescription();
       project.student = students[Math.floor(Math.random() * students.length)];
       await this.projectRepository.save(project);
     }
