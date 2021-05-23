@@ -155,6 +155,9 @@ export default class Header extends Vue {
     this.$api.clearToken();
     this.studentConnected = false;
     this.adminConnected = false;
+    this.$router.push({
+      name: "Discover",
+    });
   }
 }
 </script>
