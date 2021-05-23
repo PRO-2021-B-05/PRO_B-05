@@ -19,8 +19,7 @@ declare global {
 
 @Injectable()
 export class SMS3StorageService {
-  @Configuration()
-  private readonly configuration: Configuration;
+  @Configuration() private readonly configuration: Configuration;
   private client: Minio.Client;
 
   public $onInit(): void {

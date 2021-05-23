@@ -52,43 +52,54 @@ export class FakerController {
 
     const url = 'https://picsum.photos/550/400';
 
-    const nbImages = 1;
+    const nbImages = 3;
+    const promises: Promise<void>[] = [];
+    let addedImages = 0;
     for (const project of projects) {
       for (let i = 0; i < nbImages - project.images.length; ++i) {
-        await new Promise(resolve => {
-          request({url, encoding: null}, async (err, resp, buffer) => {
-            console.log(`Download image ${i} for ${project.title}`);
-            const createdImage = await this.imageRepository.save({
-              project,
-              title: faker.commerce.productName(),
-              description: faker.commerce.productDescription(),
+        promises.push(
+          new Promise(resolve => {
+            request({url, encoding: null}, async (err, resp, buffer) => {
+              if (err) return;
+              addedImages++;
+              const createdImage = await this.imageRepository.save({
+                project,
+                title: faker.commerce.productName(),
+                description: faker.commerce.productDescription(),
+              });
+
+              await this.s3.putFile(
+                'start',
+                `${project.uuid}/${createdImage.uuid}/original`,
+                buffer,
+                {
+                  'Content-Type': Jimp.MIME_JPEG,
+                }
+              );
+
+              const thumbnail = await Jimp.read(buffer);
+              thumbnail.resize(250, Jimp.AUTO);
+              const bufferResized = await thumbnail.getBufferAsync(
+                Jimp.MIME_PNG
+              );
+
+              await this.s3.putFile(
+                'start',
+                `${project.uuid}/${createdImage.uuid}/thumbnail`,
+                bufferResized,
+                {
+                  'Content-Type': Jimp.MIME_PNG,
+                }
+              );
+              resolve();
             });
-
-            await this.s3.putFile(
-              'start',
-              `${project.uuid}/${createdImage.uuid}/original`,
-              buffer,
-              {
-                'Content-Type': Jimp.MIME_JPEG,
-              }
-            );
-
-            const thumbnail = await Jimp.read(buffer);
-            thumbnail.resize(250, Jimp.AUTO);
-            const bufferResized = await thumbnail.getBufferAsync(Jimp.MIME_PNG);
-
-            await this.s3.putFile(
-              'start',
-              `${project.uuid}/${createdImage.uuid}/thumbnail`,
-              bufferResized,
-              {
-                'Content-Type': Jimp.MIME_PNG,
-              }
-            );
-            resolve(0);
-          });
-        });
+          })
+        );
       }
     }
+
+    return Promise.allSettled(promises).then(() => ({
+      addedImages,
+    }));
   }
 }
