@@ -85,14 +85,7 @@ export class Communication {
 
   async getMyProfile(): Promise<Student> {
     const response = await this.axiosServer.get<Student>("/my/profile/");
-    return {
-      uuid: response.data.uuid,
-      username: response.data.username,
-      password: "",
-      firstname: response.data.firstname,
-      lastname: response.data.lastname,
-      description: response.data.description,
-    };
+    return response.data;
   }
 
   async deleteStudent(uuid: string): Promise<void> {

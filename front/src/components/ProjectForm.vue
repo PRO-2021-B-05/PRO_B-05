@@ -42,7 +42,7 @@
                       </v-card>
                     </v-col>
                     <v-col sm="7" md="5" lg="7" class="pr-0">
-                      <v-text-field label="Image title"></v-text-field>
+                      <v-text-field label="Image title" v-model="image.title"></v-text-field>
                     </v-col>
                     <v-col sm="2" md="3" lg="2" class="d-flex justify-center">
                       <div class="d-flex flex-column justify-center">
@@ -220,7 +220,12 @@ export default class ProjectForm extends Vue {
       const project = await this.$api.getProject(this.projectUuid);
       this.projectName = project.title;
       this.projectDescription = project.description;
-      const images = await this.$api.getProjectImages(this.projectUuid);
+      let pagination = await this.$api.getProjectImages(
+        this.projectUuid,
+        0,
+        200
+      );
+      const images = pagination.results;
       // obtenir les images
       this.images.push(...images);
     } else {

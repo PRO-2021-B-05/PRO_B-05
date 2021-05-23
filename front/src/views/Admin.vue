@@ -5,7 +5,7 @@
       <v-breadcrumbs light />
       <v-container>
         <v-btn
-          class="my-3 mx-3"
+          class="my-4 mx-4"
           color="primary"
           dark
           outlined
@@ -38,22 +38,10 @@
                   label="Search"
                   placeholder="Student Name"
                 ></v-text-field>
-                <template v-if="$vuetify.breakpoint.mdAndUp">
-                  <v-spacer></v-spacer>
-                  <v-btn-toggle v-model="sortDesc" mandatory>
-                    <v-btn large depressed color="primary" :value="false">
-                      <v-icon>mdi-arrow-up</v-icon>
-                    </v-btn>
-                    <v-btn large depressed color="primary" :value="true">
-                      <v-icon>mdi-arrow-down</v-icon>
-                    </v-btn>
-                  </v-btn-toggle>
-                </template>
               </v-toolbar>
             </template>
-
             <template v-slot:default="props">
-              <v-row>
+              <v-row class="mx-0">
                 <v-col
                   v-for="item in props.items"
                   :key="item.username"
@@ -90,7 +78,7 @@
             <template v-slot:footer>
               <v-row
                 v-if="numberOfPages > 1"
-                class="mt-2"
+                class="mt-2 py-2 pt-2"
                 align="center"
                 justify="center"
               >
@@ -101,6 +89,7 @@
                 <v-btn
                   fab
                   dark
+                  x-small
                   color="primary darken-2"
                   class="mr-1"
                   @click="formerPage"
@@ -191,10 +180,7 @@ export default class Admin extends Vue {
   }
   public async getStudents(): Promise<void> {
     this.uuidsLoading = true;
-    let pagination = await this.$api.getStudents(
-      this.itemsPerPage * (this.page - 1),
-      this.itemsPerPage
-    );
+    let pagination = await this.$api.getStudents(0, 3);
     this.students = pagination.results;
     this.uuidsLoading = false;
   }
