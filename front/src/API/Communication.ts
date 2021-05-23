@@ -4,6 +4,7 @@ import { Student } from "@/model/IStudent";
 import { IProject } from "@/model/IProject";
 import { Image } from "@/model/IImage";
 import { Pagination } from "@/model/Pagination";
+import { SERVER_ADDRESS } from "@/config";
 
 export class Communication {
   private token?: string;
@@ -11,7 +12,7 @@ export class Communication {
 
   constructor() {
     this.axiosServer = axios.create({
-      baseURL: "http://localhost:8083/api/v1",
+      baseURL: `${SERVER_ADDRESS}/api/v1`,
     });
     this.setToken(localStorage.getItem("token") ?? "");
   }

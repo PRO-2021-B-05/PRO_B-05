@@ -105,8 +105,10 @@ export default class Profil extends Vue {
   }
   public async getProjects(): Promise<void> {
     this.projectsLoading = true;
-    let pagination = (
-      await this.$api.getStudentProjects(this.$route.params.uuid, 0, 20)
+    let pagination = await this.$api.getStudentProjects(
+      this.$route.params.uuid,
+      0,
+      20
     );
     this.projects = pagination.results;
     this.projectsLoading = false;

@@ -68,11 +68,11 @@ export default class Discover extends Vue {
       this.nProjects * (this.page - 1),
       this.nProjects
     );
-    this.numberOfPages = (pagination.total - 1) / this.nProjects + 1;
+    this.numberOfPages = Math.floor((pagination.total - 1) / this.nProjects + 1);
     this.projects = pagination.results;
     this.projectsLoading = false;
   }
-  public async mounted(): Promise<void> {
+  public async beforeMount(): Promise<void> {
     await this.getProjects();
   }
 }

@@ -68,7 +68,7 @@ export default class SmallProject extends Vue {
   }
   public async deleteProject(): Promise<void> {
     if (!this.project) return;
-    if (!this.project.userId) return;
+    if (!this.project.student.uuid) return;
     await this.$api.sendDeleteProject(this.project.uuid);
     this.$emit("delete");
   }
