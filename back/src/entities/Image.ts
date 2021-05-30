@@ -24,7 +24,7 @@ export class Image {
   @Groups('image.show')
   get url() {
     if (!this.project) return '';
-    return `https://s3.studimax.ch/start/${this.project.uuid}/${this.uuid}/original`;
+    return `${process.env.BASE_URL_IMAGE}/${this.project.uuid}/${this.uuid}/original`;
   }
 
   set url(value: string) {}
@@ -34,7 +34,7 @@ export class Image {
   @Groups('image.show')
   get thumbnailUrl() {
     if (!this.project) return '';
-    return `https://s3.studimax.ch/start/${this.project.uuid}/${this.uuid}/thumbnail`;
+    return `${process.env.BASE_URL_IMAGE}/${this.project.uuid}/${this.uuid}/thumbnail`;
   }
 
   set thumbnailUrl(value: string) {}

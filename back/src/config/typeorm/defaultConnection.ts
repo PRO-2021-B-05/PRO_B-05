@@ -10,9 +10,9 @@ export default (): ConnectionOptions => ({
   database: process.env.DATABASE_DB,
   synchronize: true,
   logging: process.env.DATABASE_LOGIN === 'true',
-  entities: ['${rootDir}/entities/**/*.ts'],
-  migrations: ['${rootDir}/migration/**/*.ts'],
-  subscribers: ['${rootDir}/subscriber/**/*.ts'],
+  entities: ['${rootDir}/entities/**/*.{js,ts}'],
+  migrations: ['${rootDir}/migration/**/*.{js,ts}'],
+  subscribers: ['${rootDir}/subscriber/**/*.{js,ts}'],
   cli: {
     entitiesDir: '${rootDir}/entity',
     migrationsDir: '${rootDir}/migration',

@@ -1,6 +1,9 @@
 version: '3.3'
+
 services:
-  server:
+  backend:
+    depends_on:
+      - mariadb
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -8,9 +11,20 @@ services:
         - http_proxy
         - https_proxy
         - no_proxy
-    image: streamboard-appstore/server:latest
+    image: start/server:latest
+    env_file: backend.env
     ports:
       - "8081:8081"
     stdin_open: true  # -i
     tty: true         # -t
 
+  mariadb:
+    image: 'linuxserver/mariadb'
+    env_file: mariadb.env
+    ports:
+      - 3306:3306
+  sms3:
+    image: bitnami/minio:latest
+    env_file: minio.env
+    ports:
+      - 9000:9000

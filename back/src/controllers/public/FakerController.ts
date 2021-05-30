@@ -20,7 +20,7 @@ export class FakerController {
 
   @Get('/students')
   async populateDbStudents() {
-    for (let i = 0; i < 100; ++i) {
+    for (let i = 0; i < 20; ++i) {
       const student = new Student();
       student.firstname = faker.name.firstName();
       student.lastname = faker.name.lastName();
@@ -28,7 +28,7 @@ export class FakerController {
         student.firstname,
         student.lastname
       );
-      student.description = faker.lorem.paragraph(255);
+      student.description = faker.commerce.productDescription();
       student.password = await bcrypt.hash('password', 10);
       await this.studentRepository.save(student);
     }
@@ -37,10 +37,10 @@ export class FakerController {
   @Get('/projects')
   async populateDbProjects() {
     const students = await this.studentRepository.find();
-    for (let i = 0; i < 100; ++i) {
+    for (let i = 0; i < 20; ++i) {
       const project = new Project();
-      project.title = faker.lorem.paragraph(1);
-      project.description = faker.lorem.paragraph(255);
+      project.title = faker.commerce.productName();
+      project.description = faker.commerce.productDescription();
       project.student = students[Math.floor(Math.random() * students.length)];
       await this.projectRepository.save(project);
     }
@@ -53,53 +53,42 @@ export class FakerController {
     const url = 'https://picsum.photos/550/400';
 
     const nbImages = 3;
-    const promises: Promise<void>[] = [];
-    let addedImages = 0;
     for (const project of projects) {
       for (let i = 0; i < nbImages - project.images.length; ++i) {
-        promises.push(
-          new Promise(resolve => {
-            request({url, encoding: null}, async (err, resp, buffer) => {
-              if (err) return;
-              addedImages++;
-              const createdImage = await this.imageRepository.save({
-                project,
-                title: faker.commerce.productName(),
-                description: faker.commerce.productDescription(),
-              });
-
-              await this.s3.putFile(
-                'start',
-                `${project.uuid}/${createdImage.uuid}/original`,
-                buffer,
-                {
-                  'Content-Type': Jimp.MIME_JPEG,
-                }
-              );
-
-              const thumbnail = await Jimp.read(buffer);
-              thumbnail.resize(250, Jimp.AUTO);
-              const bufferResized = await thumbnail.getBufferAsync(
-                Jimp.MIME_PNG
-              );
-
-              await this.s3.putFile(
-                'start',
-                `${project.uuid}/${createdImage.uuid}/thumbnail`,
-                bufferResized,
-                {
-                  'Content-Type': Jimp.MIME_PNG,
-                }
-              );
-              resolve();
+        await new Promise<void>(resolve => {
+          request({url, encoding: null}, async (err, resp, buffer) => {
+            if (err) return;
+            const createdImage = await this.imageRepository.save({
+              project,
+              title: faker.commerce.productName(),
+              description: faker.commerce.productDescription(),
             });
-          })
-        );
+
+            await this.s3.putFile(
+              'start',
+              `${project.uuid}/${createdImage.uuid}/original`,
+              buffer,
+              {
+                'Content-Type': Jimp.MIME_JPEG,
+              }
+            );
+
+            const thumbnail = await Jimp.read(buffer);
+            thumbnail.resize(250, Jimp.AUTO);
+            const bufferResized = await thumbnail.getBufferAsync(Jimp.MIME_PNG);
+
+            await this.s3.putFile(
+              'start',
+              `${project.uuid}/${createdImage.uuid}/thumbnail`,
+              bufferResized,
+              {
+                'Content-Type': Jimp.MIME_PNG,
+              }
+            );
+            resolve();
+          });
+        });
       }
     }
-
-    return Promise.allSettled(promises).then(() => ({
-      addedImages,
-    }));
   }
 }
