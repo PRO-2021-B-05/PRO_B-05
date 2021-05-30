@@ -1,11 +1,11 @@
 <template>
   <div class="Admin">
-    <v-container>
+    <v-container v-if="admin">
       <heading1> Admin </heading1>
       <v-breadcrumbs light />
-      <v-card>
+      <v-container>
         <v-btn
-          class="my-3 mx-3"
+          class="my-4 mx-4"
           color="primary"
           dark
           outlined
@@ -27,7 +27,7 @@
             hide-default-footer
           >
             <template v-slot:header>
-              <v-toolbar dark color="primary darken-1" class="mb-1">
+              <v-toolbar dark color="primary darken-1" class="mx-1 mb-4">
                 <v-text-field
                   v-model="search"
                   dense
@@ -38,22 +38,10 @@
                   label="Search"
                   placeholder="Student Name"
                 ></v-text-field>
-                <template v-if="$vuetify.breakpoint.mdAndUp">
-                  <v-spacer></v-spacer>
-                  <v-btn-toggle v-model="sortDesc" mandatory>
-                    <v-btn large depressed color="primary" :value="false">
-                      <v-icon>mdi-arrow-up</v-icon>
-                    </v-btn>
-                    <v-btn large depressed color="primary" :value="true">
-                      <v-icon>mdi-arrow-down</v-icon>
-                    </v-btn>
-                  </v-btn-toggle>
-                </template>
               </v-toolbar>
             </template>
-
             <template v-slot:default="props">
-              <v-row>
+              <v-row class="mx-0">
                 <v-col
                   v-for="item in props.items"
                   :key="item.username"
@@ -61,34 +49,26 @@
                   sm="6"
                   md="4"
                   lg="3"
+                  class="px-1 py-1"
                 >
                   <v-card>
                     <v-card-text class="px-4 pt-2 pb-2">
-                      <v-card-title>
-                        {{ item.firstname }} {{ item.lastname }}
+                      <v-card-title class="px-0">
+                        {{ item.lastname }} {{ item.firstname }}
                       </v-card-title>
                       <v-divider />
-                      <v-list dense>
-                        <v-list-item
-                          dense
-                          v-for="(key, index) in filteredKeys"
-                          :key="index"
-                        >
-                          <v-list-item-content
-                            :class="{ 'primary--text small': sortBy === key }"
-                          >
-                            {{ key }} : {{ item[key.toLowerCase()] }}
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-container class="pt-0 pb-0 text-right">
-                          <v-btn @click="deleteStudent(item.uuid)" icon>
+                      <v-container class="pt-0 pb-0">
+                        <v-row class="py-4">
+                          <div class="subtitle-1">{{ item.username }}</div>
+                          <v-spacer />
+                          <v-btn @click="deleteStudent(item.uuid)" icon small>
                             <v-icon> mdi-delete </v-icon>
                           </v-btn>
-                          <v-btn @click="modifyUser(item)" icon>
+                          <v-btn @click="modifyUser(item)" icon small>
                             <v-icon> mdi-pencil </v-icon>
                           </v-btn>
-                        </v-container>
-                      </v-list>
+                        </v-row>
+                      </v-container>
                     </v-card-text>
                   </v-card>
                 </v-col>
@@ -98,7 +78,7 @@
             <template v-slot:footer>
               <v-row
                 v-if="numberOfPages > 1"
-                class="mt-2"
+                class="mt-2 py-2 pt-2"
                 align="center"
                 justify="center"
               >
@@ -109,6 +89,7 @@
                 <v-btn
                   fab
                   dark
+                  x-small
                   color="primary darken-2"
                   class="mr-1"
                   @click="formerPage"
@@ -116,6 +97,7 @@
                   <v-icon>mdi-chevron-left</v-icon>
                 </v-btn>
                 <v-btn
+                  x-small
                   fab
                   dark
                   color="primary darken-2"
@@ -128,7 +110,7 @@
             </template>
           </v-data-iterator>
         </v-container>
-      </v-card>
+      </v-container>
     </v-container>
     <CRUD_User
       :crudAction="crudAction"
@@ -145,7 +127,6 @@ import { Component, Vue } from "vue-property-decorator";
 import Header from "@/components/Header.vue";
 import Heading1 from "@/components/Heading1.vue";
 import CRUD_User from "@/components/CRUD_User.vue";
-import { UserAPI } from "@/model/IUserAPI";
 import { Student } from "@/model/IStudent";
 
 @Component({
@@ -160,11 +141,12 @@ export default class Admin extends Vue {
     lastname: "",
     description: "",
   };
+  private admin = false;
   private crudAction: "modify" | "create" = "modify";
   private currentUser = this.blankUser;
-  private infos?: UserAPI = undefined;
   private overlay = false;
   private crudUser = "";
+  // --------------------- méthodes crud users ----------------------
   public createUser(): void {
     this.overlay = true;
     this.crudUser = "Create User";
@@ -178,14 +160,12 @@ export default class Admin extends Vue {
     this.crudAction = "modify";
   }
   private uuidsLoading = true;
-  private usersLoading = true;
-  private uuids?: { uuid: string }[] | null;
   private students: Student[] = [];
   private keys = ["username", "firstname", "lastname"];
   private search = "";
   private sortDesc = false;
   private page = 1;
-  private itemsPerPage = 24;
+  private itemsPerPage = 20;
   private sortBy = "id";
   public get filteredKeys(): string[] {
     return this.keys.filter((key) => key !== "name");
@@ -199,27 +179,25 @@ export default class Admin extends Vue {
   public formerPage(): void {
     if (this.page - 1 >= 1) this.page -= 1;
   }
-  public async getStudentsUuids(): Promise<void> {
-    this.uuidsLoading = true;
-    this.uuids = await this.$api.getStudentsUuid();
-    this.uuidsLoading = false;
-  }
   public async getStudents(): Promise<void> {
-    this.usersLoading = true;
-    if (this.uuids && this.uuids.length > 0) {
-      console.log("nb students : " + this.uuids.length);
-      for (let i = 0; i < this.uuids.length; ++i) {
-        this.students.push(...[await this.$api.getStudent(this.uuids[i].uuid)]);
-      }
-    }
-    this.usersLoading = false;
+    this.uuidsLoading = true;
+    let pagination = await this.$api.getStudents(0, 1000);
+    this.students = pagination.results;
+    this.uuidsLoading = false;
   }
   public async deleteStudent(uuid: string): Promise<void> {
     await this.$api.deleteStudent(uuid);
+    this.$router.go(0);
   }
   public async mounted(): Promise<void> {
-    await this.getStudentsUuids();
-    await this.getStudents();
+    this.admin = await this.$api.isAdmin();
+    if (!this.admin) {
+      await this.$router.push({
+        name: "ErrorPage",
+      });
+    } else {
+      await this.getStudents();
+    }
   }
 }
 </script>

@@ -5,7 +5,9 @@ import Profil from "../views/Profil.vue";
 import Project from "@/views/Project.vue";
 import Events from "@/views/Events.vue";
 import CreateProject from "../views/CreateProject.vue";
+import ModifyProject from "../views/ModifyProject.vue";
 import Admin from "@/views/Admin.vue";
+import ErrorPage from "@/views/ErrorPage.vue";
 
 Vue.use(VueRouter);
 
@@ -36,9 +38,19 @@ const routes: Array<RouteConfig> = [
     component: CreateProject,
   },
   {
+    path: "/modifyProject/:uuid",
+    name: "ModifyProject",
+    component: ModifyProject,
+  },
+  {
     path: "/events",
     name: "Events",
     component: Events,
+  },
+  {
+    path: "/errorPage",
+    name: "ErrorPage",
+    component: ErrorPage,
   },
 ];
 

@@ -39,7 +39,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { ILogin } from "@/model/Login";
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosError } from "axios";
 
 @Component({
   components: {},
@@ -48,21 +48,33 @@ export default class Login extends Vue {
   private login: ILogin = { username: "", password: "" };
   private error = false;
   @Prop({ default: false }) private overlay!: boolean;
-  close(): void {
+  public close(): void {
     this.error = false;
     this.$emit("close");
   }
-  send(): void {
-    this.$api
+  public async send(): Promise<void> {
+    let connect = false;
+    await this.$api
       .sendLogin(this.login)
-      .then((response: AxiosResponse) => {
-        this.$emit("connected");
-        this.close();
+      .then(() => {
+        connect = true;
       })
       .catch((error: AxiosError) => {
         this.error = true;
         console.log(error);
       });
+    if (connect) {
+      const isAdmin = await this.$api.isAdmin();
+      if (isAdmin) {
+        this.$emit("admin");
+        await this.$router.push({
+          name: "Admin",
+        });
+      } else {
+        this.$emit("connected");
+      }
+      this.close();
+    }
   }
 }
 </script>

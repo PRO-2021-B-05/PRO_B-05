@@ -2,22 +2,15 @@
   <v-overlay :value="overlay">
     <v-card color="white" light>
       <v-app-bar color="white" flat>
-        <v-card-title> {{ title }} </v-card-title>
+        <v-card-title> Modify Description </v-card-title>
       </v-app-bar>
       <v-form>
         <v-container>
           <v-col>
-            <v-text-field label="First Name" v-model="user.firstname" />
-            <v-text-field label="Last Name" v-model="user.lastname" />
-            <v-text-field
-              label="Password"
-              type="password"
-              v-model="user.password"
-            />
-            <v-text-field
-              label="Confirm Password"
-              type="password"
-              v-model="passwordConfirm"
+            <v-textarea
+              v-model="descriptionText"
+              label="Project Description"
+              required
             />
             <v-row class="mt-2">
               <v-btn class="mr-2" outlined elevation="2" @click="close">
@@ -44,11 +37,8 @@ import { Student } from "@/model/IStudent";
 @Component({
   components: {},
 })
-export default class CRUD_User extends Vue {
-  private passwordConfirm = "";
+export default class ModifyDescription extends Vue {
   @Prop({ default: false }) private overlay!: boolean;
-  @Prop({ default: null }) private crudAction?: "modify" | "create";
-  @Prop({ default: "Create User" }) private title!: string;
   @Prop({
     default: {
       uuid: "",
@@ -60,25 +50,29 @@ export default class CRUD_User extends Vue {
     },
   })
   private user!: Student;
+  private descriptionText = "";
+
   public close(): void {
     this.$emit("close");
   }
   public async confirm(): Promise<void> {
     try {
-      if (this.crudAction != null) {
-        switch (this.crudAction) {
-          case "create":
-            await this.$api.sendCreateStudent(this.user);
-            break;
-          case "modify":
-            await this.$api.sendModifyStudent(this.user);
-            break;
-        }
+      const response = await this.$api.modifyDescription(
+        this.user.firstname,
+        this.user.lastname,
+        this.descriptionText
+      );
+      if (response.description != this.descriptionText) {
+        this.$emit("updated");
       }
+      this.$router.go(0);
       this.close();
     } catch (error) {
       console.log(error.response.data);
     }
+  }
+  public mounted(): void {
+    this.descriptionText = this.user.description ?? "";
   }
 }
 </script>

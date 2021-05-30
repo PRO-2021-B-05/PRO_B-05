@@ -63,6 +63,7 @@ export default class Project extends Vue {
   private project?: IProject;
   private projectInfo: INavInfo | null = null;
   private images: Image[] = [];
+  private totalImages = 0;
 
   public async getProject(): Promise<void> {
     this.project = await this.$api.getProject(this.uuid);
@@ -79,8 +80,13 @@ export default class Project extends Vue {
   }
 
   public async getImages(): Promise<void> {
-    this.images = await this.$api.getProjectImages(this.uuid);
-    console.log(this.images[0].url);
+    let pagination = await this.$api.getProjectImages(
+      this.uuid,
+      0,
+      this.totalImages == 0 ? 200 : this.totalImages
+    );
+    this.images = pagination.results;
+    this.totalImages = pagination.total;
   }
 
   public async mounted(): Promise<void> {

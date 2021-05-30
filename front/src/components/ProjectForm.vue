@@ -31,18 +31,18 @@
               </v-row>
               <v-row
                 v-for="image in images"
-                :key="image.src"
+                :key="image.url"
                 class="d-flex justify-center"
               >
                 <v-card class="my-1 pa-0 d-none d-sm-block">
                   <v-row>
                     <v-col sm="3" md="4" lg="3">
                       <v-card class="pa-0" elevation="0">
-                        <v-img :src="image.src" height="75px"> </v-img>
+                        <v-img :src="image.url" height="75px"></v-img>
                       </v-card>
                     </v-col>
                     <v-col sm="7" md="5" lg="7" class="pr-0">
-                      <v-text-field label="Image title"></v-text-field>
+                      <v-text-field label="Image title" v-model="image.title"></v-text-field>
                     </v-col>
                     <v-col sm="2" md="3" lg="2" class="d-flex justify-center">
                       <div class="d-flex flex-column justify-center">
@@ -62,7 +62,7 @@
                 <v-card class="my-1 pa-0 d-sm-none">
                   <v-container>
                     <v-row>
-                      <v-img :src="image.src" height="150px"> </v-img>
+                      <v-img :src="image.url" height="150px"></v-img>
                     </v-row>
                   </v-container>
                   <v-container>
@@ -91,11 +91,18 @@
           </v-col>
         </v-row>
         <v-divider class="mb-6" />
+        <v-row class="mb-2">
+          <v-spacer />
+          <div class="subtitle-1 red--text" v-if="error">
+            Error : Title, description or image files are missing.
+          </div>
+          <v-spacer />
+        </v-row>
         <v-row>
           <v-spacer />
-          <v-btn color="primary" outlined>
+          <v-btn color="primary" outlined @click="sendProject">
             <v-icon>mdi-folder-plus-outline</v-icon>
-            Create
+            {{ crudText }}
           </v-btn>
           <v-spacer />
         </v-row>
@@ -105,45 +112,125 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
-type ImageObj = { file: File; src: string; description?: string };
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { Image } from "@/model/IImage";
 
 @Component({
   components: {},
 })
 export default class ProjectForm extends Vue {
-  test: File | null = null;
-  projectName: string | null = null;
-  projectDescription: string | null = null;
-  tmpFiles: File[] = [];
-  images: ImageObj[] = [];
+  @Prop({ default: false }) private modify!: boolean;
+  @Prop({ default: "" }) private projectUuid!: string;
+  private crudText: "Modify" | "Create" = "Modify";
+  private projectName = "";
+  private projectDescription = "";
+  //ancien trucs images qui ne sont plus utilisés
+  private tmpFiles: File[] = [];
+  //
+  private imagesToDelete: Image[] = [];
+  private images: Image[] = [];
+  private error = false;
 
-  load(imagesLoaded: File[]): void {
-    const filteredFiles = imagesLoaded.filter((image) => {
-      return (
+  // ------------------------------ méthodes -----------------------------
+  public load(imagesLoaded: File[]): void {
+    const filteredFiles = imagesLoaded.filter(
+      (image) =>
         image && (image.type === "image/png" || image.type === "image/jpeg")
-      );
-    });
-    const mappedFiles = filteredFiles.map((image) => {
-      return { file: image, src: URL.createObjectURL(image) };
-    });
+    );
+    const mappedFiles = filteredFiles.map((image) => ({
+      file: image,
+      url: URL.createObjectURL(image),
+    }));
     this.images.push(...mappedFiles);
     this.tmpFiles = [];
   }
 
-  deleteImage(image: ImageObj): void {
-    const index = this.images.findIndex((i) => i === image);
-    this.images.splice(index, 1);
-    URL.revokeObjectURL(image.src);
+  public deleteImage(image: Image): void {
+    if (image.uuid) {
+      this.imagesToDelete.push(image);
+    }
+    URL.revokeObjectURL(image.url);
+    this.images = this.images.filter((i) => i !== image);
   }
 
-  destroy(): void {
+  public destroy(): void {
     this.images.forEach((image) => {
-      URL.revokeObjectURL(image.src);
+      URL.revokeObjectURL(image.url);
     });
+  }
+
+  public async sendProject(): Promise<void> {
+    if (
+      this.projectDescription != "" &&
+      this.projectName != "" &&
+      this.images.length > 0
+    ) {
+      if (this.modify) {
+        await this.modifyProject();
+      } else {
+        await this.createProject();
+      }
+      await this.$router.push({
+        name: "Project",
+        params: {
+          uuid: this.projectUuid,
+        },
+      });
+    } else {
+      this.error = true;
+    }
+  }
+
+  private async sendDeleteImagesToServer(projectUuid: string): Promise<void> {
+    console.log(this.images);
+    for (const image of this.imagesToDelete) {
+      await this.$api.deleteImage(projectUuid, image.uuid);
+    }
+    for (const image of this.images) {
+      if (!image.file) continue;
+      await this.$api.sendImage(projectUuid, {
+        file: image.file,
+        title: image.title ?? "",
+      });
+    }
+  }
+
+  private async createProject(): Promise<void> {
+    const userUUID = (await this.$api.getMyProfile()).uuid;
+    const createdProjectUUID = await this.$api.sendCreateProject(userUUID, {
+      title: this.projectName,
+      description: this.projectDescription,
+    });
+    await this.sendDeleteImagesToServer(createdProjectUUID);
+    this.projectUuid = createdProjectUUID;
+  }
+
+  private async modifyProject(): Promise<void> {
+    await this.$api.sendModifyProject(this.projectUuid, {
+      title: this.projectName,
+      description: this.projectDescription,
+    });
+    // send new
+    await this.sendDeleteImagesToServer(this.projectUuid);
+  }
+
+  public async mounted(): Promise<void> {
+    if (this.modify) {
+      this.crudText = "Modify";
+      const project = await this.$api.getProject(this.projectUuid);
+      this.projectName = project.title;
+      this.projectDescription = project.description;
+      let pagination = await this.$api.getProjectImages(
+        this.projectUuid,
+        0,
+        200
+      );
+      const images = pagination.results;
+      // obtenir les images
+      this.images.push(...images);
+    } else {
+      this.crudText = "Create";
+    }
   }
 }
 </script>
-
-<style scoped></style>

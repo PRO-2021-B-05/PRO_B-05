@@ -2,9 +2,9 @@
   <div>
     <v-app-bar color="white" clipped-right app>
       <v-img
-        max-height="50px"
-        max-width="50px"
-        src="https://picsum.photos/id/11/500/300"
+        max-height="35px"
+        max-width="35px"
+        src="@/assets/logo.png"
       ></v-img>
       <v-app-bar-title class="ml-3">
         <div>StArt</div>
@@ -15,20 +15,28 @@
         @click.stop="drawer = !drawer"
       ></v-app-bar-nav-icon>
       <div class="d-none d-lg-block">
-        <v-btn v-for="link in links" :key="link.id" :href="link.address" text>
+        <v-btn v-for="link in links" :key="link.id" :to="link.address" text>
           <v-icon>{{ link.icon }}</v-icon>
           {{ link.name }}
         </v-btn>
-        <span v-if="connected">
-          <v-btn href="/Profil" text>
+        <span v-if="studentConnected || adminConnected">
+          <v-btn @click="loadProfile" text v-if="studentConnected">
             <v-icon>mdi-account-outline</v-icon>
             Profil
+          </v-btn>
+          <v-btn to="/Admin" text v-if="adminConnected">
+            <v-icon>mdi-account-outline</v-icon>
+            Admin
+          </v-btn>
+          <v-btn @click="disconnect" text>
+            <v-icon>mdi-logout</v-icon>
+            Log out
           </v-btn>
         </span>
         <span v-else>
           <v-btn @click="overlay = !overlay" text>
             <v-icon>mdi-login</v-icon>
-            Login
+            Log in
           </v-btn>
         </span>
       </div>
@@ -39,26 +47,39 @@
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
-          <v-list-item v-if="connected" href="/profil">
-            <v-list-item-title>
-              <v-icon>mdi-account-outline</v-icon>
-              Profil
-            </v-list-item-title>
-          </v-list-item>
+          <span v-if="studentConnected || adminConnected">
+            <v-list-item v-if="studentConnected" @click="loadProfile">
+              <v-list-item-title>
+                <v-icon>mdi-account-outline</v-icon>
+                Profil
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item v-if="adminConnected" to="/admin">
+              <v-list-item-title>
+                <v-icon>mdi-account-outline</v-icon>
+                admin
+              </v-list-item-title>
+            </v-list-item>
+          </span>
           <v-list-item v-else @click="(overlay = !overlay), (drawer = false)">
             <v-list-item-title>
               <v-icon>mdi-login</v-icon>
-              Login
+              Log in
             </v-list-item-title>
           </v-list-item>
-          <v-list-item
-            v-for="link in links"
-            :key="link.id"
-            :href="link.address"
-          >
+          <v-list-item v-for="link in links" :key="link.id" :to="link.address">
             <v-list-item-title>
               <v-icon>{{ link.icon }}</v-icon>
               {{ link.name }}
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item
+            v-if="studentConnected || adminConnected"
+            @click="disconnect"
+          >
+            <v-list-item-title>
+              <v-icon>mdi-logout</v-icon>
+              Log out
             </v-list-item-title>
           </v-list-item>
         </v-list-item-group>
@@ -67,7 +88,8 @@
     <Login
       :overlay="overlay"
       @close="overlay = false"
-      @connected="connected = true"
+      @connected="connect"
+      @admin="adminConnect"
     />
   </div>
 </template>
@@ -81,7 +103,7 @@ import Login from "@/components/Login.vue";
   components: { Login },
 })
 export default class Header extends Vue {
-  links = [
+  private links = [
     {
       id: 1,
       name: "Discover",
@@ -95,12 +117,47 @@ export default class Header extends Vue {
       address: "/events",
     },
   ];
-  overlay = false;
-  drawer = false;
-  group = null;
-  connected = false;
-  public async mounted(): void {
-    this.connected = await this.$api.isConnected();
+  private overlay = false;
+  private drawer = false;
+  private group = null;
+  private studentConnected = false;
+  private adminConnected = false;
+  private profileUuid = "";
+
+  public async loadProfile(): Promise<void> {
+    if (this.studentConnected) {
+      this.profileUuid = (await this.$api.getMyProfile()).uuid;
+      await this.$router.push({
+        name: "Profil",
+        params: {
+          uuid: this.profileUuid,
+        },
+      });
+      await this.$router.go(0);
+    }
+  }
+  public async mounted(): Promise<void> {
+    let connect = await this.$api.isConnected();
+    this.adminConnected = await this.$api.isAdmin();
+    this.studentConnected = connect && !this.adminConnected;
+    if (this.studentConnected) {
+      this.profileUuid = (await this.$api.getMyProfile()).uuid;
+    }
+  }
+  public async connect(): Promise<void> {
+    this.studentConnected = true;
+    this.profileUuid = (await this.$api.getMyProfile()).uuid;
+  }
+  public async adminConnect(): Promise<void> {
+    this.adminConnected = true;
+  }
+  public disconnect(): void {
+    this.$api.clearToken();
+    this.studentConnected = false;
+    this.adminConnected = false;
+    this.$router.push({
+      name: "Discover",
+    });
   }
 }
 </script>

@@ -54,15 +54,17 @@
             />
           </div>
           <SmallProject
+            @delete="getProjects"
             :authorDisplay="false"
             :descriptionDisplay="true"
+            :modify="modify"
             v-else
             :project="projects[id - 1]"
           />
         </v-col>
       </v-row>
     </v-container>
-    <NavInfo v-if="authorInfo" :info="authorInfo" />
+    <NavInfo v-if="authorInfo" :info="authorInfo" :user="student" :modify="modify" />
   </div>
 </template>
 
@@ -74,7 +76,7 @@ import NavInfo from "@/components/NavInfo.vue";
 import SmallProject from "@/components/SmallProject.vue";
 import { Student } from "@/model/IStudent";
 import { INavInfo } from "@/model/INavInfo";
-import { SimpleProject } from "@/model/SimpleProject";
+import { IProject } from "@/model/IProject";
 
 @Component({
   components: {
@@ -84,42 +86,48 @@ import { SimpleProject } from "@/model/SimpleProject";
   },
 })
 export default class Profil extends Vue {
-  private modify = true;
+  private modify = false;
   private uuid?: string;
-  private pageLimit = 12;
-  private nbLoaded = this.pageLimit;
-  private pageLoaded = 1;
-  private projects: SimpleProject[] = [];
+  private projects: IProject[] = [];
   private projectsLoading = true;
+  private student?: Student;
+
   public async getStudent(uuid: string): Promise<void> {
-    const student: Student = await this.$api.getStudent(uuid);
+    this.student = await this.$api.getStudent(uuid);
     this.authorInfo = {
-      title: `${student.firstname} ${student.lastname}`,
+      title: `${this.student.firstname} ${this.student.lastname}`,
       section: [
         {
           id: 1,
           title: "description",
-          content: student.description,
+          content: this.student.description ? this.student.description : "",
         },
       ],
     };
   }
-
   public async getProjects(): Promise<void> {
     this.projectsLoading = true;
-    this.projects = await this.$api.getStudentProjects(this.uuid);
+    let pagination = await this.$api.getStudentProjects(
+      this.$route.params.uuid,
+      0,
+      20
+    );
+    this.projects = pagination.results;
     this.projectsLoading = false;
   }
-
   public async mounted(): Promise<void> {
-    //this.scroll();
     this.uuid = this.$route.params.uuid;
-    await this.getProjects();
+    let myUuid = "";
+    if (await this.$api.isConnected()) {
+      myUuid = (await this.$api.getMyProfile()).uuid;
+    }
+    if (this.$route.params.uuid === myUuid) {
+      this.modify = true;
+    }
     await this.getStudent(this.uuid);
+    await this.getProjects();
   }
 
   private authorInfo: INavInfo | null = null;
 }
 </script>
-
-<style scoped></style>
