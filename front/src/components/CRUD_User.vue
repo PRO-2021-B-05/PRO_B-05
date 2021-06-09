@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <v-overlay :value="overlay">
     <v-card color="white" light>
