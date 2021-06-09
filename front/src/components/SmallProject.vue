@@ -21,12 +21,7 @@
       </div>
     </v-card>
     <v-card flat class="px-1 pb-4" v-if="modify">
-      <v-btn
-        text
-        color="warning"
-        small
-        :to="`/modifyProject/${project.uuid}`"
-      >
+      <v-btn text color="warning" small :to="`/modifyProject/${project.uuid}`">
         <v-icon>mdi-pencil</v-icon>
         Modify Project
       </v-btn>
@@ -53,12 +48,6 @@ export default class SmallProject extends Vue {
   private thumbnailURL? = "";
   public async updateImages(): Promise<void> {
     this.thumbnailURL = this.project?.thumbnailUrl;
-    /*const images = await this.$api.getProjectImages(this.project?.uuid);
-    if (images.length) {
-      this.thumbnailURL = images[0].thumbnailUrl;
-    } else {
-      this.thumbnailURL = "";
-    }*/
   }
   public async beforeUpdate(): Promise<void> {
     await this.updateImages();
