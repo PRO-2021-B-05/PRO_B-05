@@ -161,34 +161,48 @@ export default class Admin extends Vue {
   }
   private uuidsLoading = true;
   private students: Student[] = [];
-  private keys = ["username", "firstname", "lastname"];
   private search = "";
   private sortDesc = false;
   private page = 1;
   private itemsPerPage = 20;
   private sortBy = "id";
-  public get filteredKeys(): string[] {
-    return this.keys.filter((key) => key !== "name");
-  }
+  /**
+   * renvoie le nombre de pages
+   */
   get numberOfPages(): number {
     return Math.ceil(this.students.length / this.itemsPerPage);
   }
+  /**
+   * passer à la page suivante
+   */
   public nextPage(): void {
     if (this.page + 1 <= this.numberOfPages) this.page += 1;
   }
+  /**
+   * passer à la page précédente
+   */
   public formerPage(): void {
     if (this.page - 1 >= 1) this.page -= 1;
   }
+  /**
+   * rajout d'étudiant
+   */
   public async getStudents(): Promise<void> {
     this.uuidsLoading = true;
     let pagination = await this.$api.getStudents(0, 1000);
     this.students = pagination.results;
     this.uuidsLoading = false;
   }
+  /**
+   * suppression d'étudiant
+   */
   public async deleteStudent(uuid: string): Promise<void> {
     await this.$api.deleteStudent(uuid);
     this.$router.go(0);
   }
+  /**
+   * initialisation de la page, avec chargement de tous les étudiants
+   */
   public async mounted(): Promise<void> {
     this.admin = await this.$api.isAdmin();
     if (!this.admin) {
