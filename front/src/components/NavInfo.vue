@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <div>
     <v-navigation-drawer app right clipped>
@@ -42,6 +43,10 @@ import { Student } from "@/model/IStudent";
 @Component({
   components: { ModifyDescription },
 })
+
+/**
+ * Gère le composant NavInfo : la barre sur la droite de certaines pages affichant des informations
+ */
 export default class NavInfo extends Vue {
   @Prop({ default: false }) private info!: NavInfo;
   @Prop({ default: false }) private modify!: boolean;
@@ -59,7 +64,10 @@ export default class NavInfo extends Vue {
 
   private overlay = false;
 
-  public modifyDescription() {
+  /**
+   * Affiche le formulaire pour modifier la description
+   */
+  public modifyDescription(): void {
     this.overlay = true;
   }
 }
