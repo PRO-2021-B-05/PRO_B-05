@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <div class="Discover">
     <v-container>
@@ -51,6 +52,9 @@ import SmallProject from "@/components/SmallProject.vue";
 import Heading1 from "@/components/Heading1.vue";
 import { IProject } from "@/model/IProject";
 
+/**
+ * Page Discover
+ */
 @Component({
   components: { Heading1, SmallProject, Header },
 })
@@ -62,16 +66,26 @@ export default class Discover extends Vue {
   private projects: IProject[] = [];
   private projectsLoading = true;
   // méthodes
+
+  /**
+   * Récupère les informations des projets
+   */
   public async getProjects(): Promise<void> {
     this.projectsLoading = true;
     let pagination = await this.$api.getProjects(
       this.nProjects * (this.page - 1),
       this.nProjects
     );
-    this.numberOfPages = Math.floor((pagination.total - 1) / this.nProjects + 1);
+    this.numberOfPages = Math.floor(
+      (pagination.total - 1) / this.nProjects + 1
+    );
     this.projects = pagination.results;
     this.projectsLoading = false;
   }
+
+  /**
+   * Actions faites avant création de la page
+   */
   public async beforeMount(): Promise<void> {
     await this.getProjects();
   }

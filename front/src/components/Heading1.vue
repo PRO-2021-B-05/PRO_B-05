@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <v-row>
     <v-col xs="2" md="4">
@@ -15,6 +16,9 @@
 </template>
 
 <script>
+/**
+ * Composant des titres de chaque page
+ */
 export default {
   name: "Heading1",
 };

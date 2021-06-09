@@ -11,6 +11,9 @@ import ErrorPage from "@/views/ErrorPage.vue";
 
 Vue.use(VueRouter);
 
+/**
+ * liste des routes et leurs noms
+ */
 const routes: Array<RouteConfig> = [
   {
     path: "/",

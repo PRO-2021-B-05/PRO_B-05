@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <div>
     <v-navigation-drawer app right clipped>
@@ -9,7 +10,15 @@
         <v-row class="mx-4 my-2">
           <div class="subtitle-1">{{ sect.title }}</div>
           <v-spacer></v-spacer>
-          <v-btn color="primary" outlined fab small elevation="2" v-if="modify" @click="modifyDescription">
+          <v-btn
+            color="primary"
+            outlined
+            fab
+            small
+            elevation="2"
+            v-if="modify"
+            @click="modifyDescription"
+          >
             <v-icon>mdi-pencil-outline</v-icon>
           </v-btn>
         </v-row>
@@ -34,6 +43,10 @@ import { Student } from "@/model/IStudent";
 @Component({
   components: { ModifyDescription },
 })
+
+/**
+ * Gère le composant NavInfo : la barre sur la droite de certaines pages affichant des informations
+ */
 export default class NavInfo extends Vue {
   @Prop({ default: false }) private info!: NavInfo;
   @Prop({ default: false }) private modify!: boolean;
@@ -51,7 +64,10 @@ export default class NavInfo extends Vue {
 
   private overlay = false;
 
-  public modifyDescription() {
+  /**
+   * Affiche le formulaire pour modifier la description
+   */
+  public modifyDescription(): void {
     this.overlay = true;
   }
 }

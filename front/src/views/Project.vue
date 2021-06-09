@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <div>
     <v-container>
@@ -57,6 +58,9 @@ import { Image } from "@/model/IImage";
     NavInfo,
   },
 })
+/**
+ * Page affichan un projet particulier
+ */
 export default class Project extends Vue {
   private uuid?: string;
   private model = 0;
@@ -65,6 +69,9 @@ export default class Project extends Vue {
   private images: Image[] = [];
   private totalImages = 0;
 
+  /**
+   * Récupère les informations du projet
+   */
   public async getProject(): Promise<void> {
     this.project = await this.$api.getProject(this.uuid);
     this.projectInfo = {
@@ -79,6 +86,9 @@ export default class Project extends Vue {
     };
   }
 
+  /**
+   * Récupère les images du projet
+   */
   public async getImages(): Promise<void> {
     let pagination = await this.$api.getProjectImages(
       this.uuid,
@@ -89,6 +99,9 @@ export default class Project extends Vue {
     this.totalImages = pagination.total;
   }
 
+  /**
+   * Actions exècutés avant création de la page
+   */
   public async mounted(): Promise<void> {
     this.uuid = this.$route.params.uuid;
     await this.getProject();

@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <v-container>
     <heading1>Events</heading1>
@@ -13,6 +14,10 @@
 
 <script>
 import Heading1 from "@/components/Heading1";
+
+/**
+ * Page des évènements non implémenté
+ */
 export default {
   name: "Events",
   components: { Heading1 },

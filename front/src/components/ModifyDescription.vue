@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <v-overlay :value="overlay">
     <v-card color="white" light>
@@ -37,6 +38,10 @@ import { Student } from "@/model/IStudent";
 @Component({
   components: {},
 })
+
+/**
+ * Gère le composant Login : formulaire de modification de description
+ */
 export default class ModifyDescription extends Vue {
   @Prop({ default: false }) private overlay!: boolean;
   @Prop({
@@ -52,9 +57,16 @@ export default class ModifyDescription extends Vue {
   private user!: Student;
   private descriptionText = "";
 
+  /**
+   * Gère la fermeture de l'overlay
+   */
   public close(): void {
     this.$emit("close");
   }
+
+  /**
+   * confirme l'action
+   */
   public async confirm(): Promise<void> {
     try {
       const response = await this.$api.modifyDescription(
@@ -71,6 +83,10 @@ export default class ModifyDescription extends Vue {
       console.log(error.response.data);
     }
   }
+
+  /**
+   * Prépare les données avant création du composant
+   */
   public mounted(): void {
     this.descriptionText = this.user.description ?? "";
   }

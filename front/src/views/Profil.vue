@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <div>
     <v-container>
@@ -64,7 +65,12 @@
         </v-col>
       </v-row>
     </v-container>
-    <NavInfo v-if="authorInfo" :info="authorInfo" :user="student" :modify="modify" />
+    <NavInfo
+      v-if="authorInfo"
+      :info="authorInfo"
+      :user="student"
+      :modify="modify"
+    />
   </div>
 </template>
 
@@ -85,6 +91,10 @@ import { IProject } from "@/model/IProject";
     Heading1,
   },
 })
+
+/**
+ * Page profil d'un utilisateur
+ */
 export default class Profil extends Vue {
   private modify = false;
   private uuid?: string;
@@ -92,8 +102,12 @@ export default class Profil extends Vue {
   private projectsLoading = true;
   private student?: Student;
 
+  /**
+   * récupère les informations de l'utilisateur
+   */
   public async getStudent(uuid: string): Promise<void> {
     this.student = await this.$api.getStudent(uuid);
+    if (!this.student) return;
     this.authorInfo = {
       title: `${this.student.firstname} ${this.student.lastname}`,
       section: [
@@ -105,6 +119,10 @@ export default class Profil extends Vue {
       ],
     };
   }
+
+  /**
+   * récupération des projets de l'utilisateur
+   */
   public async getProjects(): Promise<void> {
     this.projectsLoading = true;
     let pagination = await this.$api.getStudentProjects(
@@ -115,6 +133,10 @@ export default class Profil extends Vue {
     this.projects = pagination.results;
     this.projectsLoading = false;
   }
+
+  /**
+   * initialisation du profil avec les informations de l'utilisateur
+   */
   public async mounted(): Promise<void> {
     this.uuid = this.$route.params.uuid;
     let myUuid = "";
