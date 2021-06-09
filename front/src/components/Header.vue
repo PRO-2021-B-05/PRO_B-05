@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <div>
     <v-app-bar color="white" clipped-right app>
@@ -138,6 +139,9 @@ export default class Header extends Vue {
       await this.$router.go(0);
     }
   }
+  /**
+   * Prépare les données avant création du composant
+   */
   public async mounted(): Promise<void> {
     let connect = await this.$api.isConnected();
     this.adminConnected = await this.$api.isAdmin();
@@ -146,6 +150,9 @@ export default class Header extends Vue {
       this.profileUuid = (await this.$api.getMyProfile()).uuid;
     }
   }
+  /**
+   * indique qu'un étudiant est connecté et stocker l'uuid
+   */
   public async connect(): Promise<void> {
     this.studentConnected = true;
     this.profileUuid = (await this.$api.getMyProfile()).uuid;
