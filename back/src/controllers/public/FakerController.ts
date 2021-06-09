@@ -6,6 +6,7 @@ import Jimp from 'jimp';
 import request from 'request';
 import {getRepository} from 'typeorm';
 
+import {Admin} from '../../entities/Admin';
 import {Image} from '../../entities/Image';
 import {Project} from '../../entities/Project';
 import {Student} from '../../entities/Student';
@@ -15,6 +16,7 @@ import {SMS3StorageService} from '../../services/SMS3StorageService';
 export class FakerController {
   @Inject() s3: SMS3StorageService;
   private studentRepository = getRepository(Student);
+  private adminRepository = getRepository(Admin);
   private projectRepository = getRepository(Project);
   private imageRepository = getRepository(Image);
 
@@ -34,6 +36,15 @@ export class FakerController {
     }
   }
 
+  @Get('/admin')
+  async populateDbAdmin() {
+    const admin = new Admin();
+    admin.firstname = faker.name.firstName();
+    admin.lastname = faker.name.lastName();
+    admin.username = 'admin';
+    admin.password = await bcrypt.hash('password', 10);
+    await this.adminRepository.save(admin);
+  }
   @Get('/projects')
   async populateDbProjects() {
     const students = await this.studentRepository.find();
