@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <v-row>
     <v-col>
@@ -42,7 +43,10 @@
                       </v-card>
                     </v-col>
                     <v-col sm="7" md="5" lg="7" class="pr-0">
-                      <v-text-field label="Image title" v-model="image.title"></v-text-field>
+                      <v-text-field
+                        label="Image title"
+                        v-model="image.title"
+                      ></v-text-field>
                     </v-col>
                     <v-col sm="2" md="3" lg="2" class="d-flex justify-center">
                       <div class="d-flex flex-column justify-center">
@@ -118,6 +122,9 @@ import { Image } from "@/model/IImage";
 @Component({
   components: {},
 })
+/**
+ * Gère le composant ProjectForm : formulaire qui créeou modifie les projets
+ */
 export default class ProjectForm extends Vue {
   @Prop({ default: false }) private modify!: boolean;
   @Prop({ default: "" }) private projectUuid!: string;
@@ -132,6 +139,9 @@ export default class ProjectForm extends Vue {
   private error = false;
 
   // ------------------------------ méthodes -----------------------------
+  /**
+   * load les images à partir de l'explorateur de fichier local
+   */
   public load(imagesLoaded: File[]): void {
     const filteredFiles = imagesLoaded.filter(
       (image) =>
@@ -145,6 +155,9 @@ export default class ProjectForm extends Vue {
     this.tmpFiles = [];
   }
 
+  /**
+   * supprime les images chargé dans le navigateur
+   */
   public deleteImage(image: Image): void {
     if (image.uuid) {
       this.imagesToDelete.push(image);
@@ -153,12 +166,20 @@ export default class ProjectForm extends Vue {
     this.images = this.images.filter((i) => i !== image);
   }
 
+  /**
+   * suppression l'URL créé par le navigateur pour une image
+   */
   public destroy(): void {
     this.images.forEach((image) => {
       URL.revokeObjectURL(image.url);
     });
   }
 
+  /**
+   * envoyer un projet
+   * si on est dans l'état modify, alors on supprime les images supprimées et
+   * on envoie les nouvelles
+   */
   public async sendProject(): Promise<void> {
     if (
       this.projectDescription != "" &&
@@ -181,6 +202,9 @@ export default class ProjectForm extends Vue {
     }
   }
 
+  /**
+   * envoyer unde demande de suppression d'images
+   */
   private async sendDeleteImagesToServer(projectUuid: string): Promise<void> {
     console.log(this.images);
     for (const image of this.imagesToDelete) {
