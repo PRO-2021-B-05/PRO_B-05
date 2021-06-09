@@ -55,6 +55,10 @@ export default class ModifyDescription extends Vue {
   public close(): void {
     this.$emit("close");
   }
+
+  /**
+   * confirme l'action
+   */
   public async confirm(): Promise<void> {
     try {
       const response = await this.$api.modifyDescription(
