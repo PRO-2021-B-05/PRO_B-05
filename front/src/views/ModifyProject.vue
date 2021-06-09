@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <v-container>
     <Heading1>Modify Project</Heading1>
@@ -13,6 +14,10 @@ import ProjectForm from "@/components/ProjectForm.vue";
 @Component({
   components: { ProjectForm, Heading1 },
 })
+
+/**
+ * Page de la modification de projet
+ */
 export default class ModifyProject extends Vue {}
 </script>
 
