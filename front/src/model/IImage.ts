@@ -1,3 +1,6 @@
+/**
+ * interface pour les objets image
+ */
 export interface Image {
   uuid?: string;
   file?: File;

@@ -1,3 +1,6 @@
+/**
+ * interface pour représenter des étudiants
+ */
 export interface Student {
   uuid?: string;
   username: string;
