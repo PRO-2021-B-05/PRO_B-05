@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <v-app>
     <Header />
@@ -18,5 +19,9 @@ import Discover from "@/views/Discover.vue";
     Header,
   },
 })
+
+/**
+ * composant d'entrée de l'application vue
+ */
 export default class App extends Vue {}
 </script>
