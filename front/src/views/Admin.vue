@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <div class="Admin">
     <v-container v-if="admin">
@@ -129,6 +130,9 @@ import Heading1 from "@/components/Heading1.vue";
 import CRUD_User from "@/components/CRUD_User.vue";
 import { Student } from "@/model/IStudent";
 
+/**
+ * Page Admin
+ */
 @Component({
   components: { Heading1, Header, CRUD_User },
 })
@@ -147,18 +151,28 @@ export default class Admin extends Vue {
   private overlay = false;
   private crudUser = "";
   // --------------------- méthodes crud users ----------------------
+
+  /**
+   * Affiche le formulaire de création d'utilisateur
+   */
   public createUser(): void {
     this.overlay = true;
     this.crudUser = "Create User";
     this.currentUser = this.blankUser;
     this.crudAction = "create";
   }
+  /**
+   * Affiche le formulaire de modification d'utilisateur
+   */
   public modifyUser(user: Student): void {
     this.overlay = true;
     this.crudUser = "Modify User: " + user.username;
     this.currentUser = user;
     this.crudAction = "modify";
   }
+  /**
+   * attributs gérants la pagination
+   */
   private uuidsLoading = true;
   private students: Student[] = [];
   private search = "";
