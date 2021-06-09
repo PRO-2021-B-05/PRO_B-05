@@ -10,6 +10,9 @@ export class Communication {
   private token?: string;
   private axiosServer: AxiosInstance;
 
+  /**
+   * crée l'instance axios
+   */
   constructor() {
     this.axiosServer = axios.create({
       baseURL: `${SERVER_ADDRESS}/api/v1`,
@@ -17,6 +20,11 @@ export class Communication {
     this.setToken(localStorage.getItem("token") ?? "");
   }
 
+  /**
+   * récupère des projets
+   * @param offset indice du premier élément cherché
+   * @param limit nombre d'éléments à récupérer
+   */
   async getProjects(
     offset: number,
     limit: number
@@ -26,6 +34,11 @@ export class Communication {
     );
     return response.data;
   }
+
+  /**
+   * récupère un projet
+   * @param projectUuid uuid du proket
+   */
   async getProject(projectUuid: string): Promise<IProject> {
     const response = await this.axiosServer.get<IProject>(
       "/projects/" + projectUuid
@@ -33,6 +46,12 @@ export class Communication {
     return response.data;
   }
 
+  /**
+   * récupère les images d'un projet
+   * @param projectUuid uuid du projet
+   * @param offset indice du premier élément cherché
+   * @param limit nombre d'éléments à récupérer
+   */
   async getProjectImages(
     projectUuid: string,
     offset: number,
@@ -49,6 +68,12 @@ export class Communication {
     return response.data;
   }
 
+  /**
+   * récupère les projets d'un étudiant
+   * @param studentUuid uuid de l'étudiant
+   * @param offset indice du premier élément cherché
+   * @param limit nombre d'éléments à récupérer
+   */
   async getStudentProjects(
     studentUuid: string,
     offset: number,
@@ -151,6 +176,11 @@ export class Communication {
   ): Promise<void> {
     await this.axiosServer.put("/my/projects/" + uuid, project);
   }
+
+  /**
+   * supprimer un projet
+   * @param uuid du projet à supprimer
+   */
   async sendDeleteProject(uuid: string): Promise<void> {
     await this.axiosServer.delete("/my/projects/" + uuid);
   }
