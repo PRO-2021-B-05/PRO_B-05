@@ -94,6 +94,7 @@ export default class Profil extends Vue {
 
   public async getStudent(uuid: string): Promise<void> {
     this.student = await this.$api.getStudent(uuid);
+    if(!this.student) return;
     this.authorInfo = {
       title: `${this.student.firstname} ${this.student.lastname}`,
       section: [
