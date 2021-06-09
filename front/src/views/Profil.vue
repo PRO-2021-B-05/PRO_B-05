@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <div>
     <v-container>
@@ -90,6 +91,10 @@ import { IProject } from "@/model/IProject";
     Heading1,
   },
 })
+
+/**
+ * Page profil d'un utilisateur
+ */
 export default class Profil extends Vue {
   private modify = false;
   private uuid?: string;
