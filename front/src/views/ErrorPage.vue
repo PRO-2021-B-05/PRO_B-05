@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <v-container>
     <heading1>Error</heading1>
@@ -14,6 +15,9 @@ import { Component, Vue } from "vue-property-decorator";
 import Header from "@/components/Header.vue";
 import Heading1 from "@/components/Heading1.vue";
 
+/**
+ * Page d'erreur
+ */
 @Component({ components: { Heading1, Header } })
 export default class ErrorPage extends Vue {}
 </script>
