@@ -6,6 +6,7 @@ COPY package.json .
 COPY yarn.lock .
 COPY ./dist ./dist
 COPY ./views ./views
+COPY ./public ./public
 
 RUN yarn install --production
 
