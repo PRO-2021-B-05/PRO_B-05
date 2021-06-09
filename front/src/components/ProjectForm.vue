@@ -133,7 +133,6 @@ export default class ProjectForm extends Vue {
   private projectDescription = "";
   //ancien trucs images qui ne sont plus utilisés
   private tmpFiles: File[] = [];
-  //
   private imagesToDelete: Image[] = [];
   private images: Image[] = [];
   private error = false;
@@ -219,6 +218,9 @@ export default class ProjectForm extends Vue {
     }
   }
 
+  /**
+   * envoyer une demande de création de projet
+   */
   private async createProject(): Promise<void> {
     const userUUID = (await this.$api.getMyProfile()).uuid;
     const createdProjectUUID = await this.$api.sendCreateProject(userUUID, {
@@ -229,6 +231,9 @@ export default class ProjectForm extends Vue {
     this.projectUuid = createdProjectUUID;
   }
 
+  /**
+   * envoyer une demande de modification du projet
+   */
   private async modifyProject(): Promise<void> {
     await this.$api.sendModifyProject(this.projectUuid, {
       title: this.projectName,
@@ -238,6 +243,9 @@ export default class ProjectForm extends Vue {
     await this.sendDeleteImagesToServer(this.projectUuid);
   }
 
+  /**
+   * initialiser le composant dans le bon état
+   */
   public async mounted(): Promise<void> {
     if (this.modify) {
       this.crudText = "Modify";
