@@ -1,3 +1,4 @@
+<!-- Commentaires en dessous du template -->
 <template>
   <v-overlay :value="overlay">
     <v-card color="white" light>
@@ -44,6 +45,10 @@ import { AxiosError } from "axios";
 @Component({
   components: {},
 })
+
+/**
+ * Gère le composant Login : formulaire d'authentification
+ */
 export default class Login extends Vue {
   private login: ILogin = { username: "", password: "" };
   private error = false;
@@ -52,6 +57,10 @@ export default class Login extends Vue {
     this.error = false;
     this.$emit("close");
   }
+
+  /**
+   * Envoie les données d'authentification au serveur via l'API
+   */
   public async send(): Promise<void> {
     let connect = false;
     await this.$api
