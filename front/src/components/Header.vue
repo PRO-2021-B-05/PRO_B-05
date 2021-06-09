@@ -1,11 +1,7 @@
 <template>
   <div>
     <v-app-bar color="white" clipped-right app>
-      <v-img
-        max-height="35px"
-        max-width="35px"
-        src="@/assets/logo.png"
-      ></v-img>
+      <v-img max-height="35px" max-width="35px" src="@/assets/logo.png"></v-img>
       <v-app-bar-title class="ml-3">
         <div>StArt</div>
       </v-app-bar-title>
@@ -102,6 +98,9 @@ import Login from "@/components/Login.vue";
 @Component({
   components: { Login },
 })
+/**
+ * Composant gérant le menu que l'on trouve sur toutes les pages
+ */
 export default class Header extends Vue {
   private links = [
     {
@@ -124,6 +123,9 @@ export default class Header extends Vue {
   private adminConnected = false;
   private profileUuid = "";
 
+  /**
+   * Récupèrer les données de l'utilisateur
+   */
   public async loadProfile(): Promise<void> {
     if (this.studentConnected) {
       this.profileUuid = (await this.$api.getMyProfile()).uuid;
@@ -148,9 +150,17 @@ export default class Header extends Vue {
     this.studentConnected = true;
     this.profileUuid = (await this.$api.getMyProfile()).uuid;
   }
+  /**
+   * indique qu'un administrateur est connecté
+   */
   public async adminConnect(): Promise<void> {
     this.adminConnected = true;
   }
+
+  /**
+   * Déconnecter l'utilisateur tout en s'assurat que le cookie de session a été
+   * effacé
+   */
   public disconnect(): void {
     this.$api.clearToken();
     this.studentConnected = false;
