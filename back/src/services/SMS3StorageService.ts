@@ -129,8 +129,8 @@ export class SMS3StorageService {
   /**
    * Génère un Url menant à la ressource demandé sur le serveur.
    *
-   * @param bucketName le nom du bucket où se trouve le fichier
-   * @param name le nom de la ressource
+   * @param bucketName Le nom du bucket où se trouve le fichier
+   * @param name Le nom de la ressource
    */
   public generateURL(bucketName: string, name: string): string {
     const c = this.configuration.sms3;
