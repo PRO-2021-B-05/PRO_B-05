@@ -1,7 +1,7 @@
-import { Required } from '@tsed/schema';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {Required} from '@tsed/schema';
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 
-import { Project } from './Project';
+import {Project} from './Project';
 
 // TODO: Supprimer.
 @Entity()
