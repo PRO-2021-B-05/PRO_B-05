@@ -9,6 +9,7 @@ import {Env} from '@tsed/core';
 import {Configuration, Inject} from '@tsed/di';
 import bodyParser from 'body-parser';
 import compress from 'compression';
+import history from 'connect-history-api-fallback';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
@@ -16,7 +17,6 @@ import methodOverride from 'method-override';
 
 import SMS3Config from './config/SMS3Config';
 import typeormConfig from './config/typeorm';
-import {IndexCtrl} from './controllers/public/pages/IndexCtrl';
 import {User} from './entities/User';
 
 dotenv.config();
@@ -53,7 +53,13 @@ if (isProduction) {
   mount: {
     '/api/v1': [`${rootDir}/controllers/public/**/*{.ts,.js}`],
     '/api/v1/my': [`${rootDir}/controllers/my/**/*{.ts,.js}`],
-    '/': [IndexCtrl],
+  },
+  statics: {
+    '/': [
+      {
+        root: `${rootDir}/../public`,
+      },
+    ],
   },
   componentsScan: [
     `${rootDir}/protocols/*{.ts,.js}`,
@@ -89,6 +95,20 @@ export class Server {
       .use(cors())
       .use(cookieParser())
       .use(compress({}))
+      .use(
+        history({
+          rewrites: [
+            {
+              from: /^\/api\/.*$/,
+              to: context => context.parsedUrl.pathname ?? '',
+            },
+            {
+              from: /^\/docs\/.*$/,
+              to: context => context.parsedUrl.pathname ?? '',
+            },
+          ],
+        })
+      )
       .use(methodOverride())
       .use(bodyParser.json())
       .use(

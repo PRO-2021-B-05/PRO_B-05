@@ -6,10 +6,11 @@ import Jimp from 'jimp';
 import request from 'request';
 import { getRepository } from 'typeorm';
 
-import { Image } from '../../entities/Image';
-import { Project } from '../../entities/Project';
-import { Student } from '../../entities/Student';
-import { SMS3StorageService } from '../../services/SMS3StorageService';
+import {Admin} from '../../entities/Admin';
+import {Image} from '../../entities/Image';
+import {Project} from '../../entities/Project';
+import {Student} from '../../entities/Student';
+import {SMS3StorageService} from '../../services/SMS3StorageService';
 
 /**
  * Contrôleur servant à remplir la base de données avec des fausses données
@@ -29,11 +30,7 @@ export class FakerController {
    *
    */
   private studentRepository = getRepository(Student);
-
-  /**
-   * Accès à la table des projets dans la base de données.
-   *
-   */
+  private adminRepository = getRepository(Admin);
   private projectRepository = getRepository(Project);
 
   /**
@@ -62,11 +59,15 @@ export class FakerController {
     }
   }
 
-  /**
-   * Permet de générer des projets appartenant aux étudiants dans la base de
-   * données.
-   *
-   */
+  @Get('/admin')
+  async populateDbAdmin() {
+    const admin = new Admin();
+    admin.firstname = faker.name.firstName();
+    admin.lastname = faker.name.lastName();
+    admin.username = 'admin';
+    admin.password = await bcrypt.hash('password', 10);
+    await this.adminRepository.save(admin);
+  }
   @Get('/projects')
   async populateDbProjects() {
     const students = await this.studentRepository.find();
