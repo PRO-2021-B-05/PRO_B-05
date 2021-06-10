@@ -82,6 +82,14 @@ export class SMS3StorageService {
     return this.client.putObject(bucketName, name, stream, metaData);
   }
 
+  /**
+   * Ajoute un fichier dans le serveur de fichier à partir d'un fichier local.
+   *
+   * @param bucketName Le nom du bucket où ajouter le fichier
+   * @param name Le nom du nouveau fichier
+   * @param filePath Le chemin vers le fichier local à copier
+   * @param metaData Les métadonnées à associer au fichier
+   */
   public putFileFromFile(
     bucketName: string,
     name: string,
