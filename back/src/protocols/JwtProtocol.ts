@@ -7,6 +7,10 @@ import {Admin} from '../entities/Admin';
 import {Student} from '../entities/Student';
 import {User} from '../entities/User';
 
+/**
+ * Décorateur servant à générer les tokens JWT d'authentification.
+ *
+ */
 @Protocol<StrategyOptions>({
   name: 'jwt',
   useStrategy: Strategy,
@@ -16,6 +20,11 @@ import {User} from '../entities/User';
     ignoreExpiration: false,
   },
 })
+
+/**
+ * Classe servant à vérifier les tokens JWT d'authentification.
+ *
+ */
 export class JwtProtocol implements OnVerify {
   private adminRepository = getRepository(Admin);
   private studentRepository = getRepository(Student);
