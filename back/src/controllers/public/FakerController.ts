@@ -12,14 +12,32 @@ import {Project} from '../../entities/Project';
 import {Student} from '../../entities/Student';
 import {SMS3StorageService} from '../../services/SMS3StorageService';
 
+/**
+ * Contrôleur servant à remplir la base de données avec des fausses données
+ * générées.
+ *
+ */
 @Controller('/faker')
 export class FakerController {
+  /**
+   * Accès au stockage des images.
+   *
+   */
   @Inject() s3: SMS3StorageService;
+
+  /**
+   * Accès au repository des divers entités de la BDD.
+   *
+   */
   private studentRepository = getRepository(Student);
   private adminRepository = getRepository(Admin);
   private projectRepository = getRepository(Project);
   private imageRepository = getRepository(Image);
 
+  /**
+   * Permet de générer des étudiants dans la base de données avec "password" comme mdp.
+   *
+   */
   @Get('/students')
   async populateDbStudents() {
     for (let i = 0; i < 20; ++i) {
@@ -36,6 +54,9 @@ export class FakerController {
     }
   }
 
+  /**
+   * Permet de créer un admin du nom de "admin" et de mdp "password"
+   */
   @Get('/admin')
   async populateDbAdmin() {
     const admin = new Admin();
@@ -45,6 +66,10 @@ export class FakerController {
     admin.password = await bcrypt.hash('password', 10);
     await this.adminRepository.save(admin);
   }
+
+  /**
+   * Permet de créer 20 projets attribués aléatoirement à un étudiant
+   */
   @Get('/projects')
   async populateDbProjects() {
     const students = await this.studentRepository.find();
@@ -57,6 +82,10 @@ export class FakerController {
     }
   }
 
+  /**
+   * Permet de générer des images et leurs métadonnées dans la base de données.
+   *
+   */
   @Get('/images')
   async populateDbImages() {
     const projects = await this.projectRepository.find({relations: ['images']});

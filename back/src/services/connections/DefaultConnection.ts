@@ -4,7 +4,9 @@ import {Connection, ConnectionOptions} from 'typeorm';
 
 export const DEFAULT_CONNECTION = Symbol.for('DEFAULT_CONNECTION');
 export type DEFAULT_CONNECTION = Connection;
-
+/**
+ * Création de la connection avec la BDD
+ */
 registerProvider({
   provide: DEFAULT_CONNECTION,
   deps: [Configuration],

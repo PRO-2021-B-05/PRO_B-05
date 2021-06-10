@@ -20,6 +20,10 @@ import {Pagination} from '../../entities/Pagination';
 import {Student} from '../../entities/Student';
 import {SMS3StorageService} from '../../services/SMS3StorageService';
 
+/**
+ *  Controleur de test.
+ */
+//TODO: A supprimer
 @Controller('/test')
 export class TestController {
   @Inject()
