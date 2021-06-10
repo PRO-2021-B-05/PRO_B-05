@@ -1,10 +1,11 @@
-import { MaxLength, MinLength, Pattern, Required } from '@tsed/schema';
+import {MaxLength, MinLength, Pattern, Required} from '@tsed/schema';
 
 /**
  * Classe contenant les informations nécessaires pour authentifier un
  * utilisateur.
  *
  */
+//TODO: A supprimer
 export class UserRegister {
   /**
    * Pseudo de l'utilisateur.

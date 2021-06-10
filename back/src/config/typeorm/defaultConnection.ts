@@ -1,5 +1,9 @@
 import {ConnectionOptions} from 'typeorm';
 
+/**
+ * Options de configuration de typeorm.
+ *
+ */
 export default (): ConnectionOptions => ({
   name: 'default',
   type: 'mariadb',

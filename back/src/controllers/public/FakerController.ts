@@ -1,10 +1,10 @@
-import { Controller, Get } from '@tsed/common';
-import { Inject } from '@tsed/di';
+import {Controller, Get} from '@tsed/common';
+import {Inject} from '@tsed/di';
 import bcrypt from 'bcrypt';
 import faker from 'faker';
 import Jimp from 'jimp';
 import request from 'request';
-import { getRepository } from 'typeorm';
+import {getRepository} from 'typeorm';
 
 import {Admin} from '../../entities/Admin';
 import {Image} from '../../entities/Image';
@@ -26,21 +26,16 @@ export class FakerController {
   @Inject() s3: SMS3StorageService;
 
   /**
-   * Accès à la table des étudiants dans la base de données.
+   * Accès au repository des divers entités de la BDD.
    *
    */
   private studentRepository = getRepository(Student);
   private adminRepository = getRepository(Admin);
   private projectRepository = getRepository(Project);
-
-  /**
-   * Accès à la table des métadonnées des images dans la base de données.
-   *
-   */
   private imageRepository = getRepository(Image);
 
   /**
-   * Permet de générer des étudiants dans la base de données.
+   * Permet de générer des étudiants dans la base de données avec "password" comme mdp.
    *
    */
   @Get('/students')
@@ -59,6 +54,9 @@ export class FakerController {
     }
   }
 
+  /**
+   * Permet de créer un admin du nom de "admin" et de mdp "password"
+   */
   @Get('/admin')
   async populateDbAdmin() {
     const admin = new Admin();
@@ -68,6 +66,10 @@ export class FakerController {
     admin.password = await bcrypt.hash('password', 10);
     await this.adminRepository.save(admin);
   }
+
+  /**
+   * Permet de créer 20 projets attribués aléatoirement à un étudiant
+   */
   @Get('/projects')
   async populateDbProjects() {
     const students = await this.studentRepository.find();
@@ -86,7 +88,7 @@ export class FakerController {
    */
   @Get('/images')
   async populateDbImages() {
-    const projects = await this.projectRepository.find({ relations: ['images'] });
+    const projects = await this.projectRepository.find({relations: ['images']});
 
     const url = 'https://picsum.photos/550/400';
 
@@ -94,7 +96,7 @@ export class FakerController {
     for (const project of projects) {
       for (let i = 0; i < nbImages - project.images.length; ++i) {
         await new Promise<void>(resolve => {
-          request({ url, encoding: null }, async (err, resp, buffer) => {
+          request({url, encoding: null}, async (err, resp, buffer) => {
             if (err) return;
             const createdImage = await this.imageRepository.save({
               project,
